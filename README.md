@@ -1,5 +1,5 @@
 # NodePad
-> My chosen project is a note-taking app made for the user to enjoy, whilst being both stimulating & productive
+> A note-taking app made for the user to enjoy, whilst being both stimulating & productive
 
 ## Documentation
 
