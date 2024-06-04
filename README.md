@@ -4,3 +4,5 @@
 ## Documentation
 
 All documentation for this project can be found within the `documentation` folder.
+
+Additionally, the write-up is in the `write_up` folder.
