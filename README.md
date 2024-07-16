@@ -3,7 +3,8 @@
 
 ## Documentation
 
-- All documentation of this project can be found within the [Documentation](/Documentation) folder. This is split into:
+- The write-up for the project - all the required written work done throughout the development of the project - is in the [Write-up](/Write-up) folder. ***You only need to care about this part if you are OCR.***
+
+- All documentation with regards to the finished project can be found within the [Documentation](/Documentation) folder. This is split into:
   - [dev](/Documentation/dev) - the guides for developers/ maintainers
   - [user](/Documentation/user) - the guides for any user of the software
-- The write-up for the project, including sections such as analysis, is in the [Write-up](/Write-up) folder.
