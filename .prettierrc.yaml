@@ -1,4 +1,9 @@
 singleQuote: true
-semi: false
+semi: true
 printWidth: 100
-trailingComma: none
+tabWidth: 2
+useTabs: false
+bracketSpacing: true
+bracketSameLine: false
+arrowParens: 'always'
+trailingComma: 'es5'

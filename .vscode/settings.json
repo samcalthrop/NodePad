@@ -1,11 +1,15 @@
 {
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never",
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit"
   },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "typescript.preferences.importModuleSpecifier": "shortest",
+  "eslint.runtime": "node",
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "cSpell.language": "en-GB",
+  "cSpell.words": ["calthrop", "electronjs", "Mantine", "nodepad", "Parens", "vite"]
 }

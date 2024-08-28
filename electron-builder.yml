@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: nodepad
+appId: com.calthrop.nodepad.app
+productName: NodePad
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: nodepad
+  executableName: NodePad
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -33,7 +33,7 @@ linux:
     - AppImage
     - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: calthrop.com
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
