@@ -11,7 +11,7 @@ export const LoginScreen = (): JSX.Element => {
       <div className={classes.root}>
         <Title order={2}>Log in</Title>
         <Text>Please enter your login credentials</Text>
-        <Button className={classes.button} onClick={() => navigate('/home')}>
+        <Button variant="subtle" className={classes.button} onClick={() => navigate('/home')}>
           Ok
         </Button>
       </div>

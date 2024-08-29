@@ -1,4 +1,6 @@
 .root {
   padding: 6px;
   background-color: var(--mantine-primary-color-light);
+  border-radius: 4px;
+  min-height: 100%;
 }

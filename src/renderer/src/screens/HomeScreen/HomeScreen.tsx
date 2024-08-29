@@ -14,7 +14,11 @@ export const HomeScreen = (): JSX.Element => {
         <Title order={2}>Home</Title>
         <Canvas drawFunc={drawPulsingDot} width={200} height={200} />
         <Text>Edit node meta</Text>
-        <Button className={classes.button} onClick={() => navigate('/edit-node-meta')}>
+        <Button
+          variant="subtle"
+          className={classes.button}
+          onClick={() => navigate('/edit-node-meta')}
+        >
           Ok
         </Button>
       </div>
