@@ -1,4 +1,5 @@
 import classes from './Sidebar.module.css';
+import { ReactElement } from 'react';
 import {
   Group,
   Tree,
@@ -10,6 +11,7 @@ import {
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen } from '@tabler/icons-react';
+// import * as fs from '@ayonli/jsext/fs';
 
 export const Sidebar = (): JSX.Element => {
   // const tree = useTree();
@@ -77,7 +79,12 @@ function FileIcon({ name, isFolder, expanded }: FileIconProps) {
   return null;
 }
 
-function Leaf({ node, expanded, hasChildren, elementProps }: RenderTreeNodePayload) {
+function Leaf({
+  node,
+  expanded,
+  hasChildren,
+  elementProps,
+}: RenderTreeNodePayload): ReactElement<FileIconProps> {
   return (
     <Group gap={5} {...elementProps}>
       <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />

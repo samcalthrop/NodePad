@@ -9,11 +9,13 @@ export const EditNodeMetaScreen = (): JSX.Element => {
   return (
     <ScreenWithSidebar>
       <div className={classes.root}>
-        <Title order={2}>Edit node meta</Title>
-        <Text>Exit</Text>
-        <Button variant="subtle" className={classes.button} onClick={() => navigate('/home')}>
-          Ok
-        </Button>
+        <div className={classes.thing}>
+          <Title order={2}>Edit node meta</Title>
+          <Text>Exit</Text>
+          <Button variant="subtle" className={classes.button} onClick={() => navigate('/home')}>
+            Ok
+          </Button>
+        </div>
       </div>
     </ScreenWithSidebar>
   );

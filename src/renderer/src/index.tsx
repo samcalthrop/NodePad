@@ -9,7 +9,7 @@ import { HomeScreen } from './screens/HomeScreen';
 import { LoginScreen } from './screens/LoginScreen';
 
 const theme = createTheme({
-  defaultRadius: 0,
+  defaultRadius: 6,
 });
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
