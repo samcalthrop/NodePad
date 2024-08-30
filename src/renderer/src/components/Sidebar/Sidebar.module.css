@@ -1,6 +1,47 @@
+
+:root {
+  --width: 10px
+}
 .root {
-  padding: 6px;
-  background-color: var(--mantine-primary-color-light);
-  border-radius: 4px;
+  padding-top: 5px;
+  background-color: rgb(40, 40, 40);
+  border-radius: 6px;
   min-height: 100%;
+  /* width: calc(200 - (2 * padding)); */
+  width: 200px;
+}
+
+.stuff {
+  padding: 10px;
+}
+
+.label {
+  /* padding-block: 1px; */
+  margin-left: var(--width);
+  margin-right: var(--width);
+
+  &[data-hovered] {
+    @mixin where-light {
+      background-color: var(--mantine-color-gray-0);
+    }
+
+    @mixin where-dark {
+      background-color: var(--mantine-color-dark-6);
+      color: var(--mantine-color-white);
+    }
+  }
+
+  &[data-selected] {
+    font-weight: 700;
+
+    @mixin light {
+      background-color: var(--mantine-color-gray-0);
+      color: var(--mantine-color-black);
+    }
+
+    @mixin dark {
+      background-color: alpha(var(--mantine-color-gray-0), 0.35);
+      color: var(--mantine-color-gray-0);
+    }
+  }
 }

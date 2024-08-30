@@ -1,35 +1,90 @@
 import classes from './Sidebar.module.css';
-import { IconChevronDown } from '@tabler/icons-react';
-import { Button, Group, Tree, TreeNodeData, useTree } from '@mantine/core';
-import { Title } from '@mantine/core';
+import {
+  Group,
+  Tree,
+  TreeNodeData,
+  RenderTreeNodePayload,
+  Title,
+  Divider,
+  Space
+} from '@mantine/core';
+import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
+import { IconFolder, IconFolderOpen } from '@tabler/icons-react';
 
 export const Sidebar = (): JSX.Element => {
   // const tree = useTree();
 
   return (
     <div className={classes.root}>
-      <Title> Sidebar </Title>
-      <Tree
+      <div className={classes.stuff}>
+        <Title order={2}> Sidebar </Title>
+        <Space h="md" />
+        <Divider />
+      </div>
+      {/* <Tree
         data={data}
         levelOffset={23}
         renderNode={({ node, expanded, hasChildren, elementProps }) => (
-          <Group>
-            <Group gap={5} {...elementProps}>
-              {hasChildren && (
-                <IconChevronDown
-                  size={18}
-                  style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                />
-              )}
-              <span>{node.label}</span>
-            </Group>
-            {/* <Button onClick={() => tree.collapseAllNodes()}>Collapse all</Button> */}
+          <Group gap={5} {...elementProps}>
+            {hasChildren && (
+              <IconChevronDown
+                size={18}
+                style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              />
+            )}
+            <span>{node.label}</span>
           </Group>
         )}
+      /> */}
+      <Tree
+        classNames={classes}
+        selectOnClick
+        clearSelectionOnOutsideClick
+        data={data}
+        renderNode={(payload) => <Leaf {...payload} />}
       />
     </div>
   );
 };
+
+interface FileIconProps {
+  name: string;
+  isFolder: boolean;
+  expanded: boolean;
+}
+
+function FileIcon({ name, isFolder, expanded }: FileIconProps) {
+  if (name.endsWith('package.json')) {
+    return <NpmIcon size={14} />;
+  }
+
+  if (name.endsWith('.ts') || name.endsWith('.tsx') || name.endsWith('tsconfig.json')) {
+    return <TypeScriptCircleIcon size={14} />;
+  }
+
+  if (name.endsWith('.css')) {
+    return <CssIcon size={14} />;
+  }
+
+  if (isFolder) {
+    return expanded ? (
+      <IconFolderOpen color="var(--mantine-color-yellow-9)" size={14} stroke={2.5} />
+    ) : (
+      <IconFolder color="var(--mantine-color-yellow-9)" size={14} stroke={2.5} />
+    );
+  }
+
+  return null;
+}
+
+function Leaf({ node, expanded, hasChildren, elementProps }: RenderTreeNodePayload) {
+  return (
+    <Group gap={5} {...elementProps}>
+      <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
+      <span>{node.label}</span>
+    </Group>
+  );
+}
 
 const data: TreeNodeData[] = [
   {

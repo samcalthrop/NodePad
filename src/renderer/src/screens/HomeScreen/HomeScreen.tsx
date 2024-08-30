@@ -11,16 +11,18 @@ export const HomeScreen = (): JSX.Element => {
   return (
     <ScreenWithSidebar>
       <div className={classes.root}>
-        <Title order={2}>Home</Title>
-        <Canvas drawFunc={drawPulsingDot} width={200} height={200} />
-        <Text>Edit node meta</Text>
-        <Button
-          variant="subtle"
-          className={classes.button}
-          onClick={() => navigate('/edit-node-meta')}
-        >
-          Ok
-        </Button>
+        <div className={classes.thing}>
+          <Title order={1}>Home</Title>
+          <Canvas drawFunc={drawPulsingDot} width={200} height={200} />
+          <Text>Edit node meta</Text>
+          <Button
+            variant="subtle"
+            className={classes.button}
+            onClick={() => navigate('/edit-node-meta')}
+          >
+            Ok
+          </Button>
+        </div>
       </div>
     </ScreenWithSidebar>
   );

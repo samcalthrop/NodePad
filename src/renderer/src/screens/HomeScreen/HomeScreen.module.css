@@ -1,9 +1,20 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  /* margin: 10px; */
+  border-radius: 6px;
+  min-height: 100vh;
+  min-width: 100vh;
+  background-color: rgb(40, 40, 40);
 
   .button {
     width: fit-content;
   }
+}
+
+.thing {
+  /* margin-top: 4px;
+  margin-left: 10px;
+  margin-right: margin-left; */
+  margin: 10px;
 }
