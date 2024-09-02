@@ -1,5 +1,5 @@
 import classes from './Sidebar.module.css';
-import { ReactElement } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import {
   Group,
   Tree,
@@ -7,14 +7,19 @@ import {
   RenderTreeNodePayload,
   Title,
   Divider,
-  Space
+  Space,
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen } from '@tabler/icons-react';
-// import * as fs from '@ayonli/jsext/fs';
 
 export const Sidebar = (): JSX.Element => {
-  // const tree = useTree();
+  const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
+
+  useEffect(() => {
+    window.ipcAPI.getTreeNodeData().then((treeNodeData) => {
+      setTreeNodeData(treeNodeData);
+    });
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -23,26 +28,11 @@ export const Sidebar = (): JSX.Element => {
         <Space h="md" />
         <Divider />
       </div>
-      {/* <Tree
-        data={data}
-        levelOffset={23}
-        renderNode={({ node, expanded, hasChildren, elementProps }) => (
-          <Group gap={5} {...elementProps}>
-            {hasChildren && (
-              <IconChevronDown
-                size={18}
-                style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
-              />
-            )}
-            <span>{node.label}</span>
-          </Group>
-        )}
-      /> */}
       <Tree
         classNames={classes}
         selectOnClick
         clearSelectionOnOutsideClick
-        data={data}
+        data={treeNodeData}
         renderNode={(payload) => <Leaf {...payload} />}
       />
     </div>
@@ -55,12 +45,17 @@ interface FileIconProps {
   expanded: boolean;
 }
 
-function FileIcon({ name, isFolder, expanded }: FileIconProps) {
+function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
   if (name.endsWith('package.json')) {
     return <NpmIcon size={14} />;
   }
 
-  if (name.endsWith('.ts') || name.endsWith('.tsx') || name.endsWith('tsconfig.json')) {
+  if (
+    name.endsWith('.ts') ||
+    name.endsWith('.tsx') ||
+    name.endsWith('tsconfig.json') ||
+    name.endsWith('tsconfig.lib.json')
+  ) {
     return <TypeScriptCircleIcon size={14} />;
   }
 
@@ -76,7 +71,7 @@ function FileIcon({ name, isFolder, expanded }: FileIconProps) {
     );
   }
 
-  return null;
+  return <></>;
 }
 
 function Leaf({
@@ -92,73 +87,3 @@ function Leaf({
     </Group>
   );
 }
-
-const data: TreeNodeData[] = [
-  {
-    label: 'src',
-    value: 'src',
-    children: [
-      {
-        label: 'components',
-        value: 'src/components',
-        children: [
-          { label: 'Accordion.tsx', value: 'src/components/Accordion.tsx' },
-          { label: 'Tree.tsx', value: 'src/components/Tree.tsx' },
-          { label: 'Button.tsx', value: 'src/components/Button.tsx' },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'node_modules',
-    value: 'node_modules',
-    children: [
-      {
-        label: 'react',
-        value: 'node_modules/react',
-        children: [
-          { label: 'index.d.ts', value: 'node_modules/react/index.d.ts' },
-          { label: 'package.json', value: 'node_modules/react/package.json' },
-        ],
-      },
-      {
-        label: '@mantine',
-        value: 'node_modules/@mantine',
-        children: [
-          {
-            label: 'core',
-            value: 'node_modules/@mantine/core',
-            children: [
-              { label: 'index.d.ts', value: 'node_modules/@mantine/core/index.d.ts' },
-              { label: 'package.json', value: 'node_modules/@mantine/core/package.json' },
-            ],
-          },
-          {
-            label: 'hooks',
-            value: 'node_modules/@mantine/hooks',
-            children: [
-              { label: 'index.d.ts', value: 'node_modules/@mantine/core/index.d.ts' },
-              { label: 'package.json', value: 'node_modules/@mantine/core/package.json' },
-            ],
-          },
-          {
-            label: 'form',
-            value: 'node_modules/@mantine/form',
-            children: [
-              { label: 'index.d.ts', value: 'node_modules/@mantine/core/index.d.ts' },
-              { label: 'package.json', value: 'node_modules/@mantine/core/package.json' },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'package.json',
-    value: 'package.json',
-  },
-  {
-    label: 'tsconfig.json',
-    value: 'tsconfig.json',
-  },
-];
