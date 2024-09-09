@@ -2,6 +2,7 @@ import classes from './LoginScreen.module.css';
 import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
 import { Button, Title, Text } from '@mantine/core';
+// import { electronAPI } from '@electron-toolkit/preload';
 
 export const LoginScreen = (): JSX.Element => {
   const navigate = useNavigate();

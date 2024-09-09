@@ -3,6 +3,8 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
+import { getTreeNodeData } from './getTreeNodeData';
+// import * as fs from 'fs';
 
 function createWindow(): void {
   // Create the browser window.
@@ -36,7 +38,7 @@ function createWindow(): void {
   }
 
   // - TESTING
-  mainWindow.webContents.send('data-send', data);
+  // mainWindow.webContents.send('data-send', data);
 
   // - dev tools
   mainWindow.webContents.openDevTools({ mode: 'right' });
@@ -60,7 +62,9 @@ app.whenReady().then(() => {
   });
 
   ipcMain.on('get-tree-node-data', (event: IpcMainEvent) => {
+    const data: TreeNodeData[] = getTreeNodeData();
     event.sender.send('get-tree-node-data-success', data);
+    console.log('done!');
   });
 
   createWindow();
@@ -85,76 +89,11 @@ app.on('window-all-closed', () => {
   }
 });
 
-const data: TreeNodeData[] = [
-  {
-    label: 'src',
-    value: 'src',
-    children: [
-      {
-        label: 'components',
-        value: 'src/components',
-        children: [
-          { label: 'Accordion.tsx', value: 'src/components/Accordion.tsx' },
-          { label: 'Tree.tsx', value: 'src/components/Tree.tsx' },
-          { label: 'Button.tsx', value: 'src/components/Button.tsx' },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'node_modules',
-    value: 'node_modules',
-    children: [
-      {
-        label: 'react',
-        value: 'node_modules/react',
-        children: [
-          { label: 'index.d.ts', value: 'node_modules/react/index.d.ts' },
-          { label: 'package.json', value: 'node_modules/react/package.json' },
-        ],
-      },
-      {
-        label: '@mantine',
-        value: 'node_modules/@mantine',
-        children: [
-          {
-            label: 'core',
-            value: 'node_modules/@mantine/core',
-            children: [
-              { label: 'index.d.ts', value: 'node_modules/@mantine/core/index.d.ts' },
-              { label: 'package.json', value: 'node_modules/@mantine/core/package.json' },
-            ],
-          },
-          {
-            label: 'hooks',
-            value: 'node_modules/@mantine/hooks',
-            children: [
-              { label: 'index.d.ts', value: 'node_modules/@mantine/core/index.d.ts' },
-              { label: 'package.json', value: 'node_modules/@mantine/core/package.json' },
-            ],
-          },
-          {
-            label: 'form',
-            value: 'node_modules/@mantine/form',
-            children: [
-              { label: 'index.d.ts', value: 'node_modules/@mantine/core/index.d.ts' },
-              { label: 'package.json', value: 'node_modules/@mantine/core/package.json' },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'package.json',
-    value: 'package.json',
-  },
-  {
-    label: 'tsconfig.json',
-    value: 'tsconfig.json',
-  },
-  {
-    label: 'tsconfig.lib.json',
-    value: 'tsconfig.lib.json',
-  },
-];
+// TESTING FILE OPENING:
+// let fileContents: string = '';
+
+// fs.readFile('README.md', (err, inputD) => {
+//   if (err) throw err;
+//   fileContents = inputD.toString();
+//   console.log(fileContents);
+// });
