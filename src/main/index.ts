@@ -30,17 +30,17 @@ function createWindow(): void {
   });
 
   // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
+  // load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
 
-  // - TESTING
+  // TESTING
   // mainWindow.webContents.send('data-send', data);
 
-  // - dev tools
+  // open dev tools
   mainWindow.webContents.openDevTools({ mode: 'right' });
 }
 
@@ -51,17 +51,18 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron');
 
   // Default open or close DevTools with F12
-  // ( https://github.com/alex8088/electron-toolkit/tree/master/packages/utils )
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // IPC test
+  // IPC test to establish connection between front & backend
   ipcMain.on('ping', (event: IpcMainEvent, args) => {
     console.log('pong', { event, args });
   });
 
+  // when the frontend requests the file tree...
   ipcMain.on('get-tree-node-data', (event: IpcMainEvent) => {
+    // all files/ directories found and returned to frontend
     const data: TreeNodeData[] = getTreeNodeData();
     event.sender.send('get-tree-node-data-success', data);
     console.log('done!');
@@ -70,8 +71,8 @@ app.whenReady().then(() => {
   createWindow();
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
+    // common on macOS to re-create a window when the
+    // dock icon clicked & no other windows open
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
@@ -82,7 +83,7 @@ app.whenReady().then(() => {
   // -
 });
 
-// Quit when all windows are closed, except on macOS
+// quit when all windows are closed unless OS=macOS
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
