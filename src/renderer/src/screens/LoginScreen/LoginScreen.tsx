@@ -16,6 +16,7 @@ export const LoginScreen = (): JSX.Element => {
       remember: false,
     },
 
+    // in-browser validation of email entry
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
     },
