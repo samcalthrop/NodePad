@@ -1,11 +1,10 @@
-import classes from './LoginScreen.module.css';
+import classes from '../LoginScreen/LoginScreen.module.css';
 import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
 import { Button, Title, TextInput, Checkbox, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-// import { electronAPI } from '@electron-toolkit/preload';
 
-export const LoginScreen = (): JSX.Element => {
+export const SignUpScreen = (): JSX.Element => {
   const navigate = useNavigate();
 
   // defining the rules for the login form
@@ -14,13 +13,15 @@ export const LoginScreen = (): JSX.Element => {
     initialValues: {
       email: '',
       password: '',
+      reEnterPassword: '',
       remember: false,
     },
 
     // in-browser validation of email entry
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length >= 8 ? null : 'Invalid email'),
+      password: (value) => (value.length >= 8 ? null : 'Invalid password'),
+      reEnterPassword: (value) => (value ? null : 'Passwords must match'),
     },
   });
 
@@ -28,9 +29,9 @@ export const LoginScreen = (): JSX.Element => {
     <Screen>
       <div className={classes.root}>
         <br />
-        <Title order={1}>Log In</Title>
+        <Title order={1}>Sign Up</Title>
         <br />
-        <form onSubmit={form.onSubmit(() => navigate('/home'))}>
+        <form onSubmit={form.onSubmit(() => navigate('/login'))}>
           {/* username field */}
           <TextInput
             withAsterisk
@@ -50,6 +51,15 @@ export const LoginScreen = (): JSX.Element => {
             {...form.getInputProps('password')}
           />
 
+          {/* re-enter password field */}
+          <PasswordInput
+            withAsterisk
+            label="Re-enter Password"
+            placeholder="password-123"
+            key={form.key('re-renter-password')}
+            {...form.getInputProps('re-renter-password')}
+          />
+
           {/* 'remember me' checkbox */}
           <Checkbox
             mt="sm"
@@ -63,15 +73,6 @@ export const LoginScreen = (): JSX.Element => {
             <Button type="submit">Submit</Button>
           </Group>
         </form>
-
-        {/* Sign up link */}
-        <Button
-          variant="transparent"
-          className={classes.button}
-          onClick={() => navigate('/signup')}
-        >
-          Sign Up
-        </Button>
       </div>
     </Screen>
   );

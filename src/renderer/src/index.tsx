@@ -7,6 +7,7 @@ import './assets/main.css';
 import { EditNodeMetaScreen } from './screens/EditNodeMetaScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { LoginScreen } from './screens/LoginScreen';
+import { SignUpScreen } from './screens/SignUpScreen';
 
 const theme = createTheme({
   defaultRadius: 6,
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <Routes>
           <Route path="/" element={<LoginScreen />} />
           <Route path="/login" element={<LoginScreen />} />
+          <Route path="/signup" element={<SignUpScreen />} />
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/edit-node-meta" element={<EditNodeMetaScreen />} />
         </Routes>
