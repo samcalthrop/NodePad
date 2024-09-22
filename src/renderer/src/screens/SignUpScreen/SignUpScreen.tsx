@@ -1,7 +1,7 @@
 import classes from '../LoginScreen/LoginScreen.module.css';
 import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
-import { Button, Title, TextInput, Checkbox, Group, PasswordInput } from '@mantine/core';
+import { Button, Title, TextInput, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 export const SignUpScreen = (): JSX.Element => {
@@ -60,17 +60,11 @@ export const SignUpScreen = (): JSX.Element => {
             {...form.getInputProps('re-renter-password')}
           />
 
-          {/* 'remember me' checkbox */}
-          <Checkbox
-            mt="sm"
-            label="remember me"
-            key={form.key('remember')}
-            {...form.getInputProps('remember', { type: 'checkbox' })}
-          />
-
           {/* form submission */}
           <Group justify="flex-begin" mt="md">
-            <Button type="submit">Submit</Button>
+            <Button type="submit" onClick={() => navigate('/login')}>
+              Submit
+            </Button>
           </Group>
         </form>
       </div>
