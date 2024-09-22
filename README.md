@@ -3,7 +3,7 @@
 
 ## Write-up
 
-The write-up for the project - all the required written work done throughout the development of the project - is in the [Write-up](/Write-up) folder. ***You only need to care about this part if you are OCR, or any of my teachers.***
+The write-up for the project - all the required written work done throughout the development of the project - is in the [writeup](/writeup) folder. ***You only need to care about this part if you are OCR, or any of my teachers.***
 
 Within the write-up are several folders, each corresponding to different parts of the development process:
 - [Section 1](https://github.com/samcalthrop/NodePad/tree/main/writeup/1%20-%20Analysis) - Any planning/ research/ ideas formed **before any code is written**
