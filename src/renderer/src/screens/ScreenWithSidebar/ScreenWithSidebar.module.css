@@ -4,7 +4,6 @@
   gap: 10px;
 
   .sidebar {
-    width: 200px;
-    min-height: 100vh;
+    width: 250px;
   }
 }

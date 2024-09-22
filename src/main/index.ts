@@ -39,9 +39,6 @@ function createWindow(): void {
 
   // TESTING
   // mainWindow.webContents.send('data-send', data);
-
-  // open dev tools
-  mainWindow.webContents.openDevTools({ mode: 'right' });
 }
 
 // This method will be called when Electron has finished

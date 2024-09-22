@@ -10,7 +10,8 @@ import {
   Space,
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
-import { IconFolder, IconFolderOpen } from '@tabler/icons-react';
+import { IconFolder, IconFolderOpen, IconMarkdown } from '@tabler/icons-react';
+// import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
@@ -63,6 +64,10 @@ function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
     return <CssIcon size={14} />;
   }
 
+  if (name.endsWith('.md')) {
+    return <IconMarkdown size={14} />;
+  }
+
   if (isFolder) {
     return expanded ? (
       <IconFolderOpen color="var(--mantine-color-yellow-9)" size={14} stroke={2.5} />
@@ -80,8 +85,18 @@ function Leaf({
   hasChildren,
   elementProps,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
+  // const navigate = useNavigate();
+
   return (
-    <Group gap={5} {...elementProps}>
+    <Group
+      gap={5}
+      {...elementProps}
+      // onClick={() => {
+      //   if (node.value.endsWith('.md')) {
+      //     navigate('/edit-node-meta');
+      //   }
+      // }}
+    >
       <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
       <span>{node.label}</span>
     </Group>
