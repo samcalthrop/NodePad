@@ -1,9 +1,9 @@
 import { TreeNodeData } from '@mantine/core';
 // import { readdir } from 'node:fs/promises';
-const dirTree = require('directory-tree');
+import directoryTree from 'directory-tree';
 
-export const getTreeNodeData = async (): Promise<TreeNodeData[]> => {
-  const tree: JSON = dirTree('./src');
+export const getTreeNodeData = (): TreeNodeData[] => {
+  const tree = directoryTree('./src');
 
   for (const child in tree) {
     console.log(child);
