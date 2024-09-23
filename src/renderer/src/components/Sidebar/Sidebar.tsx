@@ -25,7 +25,7 @@ export const Sidebar = (): JSX.Element => {
   return (
     <div className={classes.root}>
       <div className={classes.stuff}>
-        <Title order={2}> Sidebar </Title>
+        <Title order={2}> Files </Title>
         <Space h="md" />
         <Divider />
       </div>
@@ -85,18 +85,8 @@ function Leaf({
   hasChildren,
   elementProps,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
-  // const navigate = useNavigate();
-
   return (
-    <Group
-      gap={5}
-      {...elementProps}
-      // onClick={() => {
-      //   if (node.value.endsWith('.md')) {
-      //     navigate('/edit-node-meta');
-      //   }
-      // }}
-    >
+    <Group gap={5} {...elementProps}>
       <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
       <span>{node.label}</span>
     </Group>

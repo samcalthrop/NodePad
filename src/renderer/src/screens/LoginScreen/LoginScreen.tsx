@@ -20,7 +20,7 @@ export const LoginScreen = (): JSX.Element => {
     // in-browser validation of email entry
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) => (value.length >= 8 ? null : 'Invalid email'),
+      password: (value) => (value.length >= 8 ? null : 'Invalid password'),
     },
   });
 
