@@ -26,8 +26,6 @@ export const HomeScreen = (): JSX.Element => {
           </Button>
           <br />
 
-          {/*  */}
-
           <Button
             variant="filled"
             className={classes.button}
@@ -35,8 +33,6 @@ export const HomeScreen = (): JSX.Element => {
           >
             Make thing happen
           </Button>
-
-          {/*  */}
         </div>
       </div>
     </ScreenWithSidebar>
