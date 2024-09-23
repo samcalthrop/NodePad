@@ -9,8 +9,8 @@ import { getTreeNodeData } from './getTreeNodeData';
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1000,
+    height: 700,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -60,7 +60,7 @@ app.whenReady().then(() => {
   // when the frontend requests the file tree...
   ipcMain.on('get-tree-node-data', (event: IpcMainEvent) => {
     // all files/ directories found and returned to frontend
-    const data: TreeNodeData[] = getTreeNodeData();
+    const data: TreeNodeData[] = getTreeNodeData('.');
     event.sender.send('get-tree-node-data-success', data);
     console.log('done!');
   });
@@ -86,12 +86,3 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-// TESTING FILE OPENING:
-// let fileContents: string = '';
-
-// fs.readFile('README.md', (err, inputD) => {
-//   if (err) throw err;
-//   fileContents = inputD.toString();
-//   console.log(fileContents);
-// });

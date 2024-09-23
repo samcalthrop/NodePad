@@ -10,7 +10,7 @@ import {
   Space,
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
-import { IconFolder, IconFolderOpen, IconMarkdown } from '@tabler/icons-react';
+import { IconFolder, IconFolderOpen, IconMarkdown, IconBook } from '@tabler/icons-react';
 // import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
@@ -65,7 +65,7 @@ function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
   }
 
   if (name.endsWith('.md')) {
-    return <IconMarkdown size={14} />;
+    return <IconBook size={14} />;
   }
 
   if (isFolder) {

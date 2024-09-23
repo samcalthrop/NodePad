@@ -7,8 +7,8 @@ export const convertDirectoryTree = ({ name, path, children }: DirectoryTree): T
   children: children ? children.map(convertDirectoryTree) : undefined,
 });
 
-export const getTreeNodeData = (): TreeNodeData[] => {
-  const tree = directoryTree('.', { extensions: /\.md$/ });
+export const getTreeNodeData = (path: string): TreeNodeData[] => {
+  const tree = directoryTree(path, { extensions: /\.md$/ });
   console.log(tree);
 
   return [convertDirectoryTree(tree)];
