@@ -10,7 +10,7 @@ import {
   Space,
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
-import { IconFolder, IconFolderOpen, IconMarkdown, IconBook } from '@tabler/icons-react';
+import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
 // import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
