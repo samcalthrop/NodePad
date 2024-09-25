@@ -14,11 +14,12 @@ import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
+  const path = '.';
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
 
   // retrieving the treeNodeData from the backend
   useEffect(() => {
-    window.ipcAPI.getTreeNodeData().then((treeNodeData) => {
+    window.ipcAPI.getTreeNodeData(path).then((treeNodeData) => {
       setTreeNodeData(treeNodeData);
     });
   }, []);

@@ -12,8 +12,8 @@ if (process.contextIsolated) {
     // communication between front and backend for data transfer (tree node data)
     // adapted from: https://www.jsgarden.co/blog/how-to-handle-electron-ipc-events-with-typescript
     contextBridge.exposeInMainWorld('ipcAPI', {
-      getTreeNodeData: () => {
-        ipcRenderer.send('get-tree-node-data');
+      getTreeNodeData: (path: string) => {
+        ipcRenderer.send('get-tree-node-data', path);
 
         return new Promise((resolve) => {
           ipcRenderer.once('get-tree-node-data-success', (_event, data: Array<TreeNodeData>) =>
@@ -22,8 +22,8 @@ if (process.contextIsolated) {
         });
       },
       // communication between front and backend for data transfer (contents of selected file)
-      getFileContents: () => {
-        ipcRenderer.send('get-file-contents');
+      getFileContents: (path: string) => {
+        ipcRenderer.send('get-file-contents', path);
 
         return new Promise((resolve) => {
           ipcRenderer.once('get-file-contents-success', (_event, fileContents: string) => {

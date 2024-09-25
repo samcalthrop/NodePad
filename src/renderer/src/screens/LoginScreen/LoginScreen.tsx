@@ -8,12 +8,13 @@ import { useEffect, useState } from 'react';
 
 export const LoginScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  const path = './README.md';
 
   // test
   const [fileContents, setFileContents] = useState<string>();
   // retrieving the file contents from the backend
   useEffect(() => {
-    window.ipcAPI.getFileContents().then((fileContents) => {
+    window.ipcAPI.getFileContents(path).then((fileContents) => {
       setFileContents(fileContents);
     });
   }, []);
@@ -87,7 +88,9 @@ export const LoginScreen = (): JSX.Element => {
         <Button
           variant="transparent"
           className={classes.button}
-          onClick={() => (fileContents ? console.log(fileContents) : console.log('failure'))}
+          onClick={() => {
+            fileContents ? console.log(fileContents) : console.log('failure');
+          }}
         >
           Get file contents
         </Button>

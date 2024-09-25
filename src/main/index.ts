@@ -4,7 +4,6 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
 import { getFileContents, getTreeNodeData } from './getTreeNodeData';
-// import * as fs from 'fs';
 
 function createWindow(): void {
   // Create the browser window.
@@ -52,23 +51,18 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  // IPC test to establish connection between front & backend
-  ipcMain.on('ping', (event: IpcMainEvent, args) => {
-    console.log('pong', { event, args });
-  });
-
   // when the frontend requests the file tree...
-  ipcMain.on('get-tree-node-data', (event: IpcMainEvent) => {
+  ipcMain.on('get-tree-node-data', (event: IpcMainEvent, path: string) => {
     // all files/ directories found and returned to frontend
-    const data: TreeNodeData[] = getTreeNodeData('.');
+    const data: TreeNodeData[] = getTreeNodeData(path);
     event.sender.send('get-tree-node-data-success', data);
     console.log('tree node data successfully retrieved');
   });
 
   // when ipc receives request for file contents...
-  ipcMain.on('get-file-contents', (event: IpcMainEvent) => {
+  ipcMain.on('get-file-contents', (event: IpcMainEvent, path: string) => {
     // file contents are read in and returned
-    const fileContents: string | void = getFileContents('./README.md');
+    const fileContents: string | void = getFileContents(path);
     if (fileContents) {
       event.sender.send('get-file-contents-success', fileContents);
     } else {
@@ -83,12 +77,6 @@ app.whenReady().then(() => {
     // dock icon clicked & no other windows open
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
-
-  // - TESTING
-  ipcMain.on('send-data', (event: IpcMainEvent, args) => {
-    console.log('data sent from front end to backend', { event, args });
-  });
-  // -
 });
 
 // quit when all windows are closed unless OS=macOS
