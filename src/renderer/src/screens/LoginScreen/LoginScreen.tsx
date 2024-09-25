@@ -3,10 +3,20 @@ import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
 import { Button, Title, TextInput, Checkbox, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useEffect, useState } from 'react';
 // import { electronAPI } from '@electron-toolkit/preload';
 
 export const LoginScreen = (): JSX.Element => {
   const navigate = useNavigate();
+
+  // test
+  const [fileContents, setFileContents] = useState<string>();
+  // retrieving the file contents from the backend
+  useEffect(() => {
+    window.ipcAPI.getFileContents().then((fileContents) => {
+      setFileContents(fileContents);
+    });
+  }, []);
 
   // defining the rules for the login form
   const form = useForm({
@@ -71,6 +81,15 @@ export const LoginScreen = (): JSX.Element => {
           onClick={() => navigate('/signup')}
         >
           Sign Up
+        </Button>
+
+        {/* test */}
+        <Button
+          variant="transparent"
+          className={classes.button}
+          onClick={() => (fileContents ? console.log(fileContents) : console.log('failure'))}
+        >
+          Get file contents
         </Button>
       </div>
     </Screen>

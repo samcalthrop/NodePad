@@ -11,11 +11,12 @@ import {
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
 
+  // retrieving the treeNodeData from the backend
   useEffect(() => {
     window.ipcAPI.getTreeNodeData().then((treeNodeData) => {
       setTreeNodeData(treeNodeData);
@@ -28,6 +29,7 @@ export const Sidebar = (): JSX.Element => {
         <Title order={2}> Files </Title>
         <Space h="md" />
         <Divider />
+        {/* <Breadcrumbs></Breadcrumbs> */}
       </div>
       <Tree
         classNames={classes}
@@ -40,12 +42,14 @@ export const Sidebar = (): JSX.Element => {
   );
 };
 
+// declaring the properties each file icon will have
 interface FileIconProps {
   name: string;
   isFolder: boolean;
   expanded: boolean;
 }
 
+// returns the appropriate file icon for a particular file extension
 function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
   if (name.endsWith('package.json')) {
     return <NpmIcon size={14} />;
@@ -68,6 +72,7 @@ function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
     return <IconBook size={14} />;
   }
 
+  // returns an opened/ closed folder based on the boolean value `expanded`
   if (isFolder) {
     return expanded ? (
       <IconFolderOpen color="var(--mantine-color-yellow-9)" size={14} stroke={2.5} />
@@ -84,9 +89,20 @@ function Leaf({
   expanded,
   hasChildren,
   elementProps,
+  tree,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
+  const navigate = useNavigate();
+
   return (
-    <Group gap={5} {...elementProps}>
+    <Group
+      gap={5}
+      {...elementProps}
+      onClick={() => {
+        tree.toggleSelected(node.value);
+        tree.toggleExpanded(node.value);
+        !node.children ? navigate('/edit-node-meta') : null;
+      }}
+    >
       <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
       <span>{node.label}</span>
     </Group>

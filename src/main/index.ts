@@ -3,7 +3,7 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
-import { getTreeNodeData } from './getTreeNodeData';
+import { getFileContents, getTreeNodeData } from './getTreeNodeData';
 // import * as fs from 'fs';
 
 function createWindow(): void {
@@ -62,7 +62,18 @@ app.whenReady().then(() => {
     // all files/ directories found and returned to frontend
     const data: TreeNodeData[] = getTreeNodeData('.');
     event.sender.send('get-tree-node-data-success', data);
-    console.log('done!');
+    console.log('tree node data successfully retrieved');
+  });
+
+  // when ipc receives request for file contents...
+  ipcMain.on('get-file-contents', (event: IpcMainEvent) => {
+    // file contents are read in and returned
+    const fileContents: string | void = getFileContents('./README.md');
+    if (fileContents) {
+      event.sender.send('get-file-contents-success', fileContents);
+    } else {
+      console.log('no file contents found');
+    }
   });
 
   createWindow();

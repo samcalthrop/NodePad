@@ -8,7 +8,6 @@ import { EditNodeMetaScreen } from './screens/EditNodeMetaScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { SignUpScreen } from './screens/SignUpScreen';
-import { Screen } from './screens/Screen';
 
 const theme = createTheme({
   defaultRadius: 6,
@@ -19,7 +18,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <MantineProvider defaultColorScheme="dark" theme={theme}>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Screen> </Screen>} />
+          <Route path="/" element={<LoginScreen />} />
           <Route path="/login" element={<LoginScreen />} />
           <Route path="/signup" element={<SignUpScreen />} />
           <Route path="/home" element={<HomeScreen />} />

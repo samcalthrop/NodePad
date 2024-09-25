@@ -4,8 +4,11 @@ export type DrawFunc = (frameCount: number, context: CanvasRenderingContext2D) =
 
 export type GetTreeNodeData = () => Promise<Array<TreeNodeData>>;
 
+export type GetFileContents = () => Promise<string>;
+
 export type IpcAPI = {
   getTreeNodeData: GetTreeNodeData;
+  getFileContents: GetFileContents;
 };
 
 // export type NetworkNodeData = TreeNodeData & {

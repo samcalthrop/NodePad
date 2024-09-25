@@ -9,7 +9,8 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
 
-    // Adapted from: https://www.jsgarden.co/blog/how-to-handle-electron-ipc-events-with-typescript
+    // communication between front and backend for data transfer (tree node data)
+    // adapted from: https://www.jsgarden.co/blog/how-to-handle-electron-ipc-events-with-typescript
     contextBridge.exposeInMainWorld('ipcAPI', {
       getTreeNodeData: () => {
         ipcRenderer.send('get-tree-node-data');
@@ -18,6 +19,16 @@ if (process.contextIsolated) {
           ipcRenderer.once('get-tree-node-data-success', (_event, data: Array<TreeNodeData>) =>
             resolve(data)
           );
+        });
+      },
+      // communication between front and backend for data transfer (contents of selected file)
+      getFileContents: () => {
+        ipcRenderer.send('get-file-contents');
+
+        return new Promise((resolve) => {
+          ipcRenderer.once('get-file-contents-success', (_event, fileContents: string) => {
+            resolve(fileContents);
+          });
         });
       },
     });
