@@ -35,9 +35,6 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
-
-  // TESTING
-  // mainWindow.webContents.send('data-send', data);
 }
 
 // This method will be called when Electron has finished

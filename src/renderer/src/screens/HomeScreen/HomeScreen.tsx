@@ -8,8 +8,6 @@ import { drawPulsingDot } from '@renderer/drawing/drawPulsingDot';
 export const HomeScreen = (): JSX.Element => {
   const navigate = useNavigate();
 
-  window.electron.ipcRenderer.send('ping', 'this is an arg');
-
   return (
     <ScreenWithSidebar>
       <div className={classes.root}>
@@ -23,15 +21,6 @@ export const HomeScreen = (): JSX.Element => {
             onClick={() => navigate('/edit-node-meta')}
           >
             Ok
-          </Button>
-          <br />
-
-          <Button
-            variant="filled"
-            className={classes.button}
-            onClick={() => window.electron.ipcRenderer.send('send-data', 'argument')}
-          >
-            Make thing happen
           </Button>
         </div>
       </div>
