@@ -13,7 +13,6 @@ export const EditNodeMetaScreen = (): JSX.Element => {
   // hard-coded path to the README in order to retrieve test data from the backend
   const path = './README.md';
 
-  // test
   const [fileContents, setFileContents] = useState<string>();
   // retrieving the file contents from the backend
   useEffect(() => {
