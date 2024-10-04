@@ -3,7 +3,8 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
-import { getFileContents, getTreeNodeData } from './getTreeNodeData';
+import { getTreeNodeData } from './getTreeNodeData';
+import { getFileContents } from './getFileContents';
 
 function createWindow(): void {
   // Create the browser window.
@@ -59,12 +60,9 @@ app.whenReady().then(() => {
   // when ipc receives request for file contents...
   ipcMain.on('get-file-contents', (event: IpcMainEvent, path: string) => {
     // file contents are read in and returned
-    const fileContents: string | void = getFileContents(path);
-    if (fileContents) {
-      event.sender.send('get-file-contents-success', fileContents);
-    } else {
-      console.log('no file contents found');
-    }
+    const fileContents: string = getFileContents(path);
+    console.log('on get-file-contents: fileContents:', fileContents);
+    event.sender.send('get-file-contents-success', fileContents);
   });
 
   createWindow();

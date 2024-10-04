@@ -26,7 +26,8 @@ if (process.contextIsolated) {
         ipcRenderer.send('get-file-contents', path);
 
         return new Promise((resolve) => {
-          ipcRenderer.once('get-file-contents-success', (_event, fileContents: string) => {
+          ipcRenderer.on('get-file-contents-success', (_event, fileContents: string) => {
+            console.log('on get-file-contents-success: fileContents:', fileContents);
             resolve(fileContents);
           });
         });

@@ -8,6 +8,7 @@
   background-color: rgb(40, 40, 40);
   border-style: solid;
   border-color: rgb(44, 44, 44);
+  color: white;
 
   .button {
     width: fit-content;
@@ -19,4 +20,8 @@
   margin-left: 10px;
   margin-right: margin-left; */
   margin: 10px;
+}
+
+.mdxeditor {
+  background-color: crimson;
 }
