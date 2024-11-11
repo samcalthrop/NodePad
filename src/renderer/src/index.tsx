@@ -4,10 +4,10 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './assets/main.css';
-import { EditNodeMetaScreen } from './screens/EditNodeMetaScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { SignUpScreen } from './screens/SignUpScreen';
+import { SharedDataProvider } from './providers/SharedDataProvider';
 
 const theme = createTheme({
   defaultRadius: 6,
@@ -16,15 +16,16 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <MantineProvider defaultColorScheme="dark" theme={theme}>
-      <HashRouter>
-        <Routes>
-          <Route path="/" element={<LoginScreen />} />
-          <Route path="/login" element={<LoginScreen />} />
-          <Route path="/signup" element={<SignUpScreen />} />
-          <Route path="/home" element={<HomeScreen />} />
-          <Route path="/edit-node-meta" element={<EditNodeMetaScreen />} />
-        </Routes>
-      </HashRouter>
+      <SharedDataProvider>
+        <HashRouter>
+          <Routes>
+            <Route path="/" element={<LoginScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/signup" element={<SignUpScreen />} />
+            <Route path="/home/*" element={<HomeScreen />} />
+          </Routes>
+        </HashRouter>
+      </SharedDataProvider>
     </MantineProvider>
   </React.StrictMode>
 );

@@ -11,6 +11,8 @@ import {
 } from '@mantine/core';
 import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
+import { useSharedData } from '@renderer/providers/SharedDataProvider';
+
 import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
@@ -92,6 +94,7 @@ function Leaf({
   elementProps,
   tree,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
+  const { setSelectedTreeNodeData } = useSharedData();
   const navigate = useNavigate();
 
   return (
@@ -101,7 +104,11 @@ function Leaf({
       onClick={() => {
         tree.toggleSelected(node.value);
         tree.toggleExpanded(node.value);
-        !node.children ? navigate('/edit-node-meta') : null;
+        if (!node.children) {
+          console.log('Sidebar: node selected:', node);
+          setSelectedTreeNodeData(node);
+          navigate('/home/edit-node-meta');
+        }
       }}
     >
       <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />

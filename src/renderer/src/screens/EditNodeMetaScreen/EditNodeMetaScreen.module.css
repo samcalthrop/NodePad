@@ -15,7 +15,7 @@
   }
 }
 
-.thing {
+.innerDiv {
   /* margin-top: 4px;
   margin-left: 10px;
   margin-right: margin-left; */
@@ -23,5 +23,7 @@
 }
 
 .mdxeditor {
-  background-color: crimson;
+  /* background-color: rgb(73, 20, 220); */
+  height: 400px;
+  /* border-radius: 4px; */
 }
