@@ -1,13 +1,30 @@
 import classes from './HomeViewScreen.module.css';
 import { useNavigate } from 'react-router-dom';
-import { Button, Title, Text } from '@mantine/core';
-import { Canvas } from '@renderer/components/Canvas';
-import { drawPulsingDot } from '@renderer/drawing/drawPulsingDot';
+import { Button, Title, Text, TreeNodeData } from '@mantine/core';
 // import { Center, SegmentedControl, rem } from '@mantine/core';
 // import { IconEye, IconPencil } from '@tabler/icons-react';
+import { MarkdownGraph } from '@renderer/components/MarkdownGraph/MarkdownGraph';
+import { useEffect, useState } from 'react';
 
 export const HomeViewScreen = (): JSX.Element => {
   const navigate = useNavigate();
+
+  // testing network stuff ------------------------------------
+
+  const path = './writeup';
+  const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
+
+  // retrieving the treeNodeData from the backend
+  useEffect(() => {
+    window.ipcAPI.getTreeNodeData(path).then((treeNodeData) => {
+      setTreeNodeData(treeNodeData);
+    });
+  }, []);
+  for (const node of treeNodeData) {
+    console.log(node.children);
+  }
+
+  // ------------------------------------------------------------
 
   return (
     <div className={classes.root}>
@@ -34,7 +51,7 @@ export const HomeViewScreen = (): JSX.Element => {
             ]}
             radius="lg"
           /> */}
-        <Canvas drawFunc={drawPulsingDot} width={200} height={200} />
+        <MarkdownGraph files={treeNodeData} />
         <Text>Edit node meta</Text>
         <Button
           variant="subtle"

@@ -11,6 +11,24 @@ export type IpcAPI = {
   getFileContents: GetFileContents;
 };
 
+// testing network stuff ------------------------------------
+
+export interface Node {
+  id: string;
+  x: number;
+  y: number;
+  title: string;
+  filePath: string;
+  connections: string[]; // Array of connected node IDs
+}
+
+export interface Connection {
+  from: string;
+  to: string;
+}
+
+// ------------------------------------------------------------
+
 // export type NetworkNodeData = TreeNodeData & {
 //   connections: Array<TreeNodeData>;
 //   tags: Array<string>;

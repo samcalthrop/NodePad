@@ -9,14 +9,13 @@ import {
   Divider,
   Space,
 } from '@mantine/core';
-import { CssIcon, NpmIcon, TypeScriptCircleIcon } from '@mantinex/dev-icons';
+import { NpmIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
-
 import { useNavigate } from 'react-router-dom';
 
 export const Sidebar = (): JSX.Element => {
-  const path = '.';
+  const path = './writeup';
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
 
   // retrieving the treeNodeData from the backend
@@ -58,19 +57,6 @@ function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
     return <NpmIcon size={14} />;
   }
 
-  if (
-    name.endsWith('.ts') ||
-    name.endsWith('.tsx') ||
-    name.endsWith('tsconfig.json') ||
-    name.endsWith('tsconfig.lib.json')
-  ) {
-    return <TypeScriptCircleIcon size={14} />;
-  }
-
-  if (name.endsWith('.css')) {
-    return <CssIcon size={14} />;
-  }
-
   if (name.endsWith('.md')) {
     return <IconBook size={14} />;
   }
@@ -94,6 +80,7 @@ function Leaf({
   elementProps,
   tree,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
+  // making use of the SharedDataProvider and the custom hook useSharedData() to access the shared data
   const { setSelectedTreeNodeData } = useSharedData();
   const navigate = useNavigate();
 
@@ -105,7 +92,8 @@ function Leaf({
         tree.toggleSelected(node.value);
         tree.toggleExpanded(node.value);
         if (!node.children) {
-          console.log('Sidebar: node selected:', node);
+          console.log('Sidebar: node selected: ', node);
+          // updating the shared data with the selected node
           setSelectedTreeNodeData(node);
           navigate('/home/edit-node-meta');
         }

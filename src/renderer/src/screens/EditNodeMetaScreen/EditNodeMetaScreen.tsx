@@ -1,17 +1,43 @@
 import classes from './EditNodeMetaScreen.module.css';
 import { useNavigate } from 'react-router-dom';
 import { Button, Title } from '@mantine/core';
-import { MDXEditor, MDXEditorMethods, codeBlockPlugin, headingsPlugin } from '@mdxeditor/editor';
+import {
+  BlockTypeSelect,
+  BoldItalicUnderlineToggles,
+  CodeToggle,
+  CreateLink,
+  DiffSourceToggleWrapper,
+  InsertImage,
+  InsertTable,
+  ListsToggle,
+  MDXEditor,
+  MDXEditorMethods,
+  StrikeThroughSupSubToggles,
+  UndoRedo,
+  codeBlockPlugin,
+  diffSourcePlugin,
+  headingsPlugin,
+  imagePlugin,
+  jsxPlugin,
+  linkDialogPlugin,
+  linkPlugin,
+  listsPlugin,
+  markdownShortcutPlugin,
+  quotePlugin,
+  tablePlugin,
+  toolbarPlugin,
+} from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 import { useEffect, useRef, useState } from 'react';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
 
 export const EditNodeMetaScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  // the file selected in the sidebar
   const { selectedTreeNodeData } = useSharedData();
   // uses a react state to get/ change the current contents of the file being edited
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
-
+  // uses a react state to get/ change the current contents of the file being edited
   const [fileContents, setFileContents] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,6 +48,7 @@ export const EditNodeMetaScreen = (): JSX.Element => {
 
     window.ipcAPI.getFileContents(`./${selectedTreeNodeData.value}`).then((fileContents) => {
       console.log('EditNodeMetaScreen getFileContents:', fileContents);
+      // setting the markdown of the editor to the file contents
       mdxEditorRef.current?.setMarkdown(fileContents);
       console.log(
         'EditNodeMetaScreen: mdxEditorRef.current?.getMarkdown()',
@@ -45,7 +72,34 @@ export const EditNodeMetaScreen = (): JSX.Element => {
               ref={mdxEditorRef}
               className="dark-theme dark-editor"
               markdown={fileContents}
-              plugins={[codeBlockPlugin(), headingsPlugin()]}
+              plugins={[
+                codeBlockPlugin(),
+                diffSourcePlugin(),
+                headingsPlugin(),
+                imagePlugin(),
+                jsxPlugin(),
+                linkDialogPlugin(),
+                linkPlugin(),
+                listsPlugin(),
+                markdownShortcutPlugin(),
+                quotePlugin(),
+                tablePlugin(),
+                toolbarPlugin({
+                  toolbarContents: () => (
+                    <DiffSourceToggleWrapper>
+                      <BlockTypeSelect />
+                      <BoldItalicUnderlineToggles />
+                      <StrikeThroughSupSubToggles />
+                      <CreateLink />
+                      <InsertImage />
+                      <InsertTable />
+                      <ListsToggle />
+                      <CodeToggle />
+                      <UndoRedo />
+                    </DiffSourceToggleWrapper>
+                  ),
+                }),
+              ]}
             />
           </div>
         )}
