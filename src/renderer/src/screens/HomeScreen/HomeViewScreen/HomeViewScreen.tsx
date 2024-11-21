@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Title, Text, TreeNodeData } from '@mantine/core';
 // import { Center, SegmentedControl, rem } from '@mantine/core';
 // import { IconEye, IconPencil } from '@tabler/icons-react';
-import { MarkdownGraph } from '@renderer/components/MarkdownGraph/MarkdownGraph';
+import { NodeNetwork } from '@renderer/components/NodeNetwork/NodeNetwork';
 import { useEffect, useState } from 'react';
 
 export const HomeViewScreen = (): JSX.Element => {
@@ -51,7 +51,7 @@ export const HomeViewScreen = (): JSX.Element => {
             ]}
             radius="lg"
           /> */}
-        <MarkdownGraph files={treeNodeData} />
+        <NodeNetwork files={treeNodeData} />
         <Text>Edit node meta</Text>
         <Button
           variant="subtle"

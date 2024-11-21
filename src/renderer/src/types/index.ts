@@ -14,17 +14,21 @@ export type IpcAPI = {
 // testing network stuff ------------------------------------
 
 export interface Node {
-  id: string;
+  id: number;
   x: number;
   y: number;
   title: string;
   filePath: string;
-  connections: string[]; // Array of connected node IDs
+  connections: Array<number>; // Array of connected node IDs
 }
 
 export interface Connection {
-  from: string;
-  to: string;
+  from: number;
+  to: number;
+}
+
+export interface NodeNetworkProps {
+  files: Array<TreeNodeData>;
 }
 
 // ------------------------------------------------------------
@@ -32,4 +36,3 @@ export interface Connection {
 // export type NetworkNodeData = TreeNodeData & {
 //   connections: Array<TreeNodeData>;
 //   tags: Array<string>;
-// };

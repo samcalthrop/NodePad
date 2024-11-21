@@ -1,32 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
-import { Node, Connection } from '../../types/index';
-import { TreeNodeData } from '@mantine/core';
+import { Node, Connection, NodeNetworkProps } from '../../types/index';
 
-interface MarkdownGraphProps {
-  files: Array<TreeNodeData>;
-}
-
-export const MarkdownGraph = ({ files }: MarkdownGraphProps): JSX.Element => {
+export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
-  const [draggedNode, setDraggedNode] = useState<string | null>(null);
+  const [draggedNode, setDraggedNode] = useState<number | null>(null);
   const [draggingConnection, setDraggingConnection] = useState<{
-    fromId: string;
+    fromId: number;
     toPos: { x: number; y: number };
   } | null>(null);
+  const radius = 15; // radius of the nodes
 
-  // Check if a position is valid (not overlapping with other nodes)
+  // check if given position is valid (not overlapping with other nodes)
   const isValidPosition = (x: number, y: number, existingNodes: Node[]): boolean => {
-    const minDistance = 50; // Minimum distance between nodes
+    // defining the minimum distance between nodes
+    const minDistance = 2 * radius;
     return !existingNodes.some(
+      /* performing pythagoras to check if the distance between the two nodes is less than
+      the minimum distance */
       (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < minDistance
     );
   };
 
-  // Get random position within canvas bounds
-  const getRandomPosition = (existingNodes: Node[], attempts = 100): { x: number; y: number } => {
-    const padding = 50; // Padding from canvas edges
+  // generate random position within canvas
+  const getRandomPosition = (existingNodes: Node[], attempts = 1000): { x: number; y: number } => {
+    const padding = 50; // padding from canvas edges
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
 
@@ -37,46 +36,40 @@ export const MarkdownGraph = ({ files }: MarkdownGraphProps): JSX.Element => {
         return { x, y };
       }
     }
-    // If no valid position found after attempts, return a fallback position
+    // if no valid position found after attempts, return a random position
     return { x: Math.random() * canvas.width, y: Math.random() * canvas.height };
   };
 
-  // Initialize nodes from files
+  // initialize nodes from the array passed in
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const initialNodes: Node[] = [];
-    // files
-    //   .filter((file) => file.label?.toString().endsWith('.md'))
-    //   .forEach((file, index) => {
-    //     const position = getRandomPosition(initialNodes);
-    //     initialNodes.push({
-    //       id: `node-${index}`,
-    //       x: position.x,
-    //       y: position.y,
-    //       title: file.label?.toString() || '',
-    //       filePath: file.value?.toString() || '',
-    //       connections: [],
-    //     });
-    //     console.log(file.label);
-    //   });
     let index = 0;
-    for (const file of files) {
-      if (!file.children) {
+    for (const item of files) {
+      // if the item passed in has no children, it's assumed to be a file
+      if (item.label?.toString().endsWith('.md')) {
+        const file = item;
         const position = getRandomPosition(initialNodes);
+        // instantiates new node with the file's name and path, at a random position
         initialNodes.push({
-          id: `node-${index}`,
+          id: index,
           x: position.x,
           y: position.y,
-          title: file.label?.toString() || '',
+          title: file.label?.toString().replace('.md', '') || '',
           filePath: file.value?.toString() || '',
           connections: [],
         });
+        // the next node id will be given the next number, which only increments if a new node is created
         index++;
       } else {
-        for (const child of file.children) {
-          files.push(child);
+        if (item.children) {
+          for (const child of item.children) {
+            /* pushes each child to the end of the files array, to go through the same process
+             until all children are files, and so become nodes */
+            files.push(child);
+          }
         }
       }
     }
@@ -84,14 +77,14 @@ export const MarkdownGraph = ({ files }: MarkdownGraphProps): JSX.Element => {
     console.log('initial nodes: ', initialNodes);
   }, [files]);
 
-  // Canvas drawing function
+  // canvas drawing function
   const draw = (ctx: CanvasRenderingContext2D): void => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // Draw connections
+    // draw connections between each node
     connections.forEach((connection) => {
-      const fromNode = nodes.find((n) => n.id === connection.from);
-      const toNode = nodes.find((n) => n.id === connection.to);
+      const fromNode = nodes.find((node) => node.id === connection.from);
+      const toNode = nodes.find((node) => node.id === connection.to);
       if (fromNode && toNode) {
         ctx.beginPath();
         ctx.moveTo(fromNode.x, fromNode.y);
@@ -102,9 +95,9 @@ export const MarkdownGraph = ({ files }: MarkdownGraphProps): JSX.Element => {
       }
     });
 
-    // Draw dragging connection line
+    // dragging connection line
     if (draggingConnection) {
-      const fromNode = nodes.find((n) => n.id === draggingConnection.fromId);
+      const fromNode = nodes.find((node) => node.id === draggingConnection.fromId);
       if (fromNode) {
         ctx.beginPath();
         ctx.moveTo(fromNode.x, fromNode.y);
@@ -117,49 +110,59 @@ export const MarkdownGraph = ({ files }: MarkdownGraphProps): JSX.Element => {
       }
     }
 
-    // Draw nodes
+    // craw nodes
     nodes.forEach((node) => {
-      // Node circle
+      // node circle
       ctx.beginPath();
-      ctx.arc(node.x, node.y, 30, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
       ctx.fillStyle = '#2196F3';
       ctx.fill();
 
-      // Node title
-      ctx.fillStyle = 'white';
-      ctx.font = '12px Arial';
-      ctx.textAlign = 'center';
-      ctx.fillText(node.title, node.x, node.y);
-
-      // Connection handle
+      // connection handle
       ctx.beginPath();
       ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
       ctx.fillStyle = '#fff';
       ctx.fill();
+
+      // title
+      ctx.fillStyle = 'white';
+      ctx.font = '12px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(node.title, node.x, node.y + 30);
     });
   };
 
-  // Check if click is on a connection
+  // check if user has clicked a connection
   const isClickOnConnection = (x: number, y: number, connection: Connection): boolean => {
     const fromNode = nodes.find((n) => n.id === connection.from);
     const toNode = nodes.find((n) => n.id === connection.to);
     if (!fromNode || !toNode) return false;
 
-    const A = { x: fromNode.x, y: fromNode.y };
-    const B = { x: toNode.x, y: toNode.y };
-    const C = { x, y };
+    const nodeA = { x: fromNode.x, y: fromNode.y };
+    const nodeB = { x: toNode.x, y: toNode.y };
+    const click = { x, y };
 
-    // Calculate distance from point to line segment
-    const lengthAB = Math.sqrt(Math.pow(B.x - A.x, 2) + Math.pow(B.y - A.y, 2));
-    const distance =
-      Math.abs((B.y - A.y) * C.x - (B.x - A.x) * C.y + B.x * A.y - B.y * A.x) / lengthAB;
+    // calculate distance from point to line segment
+    const lengthAB = Math.sqrt(Math.pow(nodeB.x - nodeA.x, 2) + Math.pow(nodeB.y - nodeA.y, 2));
+    // perpendicular distance from point to line AB, using vector cross product
+    const perpDistance =
+      Math.abs(
+        (nodeB.y - nodeA.y) * click.x -
+          (nodeB.x - nodeA.x) * click.y +
+          nodeB.x * nodeA.y -
+          nodeB.y * nodeA.x
+      ) / lengthAB;
+
+    // calculate angle between line AB and the horizontal
+    const theta = Math.atan((nodeB.y - nodeA.y) / (nodeB.x - nodeA.x));
+    console.log('angle: ', theta * (180 / Math.PI));
 
     return (
-      distance < 10 && // Within 10px of the line
-      x >= Math.min(A.x, B.x) - 10 &&
-      x <= Math.max(A.x, B.x) + 10 &&
-      y >= Math.min(A.y, B.y) - 10 &&
-      y <= Math.max(A.y, B.y) + 10
+      perpDistance < 10 && // within 10px of the line
+      x >= Math.min(nodeA.x, nodeB.x) + radius * Math.cos(theta) && // click is within line segment, the node's radius
+      x <= Math.max(nodeA.x, nodeB.x) - radius * Math.cos(theta) &&
+      y >= Math.min(nodeA.y, nodeB.y) - radius * Math.sin(theta) &&
+      y <= Math.max(nodeA.y, nodeB.y) + radius * Math.sin(theta)
     );
   };
 
@@ -255,7 +258,7 @@ export const MarkdownGraph = ({ files }: MarkdownGraphProps): JSX.Element => {
     setDraggedNode(null);
   };
 
-  // Canvas setup and animation
+  // configuring canvas and render loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
