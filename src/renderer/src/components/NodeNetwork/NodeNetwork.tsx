@@ -166,43 +166,46 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     );
   };
 
-  // Mouse event handlers
+  // mouse event handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>): void => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
 
+    // mouse position relative to the canvas
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Check if clicking on a connection
+    // check if clicking on a connection (to remove it)
     const clickedConnection = connections.find((conn) => isClickOnConnection(x, y, conn));
+    // remove connection if clicked
     if (clickedConnection) {
       setConnections((prev) =>
         prev.filter(
           (conn) => conn.from !== clickedConnection.from || conn.to !== clickedConnection.to
         )
       );
+      // prevents any other mouse handling, graphically removing connection immediately
       return;
     }
 
-    // Check if clicking on a node
+    // check if clicking on a node
     const clickedNode = nodes.find(
-      (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < 30
+      (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < radius
     );
 
     if (clickedNode) {
-      // Check if clicking near center (connection handle)
+      // check if clicking near center (connection handle)
       const distanceToCenter = Math.sqrt(
         Math.pow(clickedNode.x - x, 2) + Math.pow(clickedNode.y - y, 2)
       );
       if (distanceToCenter < 10) {
-        // Start dragging a connection
+        // start dragging a connection
         setDraggingConnection({
           fromId: clickedNode.id,
           toPos: { x, y },
         });
       } else {
-        // Start dragging the node
+        // start dragging the node
         setDraggedNode(clickedNode.id);
       }
     }
@@ -215,10 +218,12 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+    // update canvas to draw the node in its new position, and assign it a new position internally
     if (draggedNode) {
       setNodes((prev) => prev.map((node) => (node.id === draggedNode ? { ...node, x, y } : node)));
     }
 
+    // update canvas to draw the dragging connection by mouse, and assign it a new position internally
     if (draggingConnection) {
       setDraggingConnection((prev) =>
         prev
@@ -239,12 +244,14 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     const y = e.clientY - rect.top;
 
     if (draggingConnection) {
+      // check if mouse unclicked within a node's radius
       const targetNode = nodes.find(
-        (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < 30
+        (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < radius
       );
 
       if (targetNode && targetNode.id !== draggingConnection.fromId) {
         setConnections((prev) => [
+          // extends the previous connections array to include the new connection
           ...prev,
           {
             from: draggingConnection.fromId,
@@ -273,6 +280,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    // request animation frame to render the canvas, and call the next frame, creating a loop
     let animationFrameId: number;
     const render = (): void => {
       draw(context);
