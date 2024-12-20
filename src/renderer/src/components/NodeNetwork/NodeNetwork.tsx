@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Node, Connection, NodeNetworkProps } from '../../types/index';
 
 export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const animationFrameId = useRef<number>();
   const [nodes, setNodes] = useState<Node[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [draggedNode, setDraggedNode] = useState<number | null>(null);
@@ -12,16 +14,19 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   } | null>(null);
   const radius = 15; // radius of the nodes
 
-  // check if given position is valid (not overlapping with other nodes)
-  const isValidPosition = (x: number, y: number, existingNodes: Node[]): boolean => {
-    // defining the minimum distance between nodes
-    const minDistance = 2 * radius;
-    return !existingNodes.some(
-      /* performing pythagoras to check if the distance between the two nodes is less than
-      the minimum distance */
-      (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < minDistance
-    );
-  };
+  /* check if given position is valid (not overlapping with other nodes),
+   memoising to optimise expensive calculations */
+  const isValidPosition = useCallback(
+    (x: number, y: number, existingNodes: Node[]): boolean => {
+      const minDistance = 2 * radius;
+      return !existingNodes.some(
+        /* performing pythagoras to check if the distance between the two nodes is less than
+       the minimum distance */
+        (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < minDistance
+      );
+    },
+    [radius]
+  );
 
   // generate random position within canvas
   const getRandomPosition = (existingNodes: Node[], attempts = 1000): { x: number; y: number } => {
@@ -77,60 +82,141 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     console.log('initial nodes: ', initialNodes);
   }, [files]);
 
-  // canvas drawing function
-  const draw = (ctx: CanvasRenderingContext2D): void => {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  // // canvas drawing function
+  // const draw = (ctx: CanvasRenderingContext2D): void => {
+  //   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // draw connections between each node
+  //   // draw connections between each node
+  //   connections.forEach((connection) => {
+  //     const fromNode = nodes.find((node) => node.id === connection.from);
+  //     const toNode = nodes.find((node) => node.id === connection.to);
+  //     if (fromNode && toNode) {
+  //       ctx.beginPath();
+  //       ctx.moveTo(fromNode.x, fromNode.y);
+  //       ctx.lineTo(toNode.x, toNode.y);
+  //       ctx.strokeStyle = '#666';
+  //       ctx.lineWidth = 2;
+  //       ctx.stroke();
+  //     }
+  //   });
+
+  //   // dragging connection line
+  //   if (draggingConnection) {
+  //     const fromNode = nodes.find((node) => node.id === draggingConnection.fromId);
+  //     if (fromNode) {
+  //       ctx.beginPath();
+  //       ctx.moveTo(fromNode.x, fromNode.y);
+  //       ctx.lineTo(draggingConnection.toPos.x, draggingConnection.toPos.y);
+  //       ctx.strokeStyle = '#666';
+  //       ctx.setLineDash([5, 5]);
+  //       ctx.lineWidth = 2;
+  //       ctx.stroke();
+  //       ctx.setLineDash([]);
+  //     }
+  //   }
+
+  //   // craw nodes
+  //   nodes.forEach((node) => {
+  //     // node circle
+  //     ctx.beginPath();
+  //     ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
+  //     ctx.fillStyle = '#2196F3';
+  //     ctx.fill();
+
+  //     // connection handle
+  //     ctx.beginPath();
+  //     ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
+  //     ctx.fillStyle = '#fff';
+  //     ctx.fill();
+
+  //     // title
+  //     ctx.fillStyle = 'white';
+  //     ctx.font = '12px Arial';
+  //     ctx.textAlign = 'center';
+  //     ctx.fillText(node.title, node.x, node.y + 30);
+  //   });
+  // };
+
+  // canvas drawing function
+  const draw = useCallback(() => {
+    const ctx = contextRef.current;
+    if (!ctx) return;
+
+    // Clear only the used area instead of entire canvas
+    const usedArea = nodes.reduce(
+      (acc, node) => {
+        return {
+          minX: Math.min(acc.minX, node.x - radius - 30),
+          minY: Math.min(acc.minY, node.y - radius - 30),
+          maxX: Math.max(acc.maxX, node.x + radius + 30),
+          maxY: Math.max(acc.maxY, node.y + radius + 30),
+        };
+      },
+      { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+    );
+
+    ctx.clearRect(
+      usedArea.minX,
+      usedArea.minY,
+      usedArea.maxX - usedArea.minX,
+      usedArea.maxY - usedArea.minY
+    );
+
+    // Batch similar operations
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 2;
+
+    // draw connections
+    ctx.beginPath();
     connections.forEach((connection) => {
       const fromNode = nodes.find((node) => node.id === connection.from);
       const toNode = nodes.find((node) => node.id === connection.to);
       if (fromNode && toNode) {
-        ctx.beginPath();
         ctx.moveTo(fromNode.x, fromNode.y);
         ctx.lineTo(toNode.x, toNode.y);
-        ctx.strokeStyle = '#666';
-        ctx.lineWidth = 2;
-        ctx.stroke();
       }
     });
+    ctx.stroke();
 
-    // dragging connection line
+    // draw dragging connection
     if (draggingConnection) {
       const fromNode = nodes.find((node) => node.id === draggingConnection.fromId);
       if (fromNode) {
         ctx.beginPath();
+        ctx.setLineDash([5, 5]);
         ctx.moveTo(fromNode.x, fromNode.y);
         ctx.lineTo(draggingConnection.toPos.x, draggingConnection.toPos.y);
-        ctx.strokeStyle = '#666';
-        ctx.setLineDash([5, 5]);
-        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.setLineDash([]);
       }
     }
 
-    // craw nodes
+    // batch node drawing
+    ctx.fillStyle = '#2196F3';
+    ctx.beginPath();
     nodes.forEach((node) => {
-      // node circle
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
-      ctx.fillStyle = '#2196F3';
-      ctx.fill();
+      ctx.moveTo(node.x + radius, node.y);
+      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+    });
+    ctx.fill();
 
-      // connection handle
-      ctx.beginPath();
+    // batch connection handling
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    nodes.forEach((node) => {
+      ctx.moveTo(node.x + 5, node.y);
       ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
-      ctx.fill();
+    });
+    ctx.fill();
 
-      // title
-      ctx.fillStyle = 'white';
-      ctx.font = '12px Arial';
-      ctx.textAlign = 'center';
+    // batch text rendering
+    ctx.fillStyle = 'white';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    nodes.forEach((node) => {
       ctx.fillText(node.title, node.x, node.y + 30);
     });
-  };
+  }, [nodes, connections, draggingConnection, radius]);
 
   // check if user has clicked a connection
   const isClickOnConnection = (x: number, y: number, connection: Connection): boolean => {
@@ -211,30 +297,35 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>): void => {
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
+  // throttling mouse move handler
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>): void => {
+      if (!animationFrameId.current) {
+        animationFrameId.current = requestAnimationFrame(() => {
+          const rect = canvasRef.current?.getBoundingClientRect();
+          if (!rect) return;
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
 
-    // update canvas to draw the node in its new position, and assign it a new position internally
-    if (draggedNode) {
-      setNodes((prev) => prev.map((node) => (node.id === draggedNode ? { ...node, x, y } : node)));
-    }
+          // update canvas to draw the node in its new position, and assign it a new position internally
+          if (draggedNode) {
+            setNodes((prev) =>
+              prev.map((node) => (node.id === draggedNode ? { ...node, x, y } : node))
+            );
+          }
 
-    // update canvas to draw the dragging connection by mouse, and assign it a new position internally
-    if (draggingConnection) {
-      setDraggingConnection((prev) =>
-        prev
-          ? {
-              ...prev,
-              toPos: { x, y },
-            }
-          : null
-      );
-    }
-  };
+          // update canvas to draw the dragging connection by mouse, and assign it a new position internally
+          if (draggingConnection) {
+            setDraggingConnection((prev) => (prev ? { ...prev, toPos: { x, y } } : null));
+          }
+
+          animationFrameId.current = undefined;
+        });
+      }
+    },
+    [draggedNode, draggingConnection]
+  );
 
   const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>): void => {
     const rect = canvasRef.current?.getBoundingClientRect();
@@ -265,34 +356,74 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     setDraggedNode(null);
   };
 
-  // configuring canvas and render loop
+  // // configuring canvas and render loop
+  // useEffect(() => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+
+  //   const context = canvas.getContext('2d');
+  //   if (!context) return;
+  //   contextRef.current = context;
+  //   const resizeCanvas = (): void => {
+  //     canvas.width = canvas.clientWidth;
+  //     canvas.height = canvas.clientHeight;
+  //   };
+  //   resizeCanvas();
+  //   window.addEventListener('resize', resizeCanvas);
+
+  //   // request animation frame to render the canvas, and call the next frame, creating a loop
+  //   let animationFrameId: number;
+  //   const render = (): void => {
+  //     draw();
+  //     animationFrameId = window.requestAnimationFrame(render);
+  //   };
+  //   render();
+
+  //   return (): void => {
+  //     window.removeEventListener('resize', resizeCanvas);
+  //     window.cancelAnimationFrame(animationFrameId);
+  //   };
+  // }, [nodes, connections, draggingConnection]);
+
+  // initialize canvas context once
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const context = canvas.getContext('2d');
-    if (!context) return;
+    contextRef.current = canvas.getContext('2d');
+    const ctx = contextRef.current;
+    if (!ctx) return;
 
     const resizeCanvas = (): void => {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
+      // immediately redraw after resize
+      draw();
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // request animation frame to render the canvas, and call the next frame, creating a loop
-    let animationFrameId: number;
-    const render = (): void => {
-      draw(context);
-      animationFrameId = window.requestAnimationFrame(render);
-    };
-    render();
-
     return (): void => {
       window.removeEventListener('resize', resizeCanvas);
-      window.cancelAnimationFrame(animationFrameId);
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
     };
-  }, [nodes, connections, draggingConnection]);
+  }, []);
+
+  // separate render loop effect
+  useEffect(() => {
+    let frameId: number;
+    const render = (): void => {
+      draw();
+      frameId = requestAnimationFrame(render);
+    };
+    frameId = requestAnimationFrame(render);
+
+    return (): void => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [draw]);
 
   return (
     <canvas
