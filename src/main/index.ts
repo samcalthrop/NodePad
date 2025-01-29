@@ -5,6 +5,8 @@ import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
 import { getTreeNodeData } from './getTreeNodeData';
 import { getFileContents } from './getFileContents';
+import { dialog } from 'electron';
+import { readFile } from 'fs/promises';
 
 function createWindow(): void {
   // Create the browser window.
@@ -80,3 +82,39 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+// listens for the request to select a directory, opens the native OS' filesystem UI and returns selected directory path
+ipcMain.handle('open-directory-selector', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+  });
+  return result.filePaths[0];
+});
+
+// listens for the request to select a file, opens the native OS' filesystem UI and returns selected file path
+ipcMain.handle('open-file-selector', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'Images', extensions: ['jpg', 'png', 'gif', 'jpeg'] }],
+  });
+
+  if (result.filePaths.length > 0) {
+    const imgPath = result.filePaths[0];
+    const imgBuffer = await readFile(imgPath);
+    const base64Img = imgBuffer.toString('base64');
+    const mimeType = getMimeType(imgPath);
+    return `data:${mimeType};base64,${base64Img}`;
+  }
+  return null;
+});
+
+/* this is used to retrieve the Multi-purpose Internet Mail Extension (MIME) type of the image,
+ so as to correctly encode base64 image data */
+const getMimeType = (filePath: string): string => {
+  const extension = filePath.toLowerCase();
+  if (extension.endsWith('.png')) return 'image/png';
+  if (extension.endsWith('.webp')) return 'image/webp';
+  if (extension.endsWith('.svg')) return 'image/svg+xml';
+  if (extension.endsWith('.gif')) return 'image/gif'; // in case the .gif type ever needs to be processed
+  return 'image/jpeg'; // the default extension for .jpg, .jpeg...
+};

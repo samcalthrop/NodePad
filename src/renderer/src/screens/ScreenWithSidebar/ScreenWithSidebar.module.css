@@ -2,8 +2,11 @@
   display: flex;
   flex-direction: row;
   gap: 10px;
+  background-color: var(--mantine-color-grey-9);
 
   .sidebar {
+    margin-top: 15px;
+    margin-left: 15px;
     max-width: 400px;
     min-width: 250px;
   }

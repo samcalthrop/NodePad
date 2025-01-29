@@ -7,7 +7,7 @@
 
 .root {
   padding-top: 5px;
-  background-color: rgb(40, 40, 40);
+  background-color: var(--mantine-color-grey-8);
   border-radius: 6px;
   height: 100%;
   /* width: calc(200 - (2 * padding)); */

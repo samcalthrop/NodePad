@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Node, Connection, NodeNetworkProps } from '../../types/index';
+import { Position, Node, Connection, NodeNetworkProps } from '../../types/index';
 
 export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,7 +10,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const [draggedNode, setDraggedNode] = useState<number | null>(null);
   const [draggingConnection, setDraggingConnection] = useState<{
     fromId: number;
-    toPos: { x: number; y: number };
+    toPos: Position;
   } | null>(null);
   const radius = 15; // radius of the nodes
 
@@ -29,7 +29,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   );
 
   // generate random position within canvas
-  const getRandomPosition = (existingNodes: Node[], attempts = 1000): { x: number; y: number } => {
+  const getRandomPosition = (existingNodes: Node[], attempts = 1000): Position => {
     const padding = 50; // padding from canvas edges
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };

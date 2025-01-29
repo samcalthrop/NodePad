@@ -32,6 +32,8 @@ if (process.contextIsolated) {
           });
         });
       },
+      openDirectorySelector: () => ipcRenderer.invoke('open-directory-selector'),
+      openFileSelector: (options) => ipcRenderer.invoke('open-file-selector', options),
     });
   } catch (error) {
     console.error(error);

@@ -13,6 +13,8 @@ import { NpmIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
 import { useNavigate } from 'react-router-dom';
+import { SettingsModal } from '../SettingsModal/SettingsModal';
+import { HomeButton } from '../HomeButton/HomeButton';
 
 export const Sidebar = (): JSX.Element => {
   const path = './writeup';
@@ -40,6 +42,8 @@ export const Sidebar = (): JSX.Element => {
         data={treeNodeData}
         renderNode={(payload) => <Leaf {...payload} />}
       />
+      <SettingsModal />
+      <HomeButton />
     </div>
   );
 };

@@ -7,9 +7,24 @@ export type GetFileContents = (path: string) => Promise<string>;
 export type IpcAPI = {
   getTreeNodeData: GetTreeNodeData;
   getFileContents: GetFileContents;
+  openDirectorySelector: () => Promise<string>;
+  openFileSelector: (options: {
+    filters: Array<{ name: string; extensions: string[] }>;
+  }) => Promise<string>;
 };
 
+// export interface Window {
+//   electron: {
+//     openDirectorySelector: () => Promise<string>;
+//   };
+// }
+
 // testing network stuff ------------------------------------
+
+export type Position = {
+  x: number;
+  y: number;
+};
 
 export interface Node {
   id: number;
