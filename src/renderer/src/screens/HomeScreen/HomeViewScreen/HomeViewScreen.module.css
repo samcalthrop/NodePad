@@ -3,20 +3,13 @@
   margin-left: 5px;
   display: flex;
   flex-direction: column;
-  /* margin: 10px; */
   border-radius: 6px;
-  height: 1000px;
-  width: 1000px;
+  height: calc(100vh - 15px);
+  width: 100vh;
   background-color: var(--mantine-color-grey-9);
-  border-style: solid;
-  border-color: rgb(44, 44, 44);
-
-  .button {
-    width: fit-content;
-  }
 }
 
-.thing {
+.network {
   /* margin-top: 4px;
   margin-left: 10px;
   margin-right: margin-left; */

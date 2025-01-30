@@ -1,16 +1,11 @@
 import classes from './HomeViewScreen.module.css';
-import { useNavigate } from 'react-router-dom';
-import { Button, Title, Text, TreeNodeData } from '@mantine/core';
+import { Title, TreeNodeData } from '@mantine/core';
 // import { Center, SegmentedControl, rem } from '@mantine/core';
 // import { IconEye, IconPencil } from '@tabler/icons-react';
 import { NodeNetwork } from '@renderer/components/NodeNetwork/NodeNetwork';
 import { useEffect, useState } from 'react';
 
 export const HomeViewScreen = (): JSX.Element => {
-  const navigate = useNavigate();
-
-  // testing network stuff ------------------------------------
-
   const path = './writeup';
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
 
@@ -24,12 +19,10 @@ export const HomeViewScreen = (): JSX.Element => {
     console.log(node.children);
   }
 
-  // ------------------------------------------------------------
-
   return (
     <div className={classes.root}>
-      <div className={classes.thing}>
-        <Title order={2}>Home</Title>
+      <div className={classes.network}>
+        <Title order={1}>Home</Title>
         {/* <SegmentedControl
             data={[
               {
@@ -52,14 +45,6 @@ export const HomeViewScreen = (): JSX.Element => {
             radius="lg"
           /> */}
         <NodeNetwork files={treeNodeData} />
-        <Text>Edit node meta</Text>
-        <Button
-          variant="subtle"
-          className={classes.button}
-          onClick={() => navigate('../edit-node-meta')}
-        >
-          Ok
-        </Button>
       </div>
     </div>
   );

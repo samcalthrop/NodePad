@@ -1,15 +1,11 @@
 .root {
-  margin-top: 15px;
   margin-left: 5px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   border-radius: 6px;
-  min-height: 100vh;
-  min-width: 100vh;
+  height: 100%;
   background-color: var(--mantine-color-grey-9);
-  border-style: solid;
-  border-color: rgb(44, 44, 44);
   color: white;
 
   .button {
@@ -18,13 +14,11 @@
 }
 
 .innerDiv {
-  /* margin-top: 4px;
-  margin-left: 10px;
+  /* margin-left: 10px;
   margin-right: margin-left; */
-  margin: 10px;
 }
 
 .mdxeditor {
-  height: 400px;
+  height: 89vh;
   font-family: var(--mantine-font-family);
 }

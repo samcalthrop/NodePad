@@ -1,3 +1,7 @@
+:root {
+  --sidebar-padding: 15px;
+}
+
 .root {
   display: flex;
   flex-direction: row;
@@ -5,9 +9,20 @@
   background-color: var(--mantine-color-grey-9);
 
   .sidebar {
-    margin-top: 15px;
-    margin-left: 15px;
-    max-width: 400px;
-    min-width: 250px;
+    margin-top: var(--sidebar-padding);
+    margin-left: var(--sidebar-padding);
+    margin-bottom: var(--sidebar-padding);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .resizer {
+    position: absolute;
+    right: -5px;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: col-resize;
+    z-index: 10;
   }
 }

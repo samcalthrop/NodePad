@@ -3,23 +3,49 @@
   --sidebar-width: 200px;
   --border-width: 2px;
   --border-color: rgb(44, 44, 44);
+  --toolbar-height: 60px;
+  --sidebar-border-radius: 12px;
 }
 
 .root {
   padding-top: 5px;
   background-color: var(--mantine-color-grey-8);
-  border-radius: 6px;
-  height: 100%;
-  /* width: calc(200 - (2 * padding)); */
+  border-radius: var(--sidebar-border-radius);
+  height: calc(100vh - 30px);
   width: calc(var(--sidebar-width) - 2);
-  border-style: solid;
+  /* border-style: solid;
   border-width: var(--border-width);
-  border-color: var(--border-color);
+  border-color: var(--border-color); */
+  display: flex;
+  flex-direction: column;
 }
 
-.stuff {
+.title {
   padding: 10px;
   min-width: 200px;
+  flex-shrink: 0;
+}
+
+.filetree {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  /* margin-bottom: var(--toolbar-height); */
+}
+
+.scrollableArea {
+  height: 100%;
+}
+
+.toolbar {
+  bottom: 15px;
+  height: var(--toolbar-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--mantine-color-grey-8);
+  border-radius: var(--sidebar-border-radius);
 }
 
 .label {

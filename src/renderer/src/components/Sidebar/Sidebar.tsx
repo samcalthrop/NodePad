@@ -8,6 +8,8 @@ import {
   Title,
   Divider,
   Space,
+  ScrollArea,
+  Box,
 } from '@mantine/core';
 import { NpmIcon } from '@mantinex/dev-icons';
 import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
@@ -29,21 +31,35 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.stuff}>
-        <Title order={2}> Files </Title>
-        <Space h="md" />
-        <Divider />
+      <div className={classes.title}>
+        <Title order={1}> Files </Title>
         {/* <Breadcrumbs></Breadcrumbs> */}
       </div>
-      <Tree
-        classNames={classes}
-        selectOnClick
-        clearSelectionOnOutsideClick
-        data={treeNodeData}
-        renderNode={(payload) => <Leaf {...payload} />}
-      />
-      <SettingsModal />
-      <HomeButton />
+      <Space h="md" />
+      <Divider />
+      <div className={classes.filetree}>
+        <ScrollArea.Autosize
+          className={classes.scrollableArea}
+          type="scroll"
+          offsetScrollbars
+          viewportProps={{ style: { overflowX: 'hidden' } }}
+          scrollHideDelay={100}
+        >
+          <Box>
+            <Tree
+              classNames={classes}
+              selectOnClick
+              clearSelectionOnOutsideClick
+              data={treeNodeData}
+              renderNode={(payload) => <Leaf {...payload} />}
+            />
+          </Box>
+        </ScrollArea.Autosize>
+      </div>
+      <div className={classes.toolbar}>
+        <SettingsModal />
+        <HomeButton />
+      </div>
     </div>
   );
 };
