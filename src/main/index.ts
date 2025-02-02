@@ -7,9 +7,10 @@ import { getTreeNodeData } from './getTreeNodeData';
 import { getFileContents } from './getFileContents';
 import { dialog } from 'electron';
 import { readFile } from 'fs/promises';
+import { createCredentials } from './dbHandling';
 
 function createWindow(): void {
-  // Create the browser window.
+  // create the browser window
   const mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
@@ -20,6 +21,10 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
     },
+    // remove the default title bar
+    titleBarStyle: 'hidden',
+    // expose window controls in Windows/Linux
+    ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
   });
 
   mainWindow.on('ready-to-show', () => {
@@ -65,6 +70,14 @@ app.whenReady().then(() => {
     const fileContents: string = getFileContents(path);
     console.log('on get-file-contents: fileContents:', fileContents);
     event.sender.send('get-file-contents-success', fileContents);
+  });
+
+  ipcMain.on('create-credentials', async (event: IpcMainEvent, { email, password }) => {
+    console.log('main:create-credentials', email, password);
+    const result = await createCredentials(email, password);
+    result.success
+      ? event.sender.send('create-credentials-success', result.success)
+      : event.sender.send('create-credentials-failure', result.success);
   });
 
   createWindow();

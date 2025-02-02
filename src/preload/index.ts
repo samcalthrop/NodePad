@@ -34,6 +34,21 @@ if (process.contextIsolated) {
       },
       openDirectorySelector: () => ipcRenderer.invoke('open-directory-selector'),
       openFileSelector: (options) => ipcRenderer.invoke('open-file-selector', options),
+      createCredentials: (email: string, password: string) => {
+        console.log('preload:createCredentials', { email, password });
+        ipcRenderer.send('create-credentials', { email, password });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('create-credentials-success', (_event, success) => {
+            console.log('on create-credentials-success');
+            resolve(success);
+          });
+          ipcRenderer.on('create-credentials-failure', (_event, success) => {
+            console.log('on create-credentials-failure');
+            resolve(success);
+          });
+        });
+      },
     });
   } catch (error) {
     console.error(error);

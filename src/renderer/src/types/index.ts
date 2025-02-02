@@ -11,6 +11,7 @@ export type IpcAPI = {
   openFileSelector: (options: {
     filters: Array<{ name: string; extensions: string[] }>;
   }) => Promise<string>;
+  createCredentials: (email: string, password: string) => Promise<boolean>;
 };
 
 // export interface Window {

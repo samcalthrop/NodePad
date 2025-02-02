@@ -1,6 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+
 body {
-  /* background-image: url('./wavy-lines.svg'); */
-  background-size: cover;
   user-select: none;
-  background-color: var(--mantine-color-gray-9);
+  background-color: var(--mantine-color-defaultScheme-0);
 }

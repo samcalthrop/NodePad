@@ -3,6 +3,7 @@ import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
 import { Button, Title, TextInput, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useCallback } from 'react';
 
 export const SignUpScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -21,9 +22,23 @@ export const SignUpScreen = (): JSX.Element => {
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
       password: (value) => (value.length >= 8 ? null : 'Invalid password'),
-      reEnterPassword: (value) => (value ? null : 'Passwords must match'),
+      reEnterPassword: (value, values) =>
+        value === values.password ? null : 'Passwords must match',
     },
   });
+
+  const handleSubmit = useCallback(async (): Promise<void> => {
+    const { email, password } = form.getValues();
+    const result = await window.ipcAPI.createCredentials(email, password);
+    if (result) {
+      navigate('/login');
+    } else {
+      console.log('Email already taken');
+      alert(
+        "The email '" + email + "' is already in use. Try logging in, or using a different email"
+      );
+    }
+  }, [form]);
 
   return (
     <Screen>
@@ -31,7 +46,12 @@ export const SignUpScreen = (): JSX.Element => {
         <br />
         <Title order={1}>Sign Up</Title>
         <br />
-        <form onSubmit={form.onSubmit(() => navigate('/login'))}>
+        <form
+          onSubmit={form.onSubmit((values) => {
+            console.log('onSubmit', { values });
+            handleSubmit();
+          })}
+        >
           {/* username field */}
           <TextInput
             withAsterisk
@@ -56,15 +76,13 @@ export const SignUpScreen = (): JSX.Element => {
             withAsterisk
             label="Re-enter Password"
             placeholder="password-123"
-            key={form.key('re-renter-password')}
-            {...form.getInputProps('re-renter-password')}
+            key={form.key('reEnterPassword')}
+            {...form.getInputProps('reEnterPassword')}
           />
 
           {/* form submission */}
           <Group justify="flex-begin" mt="md">
-            <Button type="submit" onClick={() => navigate('/login')}>
-              Submit
-            </Button>
+            <Button type="submit">Submit</Button>
           </Group>
         </form>
       </div>

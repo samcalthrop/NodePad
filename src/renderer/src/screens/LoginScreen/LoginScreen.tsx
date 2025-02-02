@@ -27,51 +27,51 @@ export const LoginScreen = (): JSX.Element => {
   return (
     <Screen>
       <div className={classes.root}>
-        <br />
-        <Title order={1}>Log In</Title>
-        <br />
-        <form onSubmit={form.onSubmit(() => navigate('/home'))}>
-          {/* username field */}
-          <TextInput
-            withAsterisk
-            label="Email"
-            placeholder="your@email.com"
-            key={form.key('email')}
-            {...form.getInputProps('email')}
-          />
+        <div className={classes.base}>
+          <Title className={classes.title}>log in</Title>
+          <form onSubmit={form.onSubmit(() => navigate('/home'))} className={classes.form}>
+            {/* username field */}
+            <TextInput
+              withAsterisk
+              label="Email"
+              placeholder="your@email.com"
+              key={form.key('email')}
+              {...form.getInputProps('email')}
+            />
 
-          {/* password field */}
-          <PasswordInput
-            withAsterisk
-            label="Password"
-            description="ensure password length is at least 8 characters long"
-            placeholder="password-123"
-            key={form.key('password')}
-            {...form.getInputProps('password')}
-          />
+            {/* password field */}
+            <PasswordInput
+              withAsterisk
+              label="Password"
+              description="ensure password length is at least 8 characters long"
+              placeholder="password-123"
+              key={form.key('password')}
+              {...form.getInputProps('password')}
+            />
 
-          {/* 'remember me' checkbox */}
-          <Checkbox
-            mt="sm"
-            label="remember me"
-            key={form.key('remember')}
-            {...form.getInputProps('remember', { type: 'checkbox' })}
-          />
+            {/* 'remember me' checkbox */}
+            <Checkbox
+              mt="sm"
+              label="remember me"
+              key={form.key('remember')}
+              {...form.getInputProps('remember', { type: 'checkbox' })}
+            />
 
-          {/* form submission */}
-          <Group justify="flex-begin" mt="md">
-            <Button type="submit">Submit</Button>
-          </Group>
-        </form>
+            {/* form submission */}
+            <Group justify="flex-begin" mt="md">
+              <Button type="submit">Submit</Button>
+            </Group>
+          </form>
 
-        {/* Sign up link */}
-        <Button
-          variant="transparent"
-          className={classes.button}
-          onClick={() => navigate('/signup')}
-        >
-          Sign Up
-        </Button>
+          {/* Sign up link */}
+          <Button
+            variant="transparent"
+            className={classes.button}
+            onClick={() => navigate('/signup')}
+          >
+            Sign Up
+          </Button>
+        </div>
       </div>
     </Screen>
   );
