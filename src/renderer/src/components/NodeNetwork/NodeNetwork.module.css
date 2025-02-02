@@ -1,0 +1,24 @@
+.viewEditToggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.eyeIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.pencilIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.viewToggled:hover {
+  color: var(--mantine-color-defaultScheme-9);
+}
+
+.editToggled:hover {
+  color: var(--mantine-color-defaultScheme-9);
+}

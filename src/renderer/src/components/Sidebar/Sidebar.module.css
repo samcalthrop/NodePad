@@ -4,14 +4,16 @@
   --border-width: 2px;
   --border-color: rgb(44, 44, 44);
   --toolbar-height: 60px;
-  --sidebar-border-radius: 12px;
+  --sidebar-border-radius: 13px;
+  --title-bar-height: 30px;
+  --sidebar-margin: 15px;
 }
 
 .root {
   padding-top: 5px;
-  background-color: var(--mantine-color-grey-8);
+  background-color: var(--mantine-color-defaultScheme-1);
   border-radius: var(--sidebar-border-radius);
-  height: calc(100vh - 30px);
+  height: calc(100vh - 2 * var(--sidebar-margin) - var(--title-bar-height));
   width: calc(var(--sidebar-width) - 2);
   /* border-style: solid;
   border-width: var(--border-width);
@@ -26,6 +28,9 @@
   flex-shrink: 0;
 }
 
+.tree {
+}
+
 .filetree {
   position: relative;
   flex: 1;
@@ -35,6 +40,7 @@
 
 .scrollableArea {
   height: 100%;
+  overflow-x: scroll;
 }
 
 .toolbar {
@@ -44,37 +50,37 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  background-color: var(--mantine-color-grey-8);
+  background-color: var(--mantine-color-defaultScheme-1);
   border-radius: var(--sidebar-border-radius);
+}
+
+.leaf {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0; /* Add this to allow flex item to shrink */
+  width: 100%;
+}
+
+.leafText {
+  color: var(--mantine-color-defaultScheme-4);
+  size: 'lg';
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0; /* Add this to allow text to shrink */
+}
+
+.leafText:hover {
+  color: var(--mantine-color-defaultScheme-9);
 }
 
 .label {
   /* padding-block: 1px; */
   margin-left: var(--margin-width);
   margin-right: var(--margin-width);
-
-  &[data-hovered] {
-    @mixin where-light {
-      background-color: var(--mantine-color-gray-0);
-    }
-
-    @mixin where-dark {
-      background-color: var(--mantine-color-dark-6);
-      color: var(--mantine-color-white);
-    }
-  }
-
-  &[data-selected] {
-    font-weight: 700;
-
-    @mixin light {
-      background-color: var(--mantine-color-gray-0);
-      color: var(--mantine-color-black);
-    }
-
-    @mixin dark {
-      background-color: alpha(var(--mantine-color-gray-0), 0.35);
-      color: var(--mantine-color-gray-0);
-    }
-  }
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

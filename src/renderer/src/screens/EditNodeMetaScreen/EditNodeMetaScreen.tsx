@@ -1,18 +1,8 @@
 import classes from './EditNodeMetaScreen.module.css';
-import { Divider, ScrollArea, Space, Title } from '@mantine/core';
+import { ScrollArea, Space, Title } from '@mantine/core';
 import {
-  BlockTypeSelect,
-  BoldItalicUnderlineToggles,
-  CodeToggle,
-  CreateLink,
-  DiffSourceToggleWrapper,
-  InsertImage,
-  InsertTable,
-  ListsToggle,
   MDXEditor,
   MDXEditorMethods,
-  StrikeThroughSupSubToggles,
-  UndoRedo,
   codeBlockPlugin,
   diffSourcePlugin,
   headingsPlugin,
@@ -24,7 +14,6 @@ import {
   markdownShortcutPlugin,
   quotePlugin,
   tablePlugin,
-  toolbarPlugin,
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 import { useEffect, useRef, useState } from 'react';

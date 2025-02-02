@@ -4,8 +4,15 @@
   flex-direction: column;
   gap: 12px;
   border-radius: 6px;
-  height: 100%;
-  background-color: var(--mantine-color-grey-9);
+  /* height: 100%; */
+  --sidebar-margin: 15px;
+  --title-bar-height: 15px;
+  --title-height: 70px;
+  --title-padding: 30px;
+  height: calc(
+    100vh - 2 * var(--sidebar-margin) - var(--title-bar-height) - 2 * var(--title-height)
+  );
+  background-color: var(--mantine-color-defaultScheme-0);
   color: white;
 
   .button {
@@ -14,11 +21,18 @@
 }
 
 .innerDiv {
-  /* margin-left: 10px;
-  margin-right: margin-left; */
+  height: 100vh;
 }
 
 .mdxeditor {
-  height: 89vh;
+  --sidebar-margin: 15px;
+  --title-bar-height: 32px;
+  --title-height: 70px;
+  --editor-padding: 12px;
+  height: calc(
+    100vh - 2 * var(--sidebar-margin) - var(--title-bar-height) - var(--title-height) -
+      var(--editor-padding)
+  );
   font-family: var(--mantine-font-family);
+  padding: 0;
 }

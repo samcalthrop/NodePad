@@ -8,31 +8,37 @@ export type ScreenWithSidebarProps = {
 };
 
 export const ScreenWithSidebar = ({ children }: ScreenWithSidebarProps): JSX.Element => {
-  const [sidebarWidth, setSidebarWidth] = useState(250);
+  const [sidebarWidth, setSidebarWidth] = useState(300);
   const [resizing, setResizing] = useState(false);
   const minWidth = 250;
   const maxWidth = 450;
 
   // function allowing the manual dynamic resizing of the sidebar
-  const startResizing = useCallback((mouseDownEvent: React.MouseEvent) => {
-    setResizing(true);
+  const startResizing = useCallback(
+    (mouseDownEvent: React.MouseEvent) => {
+      setResizing(true);
+      const startX = mouseDownEvent.clientX;
+      const startWidth = sidebarWidth;
 
-    const startResizing = (mouseMoveEvent: MouseEvent): void => {
-      const newWidth = mouseMoveEvent.clientX;
-      if (newWidth > minWidth && newWidth < maxWidth) {
-        setSidebarWidth(newWidth);
-      }
-    };
+      const startResizing = (mouseMoveEvent: MouseEvent): void => {
+        const difference = mouseMoveEvent.clientX - startX;
+        const newWidth = startWidth + difference;
+        if (newWidth > minWidth && newWidth < maxWidth) {
+          setSidebarWidth(newWidth);
+        }
+      };
 
-    const stopResizing = (): void => {
-      setResizing(false);
-      window.removeEventListener('mousemove', startResizing);
-      window.removeEventListener('mouseup', stopResizing);
-    };
+      const stopResizing = (): void => {
+        setResizing(false);
+        window.removeEventListener('mousemove', startResizing);
+        window.removeEventListener('mouseup', stopResizing);
+      };
 
-    window.addEventListener('mousemove', startResizing);
-    window.addEventListener('mouseup', stopResizing);
-  }, []);
+      window.addEventListener('mousemove', startResizing);
+      window.addEventListener('mouseup', stopResizing);
+    },
+    [sidebarWidth]
+  ); // Add sidebarWidth to dependencies
 
   return (
     <Screen>

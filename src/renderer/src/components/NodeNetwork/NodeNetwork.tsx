@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Position, Node, Connection, NodeNetworkProps } from '../../types/index';
+import { Center, SegmentedControl } from '@mantine/core';
+import { IconEye, IconPencil } from '@tabler/icons-react';
+import classes from './NodeNetwork.module.css';
+import { useNavigate } from 'react-router-dom';
+import { useSharedData } from '@renderer/providers/SharedDataProvider';
 
 export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
+  const navigate = useNavigate();
+  const { setSelectedTreeNodeData } = useSharedData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const animationFrameId = useRef<number>();
   const [nodes, setNodes] = useState<Node[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
+  const [mode, setMode] = useState('view');
   const [draggedNode, setDraggedNode] = useState<number | null>(null);
   const [draggingConnection, setDraggingConnection] = useState<{
     fromId: number;
@@ -82,6 +90,8 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     console.log('initial nodes: ', initialNodes);
   }, [files]);
 
+  // DO NOT DELETE: HELPFUL FOR WRITEUP OF OPTIMISATION
+
   // // canvas drawing function
   // const draw = (ctx: CanvasRenderingContext2D): void => {
   //   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -115,7 +125,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   //     }
   //   }
 
-  //   // craw nodes
+  //   // draw nodes
   //   nodes.forEach((node) => {
   //     // node circle
   //     ctx.beginPath();
@@ -142,7 +152,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     const ctx = contextRef.current;
     if (!ctx) return;
 
-    // Clear only the used area instead of entire canvas
+    // clear only the used area instead of entire canvas
     const usedArea = nodes.reduce(
       (acc, node) => {
         return {
@@ -162,7 +172,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       usedArea.maxY - usedArea.minY
     );
 
-    // Batch similar operations
+    // batch similar operations
     ctx.strokeStyle = '#666';
     ctx.lineWidth = 2;
 
@@ -178,19 +188,6 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     });
     ctx.stroke();
 
-    // draw dragging connection
-    if (draggingConnection) {
-      const fromNode = nodes.find((node) => node.id === draggingConnection.fromId);
-      if (fromNode) {
-        ctx.beginPath();
-        ctx.setLineDash([5, 5]);
-        ctx.moveTo(fromNode.x, fromNode.y);
-        ctx.lineTo(draggingConnection.toPos.x, draggingConnection.toPos.y);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-    }
-
     // batch node drawing
     ctx.fillStyle = '#2196F3';
     ctx.beginPath();
@@ -200,26 +197,45 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     });
     ctx.fill();
 
-    // batch connection handling
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    nodes.forEach((node) => {
-      ctx.moveTo(node.x + 5, node.y);
-      ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
-    });
-    ctx.fill();
+    // in the case that edit mode is on, these features are drawn
+    if (mode == 'edit') {
+      // batch centre drawing (the point from which the user can drag a connection)
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      nodes.forEach((node) => {
+        ctx.moveTo(node.x + 5, node.y);
+        ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
+      });
+      ctx.fill();
+
+      // draw dragging connection
+      if (draggingConnection) {
+        const fromNode = nodes.find((node) => node.id === draggingConnection.fromId);
+        if (fromNode) {
+          ctx.beginPath();
+          ctx.setLineDash([5, 5]);
+          ctx.moveTo(fromNode.x, fromNode.y);
+          ctx.lineTo(draggingConnection.toPos.x, draggingConnection.toPos.y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+    }
 
     // batch text rendering
     ctx.fillStyle = 'white';
-    ctx.font = '12px Arial';
+    ctx.font = '12px Fira Code';
     ctx.textAlign = 'center';
     nodes.forEach((node) => {
       ctx.fillText(node.title, node.x, node.y + 30);
     });
-  }, [nodes, connections, draggingConnection, radius]);
+  }, [nodes, connections, draggingConnection, radius, mode]);
 
   // check if user has clicked a connection
   const isClickOnConnection = (x: number, y: number, connection: Connection): boolean => {
+    // this function should only work if user is in edit mode
+    if (mode == 'view') return false;
+
     const fromNode = nodes.find((n) => n.id === connection.from);
     const toNode = nodes.find((n) => n.id === connection.to);
     if (!fromNode || !toNode) return false;
@@ -258,20 +274,30 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     if (!rect) return;
 
     // mouse position relative to the canvas
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x: number = e.clientX - rect.left;
+    const y: number = e.clientY - rect.top;
+
+    const leftClick: number = 0;
+    // const scrollClick: number = 1;
+    const rightClick: number = 2;
 
     // check if clicking on a connection (to remove it)
-    const clickedConnection = connections.find((conn) => isClickOnConnection(x, y, conn));
-    // remove connection if clicked
-    if (clickedConnection) {
-      setConnections((prev) =>
-        prev.filter(
-          (conn) => conn.from !== clickedConnection.from || conn.to !== clickedConnection.to
-        )
+    if (mode == 'edit') {
+      const clickedConnection = connections.find((connection) =>
+        isClickOnConnection(x, y, connection)
       );
-      // prevents any other mouse handling, graphically removing connection immediately
-      return;
+
+      // remove connection if clicked
+      if (clickedConnection) {
+        setConnections((prev) =>
+          prev.filter(
+            (connection) =>
+              connection.from !== clickedConnection.from || connection.to !== clickedConnection.to
+          )
+        );
+        // prevents any other mouse handling, graphically removing connection immediately
+        return;
+      }
     }
 
     // check if clicking on a node
@@ -284,15 +310,25 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       const distanceToCenter = Math.sqrt(
         Math.pow(clickedNode.x - x, 2) + Math.pow(clickedNode.y - y, 2)
       );
-      if (distanceToCenter < 10) {
+      if (mode == 'edit' && distanceToCenter < 10) {
         // start dragging a connection
         setDraggingConnection({
           fromId: clickedNode.id,
           toPos: { x, y },
         });
       } else {
-        // start dragging the node
-        setDraggedNode(clickedNode.id);
+        if (e.button == rightClick) {
+          // convert the clicked node's data into TreeNodeData, so it can be used in setSelectedTreeNodeData()
+          const treeNodeData = {
+            label: clickedNode.title + '.md',
+            value: clickedNode.filePath.replace('./', ''),
+          };
+          // set the selected node data in the shared data provider context, and navigate to its contents
+          setSelectedTreeNodeData(treeNodeData);
+          navigate('/home/edit-node-meta');
+        } else if (e.button == leftClick) {
+          setDraggedNode(clickedNode.id);
+        }
       }
     }
   };
@@ -355,6 +391,8 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
 
     setDraggedNode(null);
   };
+
+  // DO NOT DELETE: HELPFUL FOR WRITEUP OF OPTIMISATION
 
   // // configuring canvas and render loop
   // useEffect(() => {
@@ -426,12 +464,39 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   }, [draw]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: '100%', height: '100%' }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    />
+    <>
+      <div className={classes.viewEditToggle}>
+        <SegmentedControl
+          value={mode}
+          onChange={setMode}
+          data={[
+            {
+              value: 'view',
+              label: (
+                <Center className={classes.viewToggled} style={{ gap: 10 }}>
+                  <IconEye className={classes.eyeIcon} />
+                </Center>
+              ),
+            },
+            {
+              value: 'edit',
+              label: (
+                <Center className={classes.editToggled} style={{ gap: 10 }}>
+                  <IconPencil className={classes.pencilIcon} />
+                </Center>
+              ),
+            },
+          ]}
+          radius="lg"
+        />
+      </div>
+      <canvas
+        ref={canvasRef}
+        style={{ width: '100vh', height: 'calc(100vh - 144px)' }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      />
+    </>
   );
 };

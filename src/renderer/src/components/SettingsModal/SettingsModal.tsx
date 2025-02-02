@@ -193,18 +193,18 @@ const SubmissionForm = (): JSX.Element => {
 
   const handleSubmitName = async (values: typeof formName.values): Promise<void> => {
     await asyncSubmit(values);
-    setName(values.name); // Set the submitted value as the new placeholder
-    formName.reset(); // Reset the form to empty the input
+    setName(values.name); // set the submitted value as the new placeholder
+    formName.reset(); // reset the form to empty the input
   };
   const handleSubmitEmail = async (values: typeof formEmail.values): Promise<void> => {
     await asyncSubmit(values);
-    setEmail(values.email); // Set the submitted value as the new placeholder
-    formEmail.reset(); // Reset the form to empty the input
+    setEmail(values.email); // set the submitted value as the new placeholder
+    formEmail.reset(); // reset the form to empty the input
   };
   const handleSubmitPassword = async (values: typeof formPassword.values): Promise<void> => {
     await asyncSubmit(values);
-    setPassword(values.password); // Set the submitted value as the new placeholder
-    formPassword.reset(); // Reset the form to empty the input
+    setPassword(values.password); // set the submitted value as the new placeholder
+    formPassword.reset(); // reset the form to empty the input
   };
   const handleImageClick = async (): Promise<void> => {
     try {
@@ -218,6 +218,7 @@ const SubmissionForm = (): JSX.Element => {
   };
 
   return (
+    // MOVE STYLING TO CSS FILE
     <Flex align="center" gap="xl">
       <div
         style={{
@@ -230,7 +231,7 @@ const SubmissionForm = (): JSX.Element => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: 'var(--mantine-color-grey-9)',
+          backgroundColor: 'var(--mantine-color-defaultScheme-0)',
         }}
         onClick={handleImageClick}
       >
@@ -244,7 +245,7 @@ const SubmissionForm = (): JSX.Element => {
             }}
           />
         ) : (
-          <IconUser size={60} stroke={1.5} color="var(--mantine-color-grey-8)" />
+          <IconUser size={60} stroke={1.5} color="var(--mantine-color-defaultScheme-1)" />
         )}
       </div>
       <div style={{ flex: 1 }}>

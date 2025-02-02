@@ -10,9 +10,10 @@ import {
   Space,
   ScrollArea,
   Box,
+  Text,
 } from '@mantine/core';
 import { NpmIcon } from '@mantinex/dev-icons';
-import { IconFolder, IconFolderOpen, IconBook } from '@tabler/icons-react';
+import { IconBook, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
 import { useNavigate } from 'react-router-dom';
 import { SettingsModal } from '../SettingsModal/SettingsModal';
@@ -47,7 +48,8 @@ export const Sidebar = (): JSX.Element => {
         >
           <Box>
             <Tree
-              classNames={classes}
+              levelOffset="lg"
+              className={classes.tree}
               selectOnClick
               clearSelectionOnOutsideClick
               data={treeNodeData}
@@ -74,19 +76,19 @@ interface FileIconProps {
 // returns the appropriate file icon for a particular file extension
 function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
   if (name.endsWith('package.json')) {
-    return <NpmIcon size={14} />;
+    return <NpmIcon color="var(--mantine-color-defaultScheme-4)" size={14} />;
   }
 
   if (name.endsWith('.md')) {
-    return <IconBook size={14} />;
+    return <IconBook color="var(--mantine-color-defaultScheme-4)" size={14} />;
   }
 
   // returns an opened/ closed folder based on the boolean value `expanded`
   if (isFolder) {
     return expanded ? (
-      <IconFolderOpen color="var(--mantine-color-yellow-9)" size={14} stroke={2.5} />
+      <IconChevronDown color="var(--mantine-color-defaultScheme-4)" size={14} stroke={2.5} />
     ) : (
-      <IconFolder color="var(--mantine-color-yellow-9)" size={14} stroke={2.5} />
+      <IconChevronRight color="var(--mantine-color-defaultScheme-4)" size={14} stroke={2.5} />
     );
   }
 
@@ -119,8 +121,11 @@ function Leaf({
         }
       }}
     >
-      <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
-      <span>{node.label}</span>
+      <div className={classes.leaf}>
+        <div></div>
+        <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
+        <Text className={classes.leafText}>{node.label}</Text>
+      </div>
     </Group>
   );
 }
