@@ -20,6 +20,7 @@
 
 .title {
   text-align: center;
+  color: var(--mantine-color-defaultScheme-6);
 }
 
 .form {
@@ -28,8 +29,24 @@
   gap: 15px;
 }
 
-.button {
-  width: fit-content;
-  margin: 0 auto;
-  margin-top: 10px;
+.submit {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-0);
+}
+
+.submit:hover {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-5);
+}
+
+.signupText {
+  color: var(--mantine-color-defaultScheme-5);
+}
+
+.signupText:hover {
+  color: var(--mantine-color-defaultScheme-0);
+}
+
+.leftArrow:hover {
+  color: var(--mantine-color-defaultScheme-0) !important;
 }

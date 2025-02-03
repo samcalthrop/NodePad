@@ -9,23 +9,17 @@ import {
   Button as MantineButton,
   Divider,
   SimpleGrid,
-  Fieldset,
+  // Fieldset,
   TextInput,
   Group,
   Flex,
   Space,
   ActionIcon,
+  Title,
+  ScrollArea,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  IconArrowRight,
-  IconAt,
-  IconCheck,
-  IconCornerDownLeft,
-  IconLock,
-  IconSettings,
-  IconUser,
-} from '@tabler/icons-react';
+import { IconAt, IconCornerDownLeft, IconLock, IconSettings, IconUser } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export const SettingsModal = (): JSX.Element => {
@@ -33,10 +27,9 @@ export const SettingsModal = (): JSX.Element => {
 
   return (
     <>
-      <Modal
+      <Modal.Root
         opened={opened}
         onClose={close}
-        title="settings"
         centered
         size="xl"
         styles={{
@@ -46,36 +39,71 @@ export const SettingsModal = (): JSX.Element => {
           },
         }}
       >
-        <Tabs color="dark" defaultValue="appearance" variant="pills" orientation="vertical">
-          <Tabs.List>
-            <Tabs.Tab value="appearance">appearance</Tabs.Tab>
-            <Tabs.Tab value="account">account</Tabs.Tab>
-            <Tabs.Tab value="files">files</Tabs.Tab>
-            <Tabs.Tab value="help">help</Tabs.Tab>
-          </Tabs.List>
-
-          <Tabs.Panel value="files" pl="xl">
-            <Files />
-          </Tabs.Panel>
-
-          <Tabs.Panel value="appearance" pl="xl">
-            <Appearance />
-          </Tabs.Panel>
-
-          <Tabs.Panel value="account" pl="xl">
-            <Account />
-          </Tabs.Panel>
-
-          <Tabs.Panel value="help" pl="xl">
-            <Help />
-          </Tabs.Panel>
-        </Tabs>
-      </Modal>
+        <Modal.Overlay backgroundOpacity={0.2} blur={1.8} />
+        <Modal.Content radius="13px">
+          <NavbarSimpleColoured />
+        </Modal.Content>
+      </Modal.Root>
 
       <Button variant="default" onClick={open}>
         <IconSettings />
       </Button>
     </>
+  );
+};
+
+const NavbarSimpleColoured = (): JSX.Element => {
+  return (
+    <div className={classes.root}>
+      <div className={classes.header}>
+        <Title className={classes.title}>settings</Title>
+        <Title className={classes.subtitle}>subtitle</Title>
+        <Modal.CloseButton className={classes.close} size="xl" />
+      </div>
+      <div>
+        <Divider />
+      </div>
+      <Tabs
+        className={classes.tabs}
+        color="var(--mantine-color-defaultScheme-2)"
+        defaultValue="appearance"
+        variant="pills"
+        orientation="vertical"
+        radius={0}
+      >
+        <Tabs.List className={classes.navbar}>
+          <Tabs.Tab className={classes.tab} value="appearance">
+            appearance
+          </Tabs.Tab>
+          <Tabs.Tab className={classes.tab} value="account">
+            account
+          </Tabs.Tab>
+          <Tabs.Tab className={classes.tab} value="files">
+            files
+          </Tabs.Tab>
+          <Tabs.Tab className={classes.tab} value="help">
+            help
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel value="files" pl="xl">
+          <Files />
+        </Tabs.Panel>
+
+        <Tabs.Panel value="appearance" pl="xl">
+          <Appearance />
+        </Tabs.Panel>
+
+        <Tabs.Panel value="account" pl="xl">
+          <Account />
+        </Tabs.Panel>
+
+        <Tabs.Panel value="help" pl="xl">
+          <Help />
+        </Tabs.Panel>
+      </Tabs>
+    </div>
+    // </nav>
   );
 };
 
@@ -132,32 +160,57 @@ const Files = (): JSX.Element => {
   };
 
   return (
-    <div id="filesContents">
-      <Stack>
-        <Text size="lg">source folder</Text>
-        <Text size="sm" c="dimmed">
-          the root directory within which your notes will be stored
-        </Text>
-        <Text size="sm" c="dimmed">
-          {selectedDirectory || 'No directory selected'}
-        </Text>
-        <MantineButton
-          variant="default"
-          style={{ alignSelf: 'flex-start' }}
-          onClick={handleDirectorySelect}
-        >
-          select directory
-        </MantineButton>
+    <div>
+      <ScrollArea.Autosize className={classes.scrollableArea} type="scroll" scrollHideDelay={100}>
+        <Stack className={classes.stack}>
+          <Text size="lg">source folder</Text>
+          <Text size="sm" c="dimmed">
+            the root directory within which your notes will be stored
+          </Text>
+          <Text size="sm" c="dimmed">
+            {selectedDirectory || 'No directory selected'}
+          </Text>
+          <MantineButton
+            variant="default"
+            style={{
+              alignSelf: 'flex-start',
+              padding: 'var(--mantine-spacing-xs) var(--mantine-spacing-md)',
+              height: 'auto',
+              minHeight: '36px',
+            }}
+            onClick={handleDirectorySelect}
+          >
+            select directory
+          </MantineButton>
 
-        <Divider />
+          <Divider />
 
-        <Text size="lg" mt="xl">
-          other things
-        </Text>
-        <Text size="sm" c="dimmed">
-          bleh bleh bleh
-        </Text>
-      </Stack>
+          <Text size="lg" mt="xl">
+            other things
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+          <Text size="sm" c="dimmed">
+            bleh bleh bleh
+          </Text>
+        </Stack>
+      </ScrollArea.Autosize>
     </div>
   );
 };
@@ -257,7 +310,6 @@ const SubmissionForm = (): JSX.Element => {
               leftSection={user}
               placeholder={name}
               key={formName.key('name')}
-              disabled={formName.submitting}
               {...formName.getInputProps('name')}
             />
 
@@ -266,7 +318,6 @@ const SubmissionForm = (): JSX.Element => {
                 variant="transparent"
                 aria-label="submit"
                 type="submit"
-                loading={formName.submitting}
                 loaderProps={{ type: 'dots' }}
                 size="lg"
               >
@@ -286,7 +337,6 @@ const SubmissionForm = (): JSX.Element => {
               leftSection={at}
               placeholder={email}
               key={formEmail.key('email')}
-              disabled={formEmail.submitting}
               {...formEmail.getInputProps('email')}
               width="100%"
             />
@@ -297,7 +347,6 @@ const SubmissionForm = (): JSX.Element => {
                 aria-label="submit"
                 type="submit"
                 loaderProps={{ type: 'dots' }}
-                loading={formEmail.submitting}
                 size="lg"
               >
                 {/* <IconCheck stroke={2} /> */}
@@ -317,7 +366,6 @@ const SubmissionForm = (): JSX.Element => {
               leftSection={lock}
               placeholder={password}
               key={formPassword.key('password')}
-              disabled={formPassword.submitting}
               {...formPassword.getInputProps('password')}
             />
 
@@ -327,7 +375,6 @@ const SubmissionForm = (): JSX.Element => {
                 aria-label="submit"
                 type="submit"
                 loaderProps={{ type: 'dots' }}
-                loading={formPassword.submitting}
                 size="lg"
               >
                 {/* <IconArrowRight stroke={2} /> */}

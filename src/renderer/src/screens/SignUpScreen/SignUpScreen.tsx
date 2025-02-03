@@ -1,12 +1,15 @@
 import classes from '../LoginScreen/LoginScreen.module.css';
 import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
-import { Button, Title, TextInput, Group, PasswordInput } from '@mantine/core';
+import { Button, Title, TextInput, Group, PasswordInput, ActionIcon } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { UserCredential } from '@renderer/types';
 
 export const SignUpScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  const [credentials, setCredentials] = useState<UserCredential>();
 
   // defining the rules for the login form
   const form = useForm({
@@ -28,9 +31,11 @@ export const SignUpScreen = (): JSX.Element => {
   });
 
   const handleSubmit = useCallback(async (): Promise<void> => {
-    const { email, password } = form.getValues();
+    const { email, password }: UserCredential = form.getValues();
     const result = await window.ipcAPI.createCredentials(email, password);
     if (result) {
+      setCredentials({ email, password });
+      console.log(credentials);
       navigate('/login');
     } else {
       console.log('Email already taken');
@@ -43,48 +48,65 @@ export const SignUpScreen = (): JSX.Element => {
   return (
     <Screen>
       <div className={classes.root}>
-        <br />
-        <Title order={1}>Sign Up</Title>
-        <br />
-        <form
-          onSubmit={form.onSubmit((values) => {
-            console.log('onSubmit', { values });
-            handleSubmit();
-          })}
-        >
-          {/* username field */}
-          <TextInput
-            withAsterisk
-            label="Email"
-            placeholder="your@email.com"
-            key={form.key('email')}
-            {...form.getInputProps('email')}
-          />
-
-          {/* password field */}
-          <PasswordInput
-            withAsterisk
-            label="Password"
-            description="ensure password length is at least 8 characters long"
-            placeholder="password-123"
-            key={form.key('password')}
-            {...form.getInputProps('password')}
-          />
-
-          {/* re-enter password field */}
-          <PasswordInput
-            withAsterisk
-            label="Re-enter Password"
-            placeholder="password-123"
-            key={form.key('reEnterPassword')}
-            {...form.getInputProps('reEnterPassword')}
-          />
-
-          {/* form submission */}
-          <Group justify="flex-begin" mt="md">
-            <Button type="submit">Submit</Button>
+        <div className={classes.base}>
+          <br />
+          <Group align="center">
+            <ActionIcon
+              className={classes.leftArrow}
+              variant="transparent"
+              c="var(--mantine-color-defaultScheme-5)"
+              onClick={() => navigate('/login')}
+              size={48}
+            >
+              <IconArrowLeft size={48} />
+            </ActionIcon>
+            <Title className={classes.title} order={1}>
+              sign up
+            </Title>
           </Group>
-        </form>
+          <form
+            className={classes.form}
+            onSubmit={form.onSubmit((values) => {
+              console.log('onSubmit', { values });
+              handleSubmit();
+            })}
+          >
+            {/* username field */}
+            <TextInput
+              withAsterisk
+              label="email"
+              placeholder="your@email.com"
+              key={form.key('email')}
+              {...form.getInputProps('email')}
+            />
+
+            {/* password field */}
+            <PasswordInput
+              withAsterisk
+              label="password"
+              description="ensure password length is at least 8 characters long"
+              placeholder="password-123"
+              key={form.key('password')}
+              {...form.getInputProps('password')}
+            />
+
+            {/* re-enter password field */}
+            <PasswordInput
+              withAsterisk
+              label="re-enter password"
+              placeholder="password-123"
+              key={form.key('reEnterPassword')}
+              {...form.getInputProps('reEnterPassword')}
+            />
+
+            {/* form submission */}
+            <Group justify="center" mt="md">
+              <Button className={classes.submit} type="submit">
+                submit
+              </Button>
+            </Group>
+          </form>
+        </div>
       </div>
     </Screen>
   );

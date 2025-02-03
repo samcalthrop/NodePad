@@ -7,7 +7,7 @@ import { getTreeNodeData } from './getTreeNodeData';
 import { getFileContents } from './getFileContents';
 import { dialog } from 'electron';
 import { readFile } from 'fs/promises';
-import { createCredentials } from './dbHandling';
+import { checkCredentials, createCredentials } from './dbHandling';
 
 function createWindow(): void {
   // create the browser window
@@ -80,6 +80,14 @@ app.whenReady().then(() => {
       : event.sender.send('create-credentials-failure', result.success);
   });
 
+  ipcMain.on('check-credentials', async (event: IpcMainEvent, { email, password }) => {
+    console.log('main:check-credentials', email, password);
+    const result = await checkCredentials(email, password);
+    result.success
+      ? event.sender.send('check-credentials-success', result.success)
+      : event.sender.send('check-credentials-failure', result.success);
+  });
+
   createWindow();
 
   app.on('activate', function () {
@@ -91,9 +99,10 @@ app.whenReady().then(() => {
 
 // quit when all windows are closed unless OS=macOS
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  // if (process.platform !== 'darwin') {
+  //   app.quit();
+  // }
+  app.quit();
 });
 
 // listens for the request to select a directory, opens the native OS' filesystem UI and returns selected directory path

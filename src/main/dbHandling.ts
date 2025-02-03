@@ -18,6 +18,33 @@ export const createCredentials = (
   });
 };
 
+export const checkCredentials = (
+  email: string,
+  password: string
+): Promise<{ success: boolean; message?: string }> => {
+  return new Promise((resolve) => {
+    console.log('checkCredentials', { email, password });
+    database.get(
+      'SELECT * FROM Users WHERE email = ? AND password = ?',
+      [email, password],
+      (err, row) => {
+        if (err) {
+          console.error('Error checking credentials:', err);
+          resolve({ success: false, message: err.message });
+          return;
+        }
+        if (!row) {
+          console.log('User not found');
+          resolve({ success: false, message: 'Invalid email or password' });
+          return;
+        }
+        console.log('User exists');
+        resolve({ success: true });
+      }
+    );
+  });
+};
+
 // /**
 //  * @link https://github.com/electron/electron/issues/19775#issuecomment-834649057
 //  */

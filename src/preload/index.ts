@@ -49,6 +49,21 @@ if (process.contextIsolated) {
           });
         });
       },
+      checkCredentials: (email: string, password: string) => {
+        console.log('preload:checkCredentials', { email, password });
+        ipcRenderer.send('check-credentials', { email, password });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('check-credentials-success', (_event, success) => {
+            console.log('on check-credentials-success');
+            resolve(success);
+          });
+          ipcRenderer.on('check-credentials-failure', (_event, success) => {
+            console.log('on check-credentials-success');
+            resolve(success);
+          });
+        });
+      },
     });
   } catch (error) {
     console.error(error);

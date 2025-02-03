@@ -12,6 +12,7 @@ export type IpcAPI = {
     filters: Array<{ name: string; extensions: string[] }>;
   }) => Promise<string>;
   createCredentials: (email: string, password: string) => Promise<boolean>;
+  checkCredentials: (email: string, password: string) => Promise<boolean>;
 };
 
 // export interface Window {
@@ -19,8 +20,6 @@ export type IpcAPI = {
 //     openDirectorySelector: () => Promise<string>;
 //   };
 // }
-
-// testing network stuff ------------------------------------
 
 export type Position = {
   x: number;
@@ -45,7 +44,10 @@ export interface NodeNetworkProps {
   files: Array<TreeNodeData>;
 }
 
-// ------------------------------------------------------------
+export type UserCredential = {
+  email: string;
+  password: string;
+};
 
 // export type NetworkNodeData = TreeNodeData & {
 //   connections: Array<TreeNodeData>;

@@ -1,8 +1,9 @@
 import classes from './LoginScreen.module.css';
 import { Screen } from '../Screen';
 import { useNavigate } from 'react-router-dom';
-import { Button, Title, TextInput, Checkbox, Group, PasswordInput } from '@mantine/core';
+import { Button, Title, TextInput, Text, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useCallback } from 'react';
 // import { electronAPI } from '@electron-toolkit/preload';
 
 export const LoginScreen = (): JSX.Element => {
@@ -14,7 +15,6 @@ export const LoginScreen = (): JSX.Element => {
     initialValues: {
       email: '',
       password: '',
-      remember: false,
     },
 
     // in-browser validation of email entry
@@ -24,16 +24,36 @@ export const LoginScreen = (): JSX.Element => {
     },
   });
 
+  const handleSubmit = useCallback(async (): Promise<void> => {
+    const { email, password } = form.getValues();
+    const result = await window.ipcAPI.checkCredentials(email, password);
+    if (result) {
+      navigate('/home');
+    } else {
+      console.log('User not found');
+      alert(
+        'Invalid email or password. Please check both fields have been correctly entered, or sign up for a new account'
+      );
+    }
+  }, [form]);
+
   return (
     <Screen>
       <div className={classes.root}>
         <div className={classes.base}>
+          <br />
           <Title className={classes.title}>log in</Title>
-          <form onSubmit={form.onSubmit(() => navigate('/home'))} className={classes.form}>
+          {/* <form onSubmit={form.onSubmit(() => navigate('/home'))} className={classes.form}> */}
+          <form
+            onSubmit={form.onSubmit((values) => {
+              console.log('onSubmit', { values });
+              handleSubmit();
+            })}
+            className={classes.form}
+          >
             {/* username field */}
             <TextInput
-              withAsterisk
-              label="Email"
+              label="email"
               placeholder="your@email.com"
               key={form.key('email')}
               {...form.getInputProps('email')}
@@ -41,36 +61,35 @@ export const LoginScreen = (): JSX.Element => {
 
             {/* password field */}
             <PasswordInput
-              withAsterisk
-              label="Password"
-              description="ensure password length is at least 8 characters long"
+              label="password"
               placeholder="password-123"
               key={form.key('password')}
               {...form.getInputProps('password')}
             />
 
-            {/* 'remember me' checkbox */}
-            <Checkbox
-              mt="sm"
-              label="remember me"
-              key={form.key('remember')}
-              {...form.getInputProps('remember', { type: 'checkbox' })}
-            />
-
             {/* form submission */}
-            <Group justify="flex-begin" mt="md">
-              <Button type="submit">Submit</Button>
+            <Group justify="center" mt="md">
+              <Button className={classes.submit} type="submit">
+                submit
+              </Button>
             </Group>
           </form>
 
           {/* Sign up link */}
-          <Button
-            variant="transparent"
-            className={classes.button}
-            onClick={() => navigate('/signup')}
-          >
-            Sign Up
-          </Button>
+          <br />
+          <br />
+          <Group gap={8} justify="center">
+            <Text size="sm">no account? </Text>
+            <Text
+              className={classes.signupText}
+              size="sm"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate('/signup')}
+              td="underline"
+            >
+              sign up
+            </Text>
+          </Group>
         </div>
       </div>
     </Screen>
