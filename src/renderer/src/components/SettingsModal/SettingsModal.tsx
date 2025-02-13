@@ -31,10 +31,12 @@ import { useState } from 'react';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
 
 export const SettingsModal = (): JSX.Element => {
+  // react state used to globally keep track of if settings is open
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
+      {/* the skeleton of the pop-over page */}
       <Modal.Root
         className={classes.modal}
         opened={opened}
@@ -47,12 +49,16 @@ export const SettingsModal = (): JSX.Element => {
           },
         }}
       >
+        {/* the behaviour of the background when settings is open */}
         <Modal.Overlay backgroundOpacity={0.2} blur={1.8} />
+        {/* the content to be displayed within the pop-over */}
         <Modal.Content radius="13px" className={classes.content}>
+          {/* the 'sidebar' where the menu of settings will be displayed */}
           <NavBar />
         </Modal.Content>
       </Modal.Root>
 
+      {/* the button that will appear in the toolbar */}
       <Button variant="default" onClick={open}>
         <IconSettings />
       </Button>
@@ -145,6 +151,7 @@ const NavBar = (): JSX.Element => {
   );
 };
 
+// modularising each component of the Navbar
 const Appearance = (): JSX.Element => {
   return (
     <Stack className={classes.stack}>
@@ -179,11 +186,13 @@ const Account = (): JSX.Element => {
 };
 
 const Files = (): JSX.Element => {
+  // data provider used to keep track of the selected root directory
   const { rootDirPath, setRootDirPath } = useSharedData();
-  const [saveFrequency, setSaveFrequency] = useState('5');
+  const [saveFrequency, setSaveFrequency] = useState('2');
 
   const handleDirectorySelect = async (): Promise<void> => {
     try {
+      // asynchronously communicates with backend, so must wait for a response with `await`
       const directory = await window.ipcAPI.openDirectorySelector();
       if (directory) {
         setRootDirPath(directory);
@@ -239,9 +248,10 @@ const Files = (): JSX.Element => {
               onChange={(event) => setSaveFrequency(event.currentTarget.value)}
               data={[
                 { label: 'on change', value: 'on-change' },
+                { label: 'every 1s', value: '1' },
+                { label: 'every 2s', value: '2' },
                 { label: 'every 5s', value: '5' },
                 { label: 'every 10s', value: '10' },
-                { label: 'every 30s', value: '30' },
                 { label: 'never (manual saving)', value: 'manual' },
               ]}
             />
