@@ -4,10 +4,10 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
 import { getTreeNodeData } from './getTreeNodeData';
-import { getFileContents } from './getFileContents';
 import { dialog } from 'electron';
 import { readFile } from 'fs/promises';
 import { checkCredentials, createCredentials } from './dbHandling';
+import { getFileContents, saveFile, renameFile } from './fileHandling';
 
 function createWindow(): void {
   // create the browser window
@@ -86,6 +86,22 @@ app.whenReady().then(() => {
     result.success
       ? event.sender.send('check-credentials-success', result.success)
       : event.sender.send('check-credentials-failure', result.success);
+  });
+
+  ipcMain.on('save-file', async (event: IpcMainEvent, { filePath, content }) => {
+    console.log('main:save-file', filePath, content);
+    const result = await saveFile(filePath, content);
+    result.success
+      ? event.sender.send('save-file-success', result.success)
+      : event.sender.send('save-file-failure', result.success);
+  });
+
+  ipcMain.on('rename-file', async (event: IpcMainEvent, { oldPath, newTitle }) => {
+    console.log('main:rename-file', oldPath, newTitle);
+    const result = await renameFile(oldPath, newTitle);
+    result.success
+      ? event.sender.send('rename-file-success', result)
+      : event.sender.send('rename-file-failure', result);
   });
 
   createWindow();

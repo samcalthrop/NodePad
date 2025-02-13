@@ -9,7 +9,6 @@ import {
   Button as MantineButton,
   Divider,
   SimpleGrid,
-  // Fieldset,
   TextInput,
   Group,
   Flex,
@@ -17,10 +16,19 @@ import {
   ActionIcon,
   Title,
   ScrollArea,
+  NativeSelect,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconAt, IconCornerDownLeft, IconLock, IconSettings, IconUser } from '@tabler/icons-react';
+import {
+  IconAt,
+  IconChevronDown,
+  IconCornerDownLeft,
+  IconLock,
+  IconSettings,
+  IconUser,
+} from '@tabler/icons-react';
 import { useState } from 'react';
+import { useSharedData } from '@renderer/providers/SharedDataProvider';
 
 export const SettingsModal = (): JSX.Element => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -28,10 +36,10 @@ export const SettingsModal = (): JSX.Element => {
   return (
     <>
       <Modal.Root
+        className={classes.modal}
         opened={opened}
         onClose={close}
         centered
-        size="xl"
         styles={{
           title: {
             fontSize: '24px',
@@ -40,8 +48,8 @@ export const SettingsModal = (): JSX.Element => {
         }}
       >
         <Modal.Overlay backgroundOpacity={0.2} blur={1.8} />
-        <Modal.Content radius="13px">
-          <NavbarSimpleColoured />
+        <Modal.Content radius="13px" className={classes.content}>
+          <NavBar />
         </Modal.Content>
       </Modal.Root>
 
@@ -52,12 +60,14 @@ export const SettingsModal = (): JSX.Element => {
   );
 };
 
-const NavbarSimpleColoured = (): JSX.Element => {
+const NavBar = (): JSX.Element => {
+  const [section, setSection] = useState<string>('appearance');
+
   return (
     <div className={classes.root}>
       <div className={classes.header}>
         <Title className={classes.title}>settings</Title>
-        <Title className={classes.subtitle}>subtitle</Title>
+        <Title className={classes.section}>{section}</Title>
         <Modal.CloseButton className={classes.close} size="xl" />
       </div>
       <div>
@@ -70,6 +80,7 @@ const NavbarSimpleColoured = (): JSX.Element => {
         variant="pills"
         orientation="vertical"
         radius={0}
+        onChange={(value) => setSection(value || 'appearance')}
       >
         <Tabs.List className={classes.navbar}>
           <Tabs.Tab className={classes.tab} value="appearance">
@@ -86,30 +97,57 @@ const NavbarSimpleColoured = (): JSX.Element => {
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="files" pl="xl">
-          <Files />
+        <Tabs.Panel className={classes.panel} value="files" onClick={() => setSection('files')}>
+          <ScrollArea.Autosize
+            className={classes.scrollableArea}
+            type="scroll"
+            scrollHideDelay={100}
+          >
+            <Files />
+          </ScrollArea.Autosize>
         </Tabs.Panel>
 
-        <Tabs.Panel value="appearance" pl="xl">
-          <Appearance />
+        <Tabs.Panel
+          className={classes.panel}
+          value="appearance"
+          onClick={() => setSection('appearance')}
+        >
+          <ScrollArea.Autosize
+            className={classes.scrollableArea}
+            type="scroll"
+            scrollHideDelay={100}
+          >
+            <Appearance />
+          </ScrollArea.Autosize>
         </Tabs.Panel>
 
-        <Tabs.Panel value="account" pl="xl">
-          <Account />
+        <Tabs.Panel className={classes.panel} value="account" onClick={() => setSection('account')}>
+          <ScrollArea.Autosize
+            className={classes.scrollableArea}
+            type="scroll"
+            scrollHideDelay={100}
+          >
+            <Account />
+          </ScrollArea.Autosize>
         </Tabs.Panel>
 
-        <Tabs.Panel value="help" pl="xl">
-          <Help />
+        <Tabs.Panel className={classes.panel} value="help" onClick={() => setSection('help')}>
+          <ScrollArea.Autosize
+            className={classes.scrollableArea}
+            type="scroll"
+            scrollHideDelay={100}
+          >
+            <Help />
+          </ScrollArea.Autosize>
         </Tabs.Panel>
       </Tabs>
     </div>
-    // </nav>
   );
 };
 
 const Appearance = (): JSX.Element => {
   return (
-    <Stack>
+    <Stack className={classes.stack}>
       <SimpleGrid
         cols={2}
         spacing={{ base: 10, sm: 'xl' }}
@@ -134,25 +172,21 @@ const Appearance = (): JSX.Element => {
 
 const Account = (): JSX.Element => {
   return (
-    <Stack>
-      {/* <Fieldset legend="personal information">
-        <TextInput label="your name" placeholder={namePlaceholder} />
-        <TextInput label="email" placeholder={emailPlaceholder} mt="md" />
-        <PasswordInput label="password" placeholder={passPlaceholder} mt="md" />
-      </Fieldset> */}
+    <Stack className={classes.stack}>
       <SubmissionForm />
     </Stack>
   );
 };
 
 const Files = (): JSX.Element => {
-  const [selectedDirectory, setSelectedDirectory] = useState<string>('');
+  const { rootDirPath, setRootDirPath } = useSharedData();
+  const [saveFrequency, setSaveFrequency] = useState('5');
 
   const handleDirectorySelect = async (): Promise<void> => {
     try {
       const directory = await window.ipcAPI.openDirectorySelector();
       if (directory) {
-        setSelectedDirectory(directory);
+        setRootDirPath(directory);
       }
     } catch (error) {
       console.error('Failed to select directory:', error);
@@ -161,62 +195,65 @@ const Files = (): JSX.Element => {
 
   return (
     <div>
-      <ScrollArea.Autosize className={classes.scrollableArea} type="scroll" scrollHideDelay={100}>
-        <Stack className={classes.stack}>
-          <Text size="lg">source folder</Text>
-          <Text size="sm" c="dimmed">
-            the root directory within which your notes will be stored
-          </Text>
-          <Text size="sm" c="dimmed">
-            {selectedDirectory || 'No directory selected'}
-          </Text>
-          <MantineButton
-            variant="default"
-            style={{
-              alignSelf: 'flex-start',
-              padding: 'var(--mantine-spacing-xs) var(--mantine-spacing-md)',
-              height: 'auto',
-              minHeight: '36px',
-            }}
-            onClick={handleDirectorySelect}
-          >
-            select directory
-          </MantineButton>
+      <Stack className={classes.stack}>
+        <div className={classes.settingComponent}>
+          <Title className={classes.settingsComponentTitle} size="h3">
+            source folder
+          </Title>
+          <div className={classes.settingsComponentContent}>
+            <Text className={classes.text}>
+              the root directory within which your notes will be stored
+            </Text>
+            <Space h="md" />
+            <MantineButton
+              className={classes.selectFolderButton}
+              variant="subtle"
+              leftSection={<IconChevronDown />}
+              onClick={handleDirectorySelect}
+            >
+              {rootDirPath || 'select directory'}
+            </MantineButton>
+          </div>
+        </div>
 
-          <Divider />
+        <Divider />
 
-          <Text size="lg" mt="xl">
-            other things
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-          <Text size="sm" c="dimmed">
-            bleh bleh bleh
-          </Text>
-        </Stack>
-      </ScrollArea.Autosize>
+        <div className={classes.settingComponent}>
+          <Title className={classes.settingsComponentTitle} size="h3">
+            saving
+          </Title>
+          <div className={classes.settingsComponentContent}>
+            <Text className={classes.text}>select the frequency of autosaving your notes</Text>
+            <Space h="md" />
+            <NativeSelect
+              classNames={{
+                root: classes.nsRoot,
+                section: classes.nsSection,
+                input: classes.nsInput,
+                wrapper: classes.nsWrapper,
+              }}
+              variant="filled"
+              leftSection={<IconChevronDown />}
+              rightSection={<></>}
+              value={saveFrequency}
+              onChange={(event) => setSaveFrequency(event.currentTarget.value)}
+              data={[
+                { label: 'on change', value: 'on-change' },
+                { label: 'every 5s', value: '5' },
+                { label: 'every 10s', value: '10' },
+                { label: 'every 30s', value: '30' },
+                { label: 'never (manual saving)', value: 'manual' },
+              ]}
+            />
+          </div>
+        </div>
+      </Stack>
     </div>
   );
 };
 
 const Help = (): JSX.Element => {
-  return <Stack>{/* stuff */}</Stack>;
+  return <Stack className={classes.stack}>{/* stuff */}</Stack>;
 };
 
 const asyncSubmit = (values: unknown): unknown =>

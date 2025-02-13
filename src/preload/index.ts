@@ -64,6 +64,36 @@ if (process.contextIsolated) {
           });
         });
       },
+      saveFile: (filePath: string, content: string) => {
+        console.log('preload:saveFile', { filePath, content });
+        ipcRenderer.send('save-file', { filePath, content });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('save-file-success', (_event, success) => {
+            console.log('on save-file-success');
+            resolve(success);
+          });
+          ipcRenderer.on('save-file-failure', (_event, success) => {
+            console.log('on save-file-failure');
+            resolve(success);
+          });
+        });
+      },
+      renameFile: (oldPath: string, newTitle: string) => {
+        console.log('preload:renameFile', { oldPath, newTitle });
+        ipcRenderer.send('rename-file', { oldPath, newTitle });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('rename-file-success', (_event, message) => {
+            console.log('on rename-file-success');
+            resolve(message);
+          });
+          ipcRenderer.on('rename-file-failure', (_event, message) => {
+            console.log('on rename-file-failure');
+            resolve(message);
+          });
+        });
+      },
     });
   } catch (error) {
     console.error(error);

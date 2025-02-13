@@ -1,5 +1,24 @@
 import { Database } from 'sqlite3';
 
+// /**
+//  * @link https://github.com/electron/electron/issues/19775#issuecomment-834649057
+//  */
+// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
+const database = new Database('./db/nodepad.sqlite3', (err) => {
+  if (err) {
+    console.error('Database opening error:', err);
+  }
+});
+
+database.all('SELECT * FROM Users', (err, rows) => {
+  if (err) {
+    console.error('Database SELECT error:', err);
+    return;
+  }
+  console.log('Database SELECT result:', { rows });
+});
+
 export const createCredentials = (
   email: string,
   password: string
@@ -44,22 +63,3 @@ export const checkCredentials = (
     );
   });
 };
-
-// /**
-//  * @link https://github.com/electron/electron/issues/19775#issuecomment-834649057
-//  */
-// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-
-const database = new Database('./db/nodepad.sqlite3', (err) => {
-  if (err) {
-    console.error('Database opening error:', err);
-  }
-});
-
-database.all('SELECT * FROM Users', (err, rows) => {
-  if (err) {
-    console.error('Database SELECT error:', err);
-    return;
-  }
-  console.log('Database SELECT result:', { rows });
-});

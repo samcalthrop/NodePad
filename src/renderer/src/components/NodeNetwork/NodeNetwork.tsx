@@ -8,7 +8,7 @@ import { useSharedData } from '@renderer/providers/SharedDataProvider';
 
 export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const navigate = useNavigate();
-  const { setSelectedTreeNodeData } = useSharedData();
+  const { setSelectedTreeNodeData, setSelectedFile } = useSharedData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const animationFrameId = useRef<number>();
@@ -325,6 +325,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
           };
           // set the selected node data in the shared data provider context, and navigate to its contents
           setSelectedTreeNodeData(treeNodeData);
+          setSelectedFile(treeNodeData.value.split('/').pop()?.replace('.md', '') || '');
           navigate('/home/edit-node-meta');
         } else if (e.button == leftClick) {
           setDraggedNode(clickedNode.id);

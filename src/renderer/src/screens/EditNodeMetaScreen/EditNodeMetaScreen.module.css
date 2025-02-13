@@ -36,3 +36,38 @@
   font-family: var(--mantine-font-family);
   padding: 0;
 }
+
+.title {
+  font-family: 'Fredoka';
+  color: var(--mantine-color-defaultScheme-9);
+  font-size: 54px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.editor {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-0);
+}
+
+.editor :global([contenteditable='true']) {
+  color: var(--mantine-color-defaultScheme-9) !important;
+  background-color: var(--mantine-color-defaultScheme-0) !important;
+  font-family: var(--mantine-font-family) !important;
+  --baseBg: var(--mantine-color-defaultScheme-2);
+}
+
+.editor :global([contenteditable='true'] a) {
+  color: var(--mantine-color-defaultScheme-5) !important;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.editor :global([contenteditable='true'] a:hover) {
+  color: var(--mantine-color-defaultScheme-6) !important;
+  text-decoration: underline;
+}
+
+.editor :global([contenteditable='true'] h1) {
+  color: var(--mantine-color-defaultScheme-9) !important;
+}

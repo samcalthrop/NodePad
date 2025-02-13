@@ -7,34 +7,37 @@
   --sidebar-border-radius: 13px;
   --title-bar-height: 30px;
   --sidebar-margin: 15px;
+  --padding-default: 20px;
 }
 
 .root {
-  padding-top: 5px;
+  /* padding-top: 5px; */
   background-color: var(--mantine-color-defaultScheme-1);
   border-radius: var(--sidebar-border-radius);
   height: calc(100vh - 2 * var(--sidebar-margin) - var(--title-bar-height));
   width: calc(var(--sidebar-width) - 2);
-  /* border-style: solid;
-  border-width: var(--border-width);
-  border-color: var(--border-color); */
   display: flex;
   flex-direction: column;
 }
 
 .title {
-  padding: 10px;
+  padding-left: var(--padding-default);
+  padding-top: var(--padding-default);
   min-width: 200px;
   flex-shrink: 0;
+  color: var(--mantine-color-defaultScheme-6);
 }
 
 .tree {
+  background-color: transparent;
 }
 
 .filetree {
   position: relative;
   flex: 1;
   min-height: 0;
+  padding-left: 10px;
+  padding-top: 4px;
   /* margin-bottom: var(--toolbar-height); */
 }
 
@@ -58,8 +61,12 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  min-width: 0; /* Add this to allow flex item to shrink */
+  min-width: 0;
   width: 100%;
+}
+
+:global([data-mantine-color-scheme='dark'] .mantine-Tree-label[data-selected]) {
+  background-color: var(--mantine-color-defaultScheme-1) !important;
 }
 
 .leafText {

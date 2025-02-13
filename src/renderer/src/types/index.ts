@@ -13,6 +13,8 @@ export type IpcAPI = {
   }) => Promise<string>;
   createCredentials: (email: string, password: string) => Promise<boolean>;
   checkCredentials: (email: string, password: string) => Promise<boolean>;
+  saveFile: (filePath: string, content: string) => Promise<boolean>;
+  renameFile: (oldPath: string, newTitle: string) => Promise<renameReturnObject>;
 };
 
 // export interface Window {
@@ -47,6 +49,11 @@ export interface NodeNetworkProps {
 export type UserCredential = {
   email: string;
   password: string;
+};
+
+export type renameReturnObject = {
+  success: boolean;
+  path: string;
 };
 
 // export type NetworkNodeData = TreeNodeData & {

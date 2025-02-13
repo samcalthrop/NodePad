@@ -11,6 +11,12 @@ export type SharedData = {
   setSelectedTreeNodeData: React.Dispatch<React.SetStateAction<TreeNodeData | undefined>>;
   credentials: UserCredential | undefined;
   setCredentials: React.Dispatch<React.SetStateAction<UserCredential | undefined>>;
+  rootDirPath: string | undefined;
+  setRootDirPath: React.Dispatch<React.SetStateAction<string | undefined>>;
+  selectedFile: string | undefined;
+  setSelectedFile: React.Dispatch<React.SetStateAction<string | undefined>>;
+  title: string | undefined;
+  setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export const SharedDataContext = createContext<SharedData | undefined>(undefined);
@@ -18,6 +24,9 @@ export const SharedDataContext = createContext<SharedData | undefined>(undefined
 export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.Element {
   const [selectedTreeNodeData, setSelectedTreeNodeData] = useState<TreeNodeData>();
   const [credentials, setCredentials] = useState<UserCredential>();
+  const [rootDirPath, setRootDirPath] = useState<string>();
+  const [selectedFile, setSelectedFile] = useState<string>();
+  const [title, setTitle] = useState<string>();
 
   const value = useMemo<SharedData>(
     () => ({
@@ -25,8 +34,14 @@ export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.E
       setSelectedTreeNodeData,
       credentials,
       setCredentials,
+      rootDirPath,
+      setRootDirPath,
+      selectedFile,
+      setSelectedFile,
+      title,
+      setTitle,
     }),
-    [selectedTreeNodeData, credentials]
+    [selectedTreeNodeData, credentials, rootDirPath, selectedFile, title]
   );
 
   return <SharedDataContext.Provider value={value}>{children}</SharedDataContext.Provider>;

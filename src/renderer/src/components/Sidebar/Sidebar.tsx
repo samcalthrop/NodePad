@@ -7,7 +7,6 @@ import {
   RenderTreeNodePayload,
   Title,
   Divider,
-  Space,
   ScrollArea,
   Box,
   Text,
@@ -20,23 +19,23 @@ import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { HomeButton } from '../HomeButton/HomeButton';
 
 export const Sidebar = (): JSX.Element => {
-  const path = './writeup';
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
+  const { rootDirPath, title } = useSharedData();
 
   // retrieving the treeNodeData from the backend
   useEffect(() => {
-    window.ipcAPI.getTreeNodeData(path).then((treeNodeData) => {
-      setTreeNodeData(treeNodeData);
-    });
-  }, []);
+    if (rootDirPath) {
+      window.ipcAPI.getTreeNodeData(rootDirPath).then((treeNodeData) => {
+        setTreeNodeData(treeNodeData);
+      });
+    }
+  }, [rootDirPath, title]);
 
   return (
     <div className={classes.root}>
       <div className={classes.title}>
-        <Title order={1}> Files </Title>
-        {/* <Breadcrumbs></Breadcrumbs> */}
+        <Title order={1}>files</Title>
       </div>
-      <Space h="md" />
       <Divider />
       <div className={classes.filetree}>
         <ScrollArea.Autosize
@@ -52,7 +51,7 @@ export const Sidebar = (): JSX.Element => {
               className={classes.tree}
               selectOnClick
               clearSelectionOnOutsideClick
-              data={treeNodeData}
+              data={treeNodeData ? treeNodeData : []}
               renderNode={(payload) => <Leaf {...payload} />}
             />
           </Box>
@@ -103,7 +102,7 @@ function Leaf({
   tree,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
   // making use of the SharedDataProvider and the custom hook useSharedData() to access the shared data
-  const { setSelectedTreeNodeData } = useSharedData();
+  const { setSelectedTreeNodeData, setSelectedFile } = useSharedData();
   const navigate = useNavigate();
 
   return (
@@ -117,12 +116,13 @@ function Leaf({
           console.log('Sidebar: node selected: ', node);
           // updating the shared data with the selected node
           setSelectedTreeNodeData(node);
+          setSelectedFile(node.value.split('/').pop()?.replace('.md', '') || '');
           navigate('/home/edit-node-meta');
         }
       }}
     >
       <div className={classes.leaf}>
-        <div></div>
+        {/* <div></div> */}
         <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
         <Text className={classes.leafText}>{node.label}</Text>
       </div>

@@ -1,3 +1,4 @@
+// import classes from './index.module.css';
 import { createTheme, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { HashRouter, Routes, Route } from 'react-router-dom';
@@ -12,30 +13,6 @@ import { SharedDataProvider } from './providers/SharedDataProvider';
 const theme = createTheme({
   fontFamily: 'Fira Code, monospace',
   colors: {
-    grey: [
-      '#868e96',
-      '#868e96',
-      '#868e96',
-      '#868e96',
-      '#868e96',
-      '#868e96',
-      '#868e96',
-      '#4A484F',
-      '#28262D',
-      '#19161E',
-    ],
-    purple: [
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#F8D6F9',
-      '#5D4A79',
-    ],
     defaultScheme: [
       '#19161E',
       '#29262D',
@@ -51,7 +28,8 @@ const theme = createTheme({
   },
 
   headings: {
-    fontFamily: 'Fredoka, sans-serif',
+    fontFamily: 'fredoka, sans-serif',
+    fontWeight: '500',
     sizes: {
       h1: { fontSize: '54px' },
       h2: { fontSize: '40px' },
