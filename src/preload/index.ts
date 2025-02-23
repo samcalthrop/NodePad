@@ -2,16 +2,16 @@ import { TreeNodeData } from '@mantine/core';
 import { electronAPI } from '@electron-toolkit/preload';
 import { contextBridge, ipcRenderer } from 'electron';
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
 
     // communication between front and backend for data transfer (tree node data)
     // adapted from: https://www.jsgarden.co/blog/how-to-handle-electron-ipc-events-with-typescript
+
+    // expose these functions to the backend (main):
     contextBridge.exposeInMainWorld('ipcAPI', {
+      // retrieves file structure from given path, in TreeNodeData[] format
       getTreeNodeData: (path: string) => {
         ipcRenderer.send('get-tree-node-data', path);
 
@@ -21,6 +21,7 @@ if (process.contextIsolated) {
           );
         });
       },
+
       // communication between front and backend for data transfer (contents of selected file)
       getFileContents: (path: string) => {
         ipcRenderer.send('get-file-contents', path);
@@ -32,9 +33,16 @@ if (process.contextIsolated) {
           });
         });
       },
+
+      // triggers native filesystem GUI (for folder selection)
       openDirectorySelector: () => ipcRenderer.invoke('open-directory-selector'),
+
+      // triggers native filesystem GUI (for file selection)
       openFileSelector: (options) => ipcRenderer.invoke('open-file-selector', options),
+
+      // creates new record in db
       createCredentials: (email: string, password: string) => {
+        // debug
         console.log('preload:createCredentials', { email, password });
         ipcRenderer.send('create-credentials', { email, password });
 
@@ -49,7 +57,10 @@ if (process.contextIsolated) {
           });
         });
       },
+
+      // checks credentials against existing entries in db
       checkCredentials: (email: string, password: string) => {
+        // debug
         console.log('preload:checkCredentials', { email, password });
         ipcRenderer.send('check-credentials', { email, password });
 
@@ -64,7 +75,46 @@ if (process.contextIsolated) {
           });
         });
       },
+
+      // updates email field in the record with primary key of oldEmail in db
+      updateEmail: (oldEmail: string, newEmail: string) => {
+        // debug
+        console.log('preload:updateEmail', { oldEmail, newEmail });
+        ipcRenderer.send('update-email', { oldEmail, newEmail });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('update-email-success', (_event, success) => {
+            console.log('on update-email-success');
+            resolve(success);
+          });
+          ipcRenderer.on('update-email-failure', (_event, success) => {
+            console.log('on update-email-failure');
+            resolve(success);
+          });
+        });
+      },
+
+      // updates password field in the record with primary key of email in db
+      updatePassword: (email: string, password: string) => {
+        // debug
+        console.log('preload:updatePassword', { email, password });
+        ipcRenderer.send('update-password', { email, password });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('update-password-success', (_event, success) => {
+            console.log('on update-password-success');
+            resolve(success);
+          });
+          ipcRenderer.on('update-password-failure', (_event, success) => {
+            console.log('on update-password-failure');
+            resolve(success);
+          });
+        });
+      },
+
+      // saves file contents to a given filepath in user's filesystem
       saveFile: (filePath: string, content: string) => {
+        // debug
         console.log('preload:saveFile', { filePath, content });
         ipcRenderer.send('save-file', { filePath, content });
 
@@ -79,7 +129,10 @@ if (process.contextIsolated) {
           });
         });
       },
+
+      // renames a given file in user's filesystem
       renameFile: (oldPath: string, newTitle: string) => {
+        // debug
         console.log('preload:renameFile', { oldPath, newTitle });
         ipcRenderer.send('rename-file', { oldPath, newTitle });
 

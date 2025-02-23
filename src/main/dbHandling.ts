@@ -1,65 +1,91 @@
-import { Database } from 'sqlite3';
+import Database from 'better-sqlite3';
 
-// /**
-//  * @link https://github.com/electron/electron/issues/19775#issuecomment-834649057
-//  */
-// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-
-const database = new Database('./db/nodepad.sqlite3', (err) => {
-  if (err) {
-    console.error('Database opening error:', err);
-  }
+const database = new Database('./db/nodepad.sqlite3', {
+  verbose: console.log,
 });
 
-database.all('SELECT * FROM Users', (err, rows) => {
-  if (err) {
-    console.error('Database SELECT error:', err);
-    return;
-  }
-  console.log('Database SELECT result:', { rows });
-});
+// initialise database with a Users table if it doesn't already exist
+database.exec(`
+  CREATE TABLE IF NOT EXISTS Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+  )
+`);
 
+// log all current users
+const allUsers = database.prepare('SELECT * FROM Users').all();
+console.log('Current users in database:', allUsers);
+
+// create a new record with passed in credentials if they don't already exist
 export const createCredentials = (
   email: string,
   password: string
 ): Promise<{ success: boolean; message?: string }> => {
-  return new Promise((resolve) => {
-    console.log('createCredentials', { email, password });
-    database.run('INSERT INTO Users (email, password) VALUES (?, ?)', [email, password], (err) => {
-      if (err) {
-        console.error('Error inserting user:', err);
-        resolve({ success: false, message: err.message });
-        return;
-      }
-      console.log('User created successfully');
-      resolve({ success: true });
-    });
-  });
+  try {
+    const statement = database.prepare('INSERT INTO Users (email, password) VALUES (?, ?)');
+    // arguments passed into `.run()` are assigned to each consecutive `?` in the `.prepare()` statement above
+    statement.run(email, password);
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    console.error('!! Error inserting user:', err);
+    return Promise.resolve({ success: false, message: 'error creating credentials' });
+  }
 };
 
+// check the passed in credentials to those existing in the db
 export const checkCredentials = (
   email: string,
   password: string
 ): Promise<{ success: boolean; message?: string }> => {
-  return new Promise((resolve) => {
-    console.log('checkCredentials', { email, password });
-    database.get(
-      'SELECT * FROM Users WHERE email = ? AND password = ?',
-      [email, password],
-      (err, row) => {
-        if (err) {
-          console.error('Error checking credentials:', err);
-          resolve({ success: false, message: err.message });
-          return;
-        }
-        if (!row) {
-          console.log('User not found');
-          resolve({ success: false, message: 'Invalid email or password' });
-          return;
-        }
-        console.log('User exists');
-        resolve({ success: true });
-      }
-    );
-  });
+  try {
+    const statement = database.prepare('SELECT * FROM Users WHERE email = ? AND password = ?');
+    const row = statement.get(email, password);
+    if (!row) {
+      return Promise.resolve({ success: false, message: 'invalid email or password' });
+    }
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    console.error('!! Error checking credentials:', err);
+    return Promise.resolve({ success: false, message: 'an unknown error occurred' });
+  }
+};
+
+// update the email of an existing record
+export const updateEmail = (
+  oldEmail: string,
+  newEmail: string
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const statement = database.prepare('UPDATE Users SET email = ? WHERE email = ?');
+    const result = statement.run(newEmail, oldEmail);
+
+    if (result.changes === 0) {
+      return Promise.resolve({ success: false, message: 'email not found' });
+    }
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    console.error('!! Error updating email:', err);
+    return Promise.resolve({ success: false, message: 'an unknown error occurred' });
+  }
+};
+
+// update the password of an existing record with given email
+export const updatePassword = (
+  email: string,
+  password: string
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const statement = database.prepare('UPDATE Users SET password = ? WHERE email = ?');
+    const result = statement.run(password, email);
+
+    // if the record is not updated
+    if (result.changes === 0) {
+      return Promise.resolve({ success: false, message: 'account not found' });
+    }
+    return Promise.resolve({ success: true });
+  } catch (err) {
+    console.error('!! Error updating password:', err);
+    return Promise.resolve({ success: false, message: 'an unknown error occurred' });
+  }
 };

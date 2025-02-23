@@ -5,10 +5,19 @@ import { IconEye, IconPencil } from '@tabler/icons-react';
 import classes from './NodeNetwork.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
+import { PhysicsSystem } from '@renderer/physics/NodePhysics';
+import { PhysicsControls } from '../BoidsMenu/BoidsMenu';
 
 export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const navigate = useNavigate();
-  const { setSelectedTreeNodeData, setSelectedFile } = useSharedData();
+  const {
+    boids,
+    setSelectedTreeNodeData,
+    setSelectedFile,
+    nodeRadius,
+    setNodeRadius,
+    titleOpacity,
+  } = useSharedData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
   const animationFrameId = useRef<number>();
@@ -20,20 +29,51 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     fromId: number;
     toPos: Position;
   } | null>(null);
-  const radius = 15; // radius of the nodes
+  const physicsSystem = useRef<PhysicsSystem | null>(null);
+  const [prevMousePos, setPrevMousePos] = useState<Position | null>(null);
+  const [isIdle, setIsIdle] = useState<boolean>(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout>();
+  const [physicsParams, setPhysicsParams] = useState({
+    protectedRange: 50,
+    visualRange: 300,
+    avoidFactor: 0.05,
+    turnFactor: 0.1,
+    centeringFactor: 0.0001,
+    matchingFactor: 0.05,
+    maxSpeed: 2,
+    nodeRadius: 15,
+  });
+  // const radius: number = nodeRadius || 15;
+
+  const handlePhysicsUpdate = (param: string, value: number): void => {
+    setPhysicsParams((prev) => ({ ...prev, [param]: value }));
+    if (param === 'nodeRadius') {
+      setNodeRadius(value);
+      // Update all nodes with new radius
+      setNodes((prevNodes) =>
+        prevNodes.map((node) => ({
+          ...node,
+          radius: value,
+        }))
+      );
+    }
+    if (physicsSystem.current) {
+      physicsSystem.current[param] = value;
+    }
+  };
 
   /* check if given position is valid (not overlapping with other nodes),
    memoising to optimise expensive calculations */
   const isValidPosition = useCallback(
     (x: number, y: number, existingNodes: Node[]): boolean => {
-      const minDistance = 2 * radius;
+      const minDistance = 2 * (nodeRadius || 15);
       return !existingNodes.some(
         /* performing pythagoras to check if the distance between the two nodes is less than
        the minimum distance */
         (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < minDistance
       );
     },
-    [radius]
+    [nodeRadius]
   );
 
   // generate random position within canvas
@@ -53,7 +93,14 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     return { x: Math.random() * canvas.width, y: Math.random() * canvas.height };
   };
 
-  // initialize nodes from the array passed in
+  const debounce = (callback: () => void, delay: number = 5000): void => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    debounceTimerRef.current = setTimeout(callback, delay);
+  };
+
+  // initialise nodes from the array passed in
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -73,6 +120,10 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
           title: file.label?.toString().replace('.md', '') || '',
           filePath: file.value?.toString() || '',
           connections: [],
+          mass: connections.length == 0 ? 1 : connections.length,
+          vx: Math.random() * 2 - 1,
+          vy: Math.random() * 2 - 1,
+          radius: nodeRadius || 15,
         });
         // the next node id will be given the next number, which only increments if a new node is created
         index++;
@@ -90,91 +141,56 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     console.log('initial nodes: ', initialNodes);
   }, [files]);
 
-  // DO NOT DELETE: HELPFUL FOR WRITEUP OF OPTIMISATION
-
-  // // canvas drawing function
-  // const draw = (ctx: CanvasRenderingContext2D): void => {
-  //   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-  //   // draw connections between each node
-  //   connections.forEach((connection) => {
-  //     const fromNode = nodes.find((node) => node.id === connection.from);
-  //     const toNode = nodes.find((node) => node.id === connection.to);
-  //     if (fromNode && toNode) {
-  //       ctx.beginPath();
-  //       ctx.moveTo(fromNode.x, fromNode.y);
-  //       ctx.lineTo(toNode.x, toNode.y);
-  //       ctx.strokeStyle = '#666';
-  //       ctx.lineWidth = 2;
-  //       ctx.stroke();
-  //     }
-  //   });
-
-  //   // dragging connection line
-  //   if (draggingConnection) {
-  //     const fromNode = nodes.find((node) => node.id === draggingConnection.fromId);
-  //     if (fromNode) {
-  //       ctx.beginPath();
-  //       ctx.moveTo(fromNode.x, fromNode.y);
-  //       ctx.lineTo(draggingConnection.toPos.x, draggingConnection.toPos.y);
-  //       ctx.strokeStyle = '#666';
-  //       ctx.setLineDash([5, 5]);
-  //       ctx.lineWidth = 2;
-  //       ctx.stroke();
-  //       ctx.setLineDash([]);
-  //     }
-  //   }
-
-  //   // draw nodes
-  //   nodes.forEach((node) => {
-  //     // node circle
-  //     ctx.beginPath();
-  //     ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
-  //     ctx.fillStyle = '#2196F3';
-  //     ctx.fill();
-
-  //     // connection handle
-  //     ctx.beginPath();
-  //     ctx.arc(node.x, node.y, 5, 0, Math.PI * 2);
-  //     ctx.fillStyle = '#fff';
-  //     ctx.fill();
-
-  //     // title
-  //     ctx.fillStyle = 'white';
-  //     ctx.font = '12px Arial';
-  //     ctx.textAlign = 'center';
-  //     ctx.fillText(node.title, node.x, node.y + 30);
-  //   });
-  // };
+  useEffect(() => {
+    debounce(() => {
+      if (boids) {
+        setIsIdle(true);
+      }
+    });
+  }, []);
 
   // canvas drawing function
   const draw = useCallback(() => {
     const ctx = contextRef.current;
     if (!ctx) return;
 
-    // clear only the used area instead of entire canvas
-    const usedArea = nodes.reduce(
-      (acc, node) => {
-        return {
-          minX: Math.min(acc.minX, node.x - radius - 30),
-          minY: Math.min(acc.minY, node.y - radius - 30),
-          maxX: Math.max(acc.maxX, node.x + radius + 30),
-          maxY: Math.max(acc.maxY, node.y + radius + 30),
-        };
-      },
-      { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
-    );
+    ctx.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
 
-    ctx.clearRect(
-      usedArea.minX,
-      usedArea.minY,
-      usedArea.maxX - usedArea.minX,
-      usedArea.maxY - usedArea.minY
-    );
+    // retrieving network styling from css file
+    const computedStyle = getComputedStyle(document.documentElement);
+    const nodeColour: string = computedStyle.getPropertyValue('--node-colour') || '#2196F3';
+    const nodeTextColour: string = computedStyle.getPropertyValue('--node-text-colour') || 'white';
+    const connectionColour: string =
+      computedStyle.getPropertyValue('--node-connection-colour') || '#666';
+    const centreColour: string = computedStyle.getPropertyValue('--node-centre-colour') || 'white';
+    const connectionWidth: number =
+      parseInt(computedStyle.getPropertyValue('--node-connection-width')) || 2;
+    const fontFamily: string = computedStyle.getPropertyValue('--node-font') || 'Fira Code';
+    const textSize: string = computedStyle.getPropertyValue('--node-text-size') || '12px';
+
+    // // clear only the used area instead of entire canvas
+    // const usedArea = nodes.reduce(
+    //   (acc, node) => {
+    //     return {
+    //       minX: Math.min(acc.minX, node.x - 3 * radius),
+    //       minY: Math.min(acc.minY, node.y - 3 * radius),
+    //       maxX: Math.max(acc.maxX, node.x + 3 * radius),
+    //       maxY: Math.max(acc.maxY, node.y + 3 * radius),
+    //     };
+    //   },
+    //   { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
+    // );
+
+    // ctx.clearRect(
+    //   usedArea.minX,
+    //   usedArea.minY,
+    //   usedArea.maxX - usedArea.minX,
+    //   usedArea.maxY - usedArea.minY
+    // );
 
     // batch similar operations
-    ctx.strokeStyle = '#666';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = connectionColour;
+    ctx.lineWidth = connectionWidth;
 
     // draw connections
     ctx.beginPath();
@@ -188,19 +204,29 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     });
     ctx.stroke();
 
+    // batch text rendering
+    ctx.fillStyle = nodeTextColour;
+    ctx.font = `${textSize} ${fontFamily}`;
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = titleOpacity || 1;
+    nodes.forEach((node) => {
+      ctx.fillText(node.title, node.x, node.y + 30);
+    });
+    ctx.globalAlpha = 1;
+
     // batch node drawing
-    ctx.fillStyle = '#2196F3';
+    ctx.fillStyle = nodeColour;
     ctx.beginPath();
     nodes.forEach((node) => {
-      ctx.moveTo(node.x + radius, node.y);
-      ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
+      ctx.moveTo(node.x + (nodeRadius || 15), node.y);
+      ctx.arc(node.x, node.y, nodeRadius || 15, 0, Math.PI * 2);
     });
     ctx.fill();
 
     // in the case that edit mode is on, these features are drawn
     if (mode == 'edit') {
       // batch centre drawing (the point from which the user can drag a connection)
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = centreColour;
       ctx.beginPath();
       nodes.forEach((node) => {
         ctx.moveTo(node.x + 5, node.y);
@@ -221,15 +247,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
         }
       }
     }
-
-    // batch text rendering
-    ctx.fillStyle = 'white';
-    ctx.font = '12px Fira Code';
-    ctx.textAlign = 'center';
-    nodes.forEach((node) => {
-      ctx.fillText(node.title, node.x, node.y + 30);
-    });
-  }, [nodes, connections, draggingConnection, radius, mode]);
+  }, [nodes, connections, draggingConnection, nodeRadius, mode, titleOpacity]);
 
   // check if user has clicked a connection
   const isClickOnConnection = (x: number, y: number, connection: Connection): boolean => {
@@ -261,21 +279,34 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
 
     return (
       perpDistance < 10 && // within 10px of the line
-      x >= Math.min(nodeA.x, nodeB.x) + radius * Math.cos(theta) && // click is within line segment, the node's radius
-      x <= Math.max(nodeA.x, nodeB.x) - radius * Math.cos(theta) &&
-      y >= Math.min(nodeA.y, nodeB.y) - radius * Math.sin(theta) &&
-      y <= Math.max(nodeA.y, nodeB.y) + radius * Math.sin(theta)
+      x >= Math.min(nodeA.x, nodeB.x) + (nodeRadius || 15) * Math.cos(theta) && // click is within line segment, the node's radius
+      x <= Math.max(nodeA.x, nodeB.x) - (nodeRadius || 15) * Math.cos(theta) &&
+      y >= Math.min(nodeA.y, nodeB.y) - (nodeRadius || 15) * Math.sin(theta) &&
+      y <= Math.max(nodeA.y, nodeB.y) + (nodeRadius || 15) * Math.sin(theta)
     );
+  };
+
+  const handleMousePosition = (clientX: number, clientY: number): Position => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return { x: 0, y: 0 };
+
+    const scaleX = rect.width / canvasRef.current!.width;
+    const scaleY = rect.height / canvasRef.current!.height;
+
+    return {
+      x: (clientX - rect.left) / scaleX,
+      y: (clientY - rect.top) / scaleY,
+    };
   };
 
   // mouse event handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>): void => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
+    setIsIdle(false);
 
     // mouse position relative to the canvas
-    const x: number = e.clientX - rect.left;
-    const y: number = e.clientY - rect.top;
+    const { x, y } = handleMousePosition(e.clientX, e.clientY);
 
     const leftClick: number = 0;
     // const scrollClick: number = 1;
@@ -302,7 +333,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
 
     // check if clicking on a node
     const clickedNode = nodes.find(
-      (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < radius
+      (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < (nodeRadius || 15)
     );
 
     if (clickedNode) {
@@ -342,9 +373,8 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
           const rect = canvasRef.current?.getBoundingClientRect();
           if (!rect) return;
 
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-
+          const { x, y } = handleMousePosition(e.clientX, e.clientY);
+          setPrevMousePos({ x, y });
           // update canvas to draw the node in its new position, and assign it a new position internally
           if (draggedNode) {
             setNodes((prev) =>
@@ -361,20 +391,20 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
         });
       }
     },
-    [draggedNode, draggingConnection]
+    // function is only called when a node or connection is being dragged
+    [draggedNode, draggingConnection, nodes, nodeRadius || 15, draw]
   );
 
   const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>): void => {
     const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
 
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = handleMousePosition(e.clientX, e.clientY);
 
     if (draggingConnection) {
       // check if mouse unclicked within a node's radius
       const targetNode = nodes.find(
-        (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < radius
+        (node) => Math.sqrt(Math.pow(node.x - x, 2) + Math.pow(node.y - y, 2)) < (nodeRadius || 15)
       );
 
       if (targetNode && targetNode.id !== draggingConnection.fromId) {
@@ -389,40 +419,20 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       }
       setDraggingConnection(null);
     }
-
+    setPrevMousePos(null);
     setDraggedNode(null);
+
+    // code within this statement will only be run if mouseUp has not occurred for the time determined in the `debounce` function (when idle)
+    debounce(() => {
+      if (boids) {
+        setIsIdle(true);
+      }
+    });
   };
 
-  // DO NOT DELETE: HELPFUL FOR WRITEUP OF OPTIMISATION
-
-  // // configuring canvas and render loop
-  // useEffect(() => {
-  //   const canvas = canvasRef.current;
-  //   if (!canvas) return;
-
-  //   const context = canvas.getContext('2d');
-  //   if (!context) return;
-  //   contextRef.current = context;
-  //   const resizeCanvas = (): void => {
-  //     canvas.width = canvas.clientWidth;
-  //     canvas.height = canvas.clientHeight;
-  //   };
-  //   resizeCanvas();
-  //   window.addEventListener('resize', resizeCanvas);
-
-  //   // request animation frame to render the canvas, and call the next frame, creating a loop
-  //   let animationFrameId: number;
-  //   const render = (): void => {
-  //     draw();
-  //     animationFrameId = window.requestAnimationFrame(render);
-  //   };
-  //   render();
-
-  //   return (): void => {
-  //     window.removeEventListener('resize', resizeCanvas);
-  //     window.cancelAnimationFrame(animationFrameId);
-  //   };
-  // }, [nodes, connections, draggingConnection]);
+  const handleMouseLeave = useCallback(() => {
+    setDraggedNode(null);
+  }, []);
 
   // initialize canvas context once
   useEffect(() => {
@@ -450,24 +460,51 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     };
   }, []);
 
+  // Clean up the timer when component unmounts
+  useEffect(() => {
+    return (): void => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    physicsSystem.current = new PhysicsSystem(canvas.width, canvas.height);
+  }, []);
+
   // separate render loop effect
   useEffect(() => {
     let frameId: number;
-    const render = (): void => {
-      draw();
-      frameId = requestAnimationFrame(render);
-    };
-    frameId = requestAnimationFrame(render);
+    const animate = (): void => {
+      if (physicsSystem.current) {
+        const updatedNodes = [...nodes];
+        physicsSystem.current.update(updatedNodes, draggedNode, isIdle, prevMousePos || undefined);
+        // Check if any nodes actually moved before updating state
+        const hasChanges = updatedNodes.some(
+          (node, i) => node.x !== nodes[i].x || node.y !== nodes[i].y
+        );
 
-    return (): void => {
-      cancelAnimationFrame(frameId);
+        if (hasChanges) {
+          setNodes(updatedNodes);
+        }
+      }
+      draw();
+      frameId = requestAnimationFrame(animate);
     };
-  }, [draw]);
+    frameId = requestAnimationFrame(animate);
+
+    return (): void => cancelAnimationFrame(frameId);
+  }, [draggedNode, prevMousePos, draw, nodes]);
 
   return (
-    <>
+    <div className={classes.networkDiv}>
+      <PhysicsControls {...physicsParams} onUpdate={handlePhysicsUpdate} />
       <div className={classes.viewEditToggle}>
         <SegmentedControl
+          className={classes.segmentedControl}
           value={mode}
           onChange={setMode}
           data={[
@@ -492,12 +529,13 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
         />
       </div>
       <canvas
+        className={classes.canvas}
         ref={canvasRef}
-        style={{ width: '100vh', height: 'calc(100vh - 144px)' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
       />
-    </>
+    </div>
   );
 };

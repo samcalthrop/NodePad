@@ -1,0 +1,248 @@
+.modal {
+  --modal-size: var(--root-width);
+  height: var(--root-height);
+}
+
+.root {
+  --title-width: 208px;
+  --title-width-padded: calc(2 * var(--mantine-spacing-lg) + var(--title-width));
+  --root-height: 70vh;
+  --root-width: 110vh;
+  --header-padding-top: var(--mantine-spacing-xl);
+  --header-padding-bottom: var(--mantine-spacing-xs);
+  --header-height: calc(var(--header-padding-bottom) + var(--header-padding-top) + 72px);
+  --main-area-height: calc(var(--root-height) - var(--header-height));
+  --padding-default: 20px;
+  --content-area-width: calc(var(--root-width) - var(--title-width-padded));
+  --content-area-width-padded: calc(var(--content-area-width) - 2 * var(--padding-default));
+  --profile-img-width: 160px;
+
+  height: var(--root-height);
+  width: var(--root-width);
+  background-color: var(--mantine-color-defaultScheme-1);
+  font-weight: 500;
+}
+
+.settingsButton {
+  color: var(--mantine-color-defaultScheme-4);
+  background-color: var(--mantine-color-defaultScheme-1);
+  border-color: var(--mantine-color-defaultScheme-1);
+}
+
+.settingsButton:hover {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.tab {
+  border-radius: 0;
+  transition: color 100ms ease;
+  color: var(--mantine-color-defaultScheme-3);
+  font-size: 20px;
+}
+
+.tab:active {
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+.tab:focus {
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+.tab:hover {
+  background-color: transparent;
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+.navbar {
+  padding-left: 4px;
+  padding-top: 10px;
+  background-color: var(--mantine-color-defaultScheme-2);
+  color: var(--mantine-color-defaultScheme-9);
+  height: calc(var(--main-area-height));
+  min-width: var(--title-width-padded);
+  gap: 0;
+}
+
+.title {
+  padding-left: var(--mantine-spacing-lg);
+  padding-top: var(--header-padding-top);
+  padding-right: var(--mantine-spacing-lg);
+  padding-bottom: var(--header-padding-bottom);
+  min-width: var(--title-width-padded);
+  background-color: var(--mantine-color-defaultScheme-2);
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+.section {
+  padding-left: var(--mantine-spacing-lg);
+  padding-top: var(--mantine-spacing-xl);
+  color: var(--mantine-color-defaultScheme-9);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
+.close {
+  padding-top: var(--mantine-spacing-xs);
+  padding-right: var(--mantine-spacing-xs);
+  color: var(--mantine-color-defaultScheme-4);
+  background-color: var(--mantine-color-defaultScheme-1) !important;
+}
+
+.scrollableArea {
+  height: 100%;
+  overflow-x: scroll;
+}
+
+.stack {
+  height: calc(var(--main-area-height));
+}
+
+.panel {
+  padding-left: var(--padding-default);
+  /* height: calc(var(--main-area-height) - var(--padding-default)); */
+}
+
+.text {
+  color: var(--mantine-color-defaultScheme-4);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.selectFolderButton {
+  align-self: flex-start;
+  height: auto;
+  align-content: center;
+  min-height: 36px;
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+  padding: 5px;
+  gap: 0;
+  padding-right: 78px;
+}
+
+.selectFolderButton:hover {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-2);
+}
+
+.nsRoot {
+  align-self: flex-start;
+  height: auto;
+  align-content: center;
+  max-height: 36px;
+  margin-left: -5px;
+}
+
+.nsSection {
+  color: var(--mantine-color-defaultScheme-5);
+  /* padding-right: 5px; */
+  margin-left: 5px;
+}
+
+.nsInput {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+  /* width: fit-content; */
+  margin-left: 5px;
+}
+
+.nsInput:hover {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-2);
+}
+
+.settingComponent {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.settingsComponentTitle {
+  width: 100%;
+  color: var(--mantine-color-defaultScheme-9);
+}
+
+.settingsComponentContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileImg {
+  width: var(--profile-img-width);
+  height: var(--profile-img-width);
+  border-radius: calc(var(--profile-img-width) / 2);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid var(--mantine-color-defaultScheme-3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.cameraIcon {
+  color: var(--mantine-color-defaultScheme-3);
+}
+
+.settingsSubHeading {
+  width: 100%;
+  color: var(--mantine-color-defaultScheme-3);
+}
+
+.checkbox {
+  border: 1px solid var(--mantine-color-defaultScheme-3);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  transition:
+    color 100ms ease,
+    background-color 100ms ease,
+    border-color 100ms ease;
+  cursor: pointer;
+  max-width: 240px;
+
+  &[data-checked] {
+    background-color: var(--mantine-color-defaultScheme-2);
+    border-color: var(--mantine-color-defaultScheme-5);
+    color: var(--mantine-color-defaultScheme-5);
+  }
+
+  & * {
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+.dividerNavBar {
+  margin-left: var(--padding-default);
+  width: var(--title-width);
+  background-color: var(--mantine-color-defaultScheme-2);
+  /* margin-right: calc(var(--padding-default) + var(--root-width) - var(--title-width-padded)); */
+}
+
+.behindDividerNavBar {
+  background-color: var(--mantine-color-defaultScheme-2);
+  width: var(--title-width-padded);
+}
+
+.dividerContentArea {
+  margin-left: var(--padding-default);
+  width: var(--content-area-width-padded);
+  background-color: var(--mantine-color-defaultScheme-2);
+}
+
+.behindDividerContentArea {
+  background-color: var(--mantine-color-defaultScheme-1);
+  width: var(--title-width-padded);
+}
+
+.dividerContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.dividerSettingsComponent {
+  width: var(--content-area-width-padded);
+}

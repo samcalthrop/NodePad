@@ -17,6 +17,20 @@ export type SharedData = {
   setSelectedFile: React.Dispatch<React.SetStateAction<string | undefined>>;
   title: string | undefined;
   setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
+  boids: boolean | undefined;
+  setBoids: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  nodeRadius: number | undefined;
+  setNodeRadius: React.Dispatch<React.SetStateAction<number | undefined>>;
+  titleOpacity: number | undefined;
+  setTitleOpacity: React.Dispatch<React.SetStateAction<number | undefined>>;
+  email: string | undefined;
+  setEmail: React.Dispatch<React.SetStateAction<string | undefined>>;
+  username: string | undefined;
+  setUsername: React.Dispatch<React.SetStateAction<string | undefined>>;
+  password: string | undefined;
+  setPassword: React.Dispatch<React.SetStateAction<string | undefined>>;
+  saveFrequency: string | undefined;
+  setSaveFrequency: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export const SharedDataContext = createContext<SharedData | undefined>(undefined);
@@ -27,6 +41,13 @@ export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.E
   const [rootDirPath, setRootDirPath] = useState<string>();
   const [selectedFile, setSelectedFile] = useState<string>();
   const [title, setTitle] = useState<string>();
+  const [boids, setBoids] = useState<boolean>();
+  const [nodeRadius, setNodeRadius] = useState<number>();
+  const [titleOpacity, setTitleOpacity] = useState<number>();
+  const [email, setEmail] = useState<string>();
+  const [username, setUsername] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [saveFrequency, setSaveFrequency] = useState<string>();
 
   const value = useMemo<SharedData>(
     () => ({
@@ -40,8 +61,35 @@ export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.E
       setSelectedFile,
       title,
       setTitle,
+      boids,
+      setBoids,
+      nodeRadius,
+      setNodeRadius,
+      titleOpacity,
+      setTitleOpacity,
+      email,
+      setEmail,
+      username,
+      setUsername,
+      password,
+      setPassword,
+      saveFrequency,
+      setSaveFrequency,
     }),
-    [selectedTreeNodeData, credentials, rootDirPath, selectedFile, title]
+    [
+      selectedTreeNodeData,
+      credentials,
+      rootDirPath,
+      selectedFile,
+      title,
+      boids,
+      nodeRadius,
+      titleOpacity,
+      email,
+      username,
+      password,
+      saveFrequency,
+    ]
   );
 
   return <SharedDataContext.Provider value={value}>{children}</SharedDataContext.Provider>;

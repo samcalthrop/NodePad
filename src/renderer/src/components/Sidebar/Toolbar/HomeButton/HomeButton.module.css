@@ -1,0 +1,10 @@
+.homeButton {
+  color: var(--mantine-color-defaultScheme-4);
+  background-color: var(--mantine-color-defaultScheme-1);
+  border-color: var(--mantine-color-defaultScheme-1);
+}
+
+.homeButton:hover {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-1);
+}

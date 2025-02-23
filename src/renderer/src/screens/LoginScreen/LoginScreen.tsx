@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Title, TextInput, Text, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useCallback } from 'react';
+import { useSharedData } from '@renderer/providers/SharedDataProvider';
 // import { electronAPI } from '@electron-toolkit/preload';
 
 export const LoginScreen = (): JSX.Element => {
   const navigate = useNavigate();
+  const { setEmail, setPassword, setBoids } = useSharedData();
 
   // defining the rules for the login form
   const form = useForm({
@@ -28,6 +30,11 @@ export const LoginScreen = (): JSX.Element => {
     const { email, password } = form.getValues();
     const result = await window.ipcAPI.checkCredentials(email, password);
     if (result) {
+      // if credentials are valid, log in and assign the useSharedData() provider with user's credentials
+      setEmail(email);
+      setPassword(password);
+      // set boids to apply after 5s of inactivity by default
+      setBoids(true);
       navigate('/home');
     } else {
       console.log('User not found');
@@ -53,6 +60,16 @@ export const LoginScreen = (): JSX.Element => {
           >
             {/* username field */}
             <TextInput
+              styles={{
+                input: {
+                  background: 'var(--mantine-color-defaultScheme-2)',
+                  color: 'var(--mantine-color-defaultScheme-6)',
+                  borderColor: 'var(--mantine-color-defaultScheme-2)',
+                },
+                label: {
+                  color: 'var(--mantine-color-defaultScheme-4)',
+                },
+              }}
               label="email"
               placeholder="your@email.com"
               key={form.key('email')}
@@ -61,6 +78,16 @@ export const LoginScreen = (): JSX.Element => {
 
             {/* password field */}
             <PasswordInput
+              styles={{
+                input: {
+                  background: 'var(--mantine-color-defaultScheme-2)',
+                  color: 'var(--mantine-color-defaultScheme-6)',
+                  borderColor: 'var(--mantine-color-defaultScheme-2)',
+                },
+                label: {
+                  color: 'var(--mantine-color-defaultScheme-4)',
+                },
+              }}
               label="password"
               placeholder="password-123"
               key={form.key('password')}

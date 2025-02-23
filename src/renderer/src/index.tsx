@@ -26,7 +26,6 @@ const theme = createTheme({
       '#FFFFFF',
     ],
   },
-
   headings: {
     fontFamily: 'fredoka, sans-serif',
     fontWeight: '500',

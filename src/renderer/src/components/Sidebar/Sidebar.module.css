@@ -28,6 +28,11 @@
   color: var(--mantine-color-defaultScheme-6);
 }
 
+.divider {
+  margin-left: var(--padding-default);
+  margin-right: var(--padding-default);
+}
+
 .tree {
   background-color: transparent;
 }
@@ -38,12 +43,13 @@
   min-height: 0;
   padding-left: 10px;
   padding-top: 4px;
-  /* margin-bottom: var(--toolbar-height); */
+  overflow: hidden;
 }
 
 .scrollableArea {
   height: 100%;
-  overflow-x: scroll;
+  padding-right: 10px;
+  scrollbar-width: none;
 }
 
 .toolbar {
@@ -65,8 +71,9 @@
   width: 100%;
 }
 
-:global([data-mantine-color-scheme='dark'] .mantine-Tree-label[data-selected]) {
+:global(.mantine-Tree-label[data-selected]) {
   background-color: var(--mantine-color-defaultScheme-1) !important;
+  color: var(--mantine-color-defaultScheme-6) !important;
 }
 
 .leafText {
@@ -80,7 +87,7 @@
 }
 
 .leafText:hover {
-  color: var(--mantine-color-defaultScheme-9);
+  color: var(--mantine-color-defaultScheme-6);
 }
 
 .label {
@@ -90,4 +97,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  &[data-selected] {
+    color: var(--mantine-color-defaultScheme-6);
+  }
 }

@@ -25,7 +25,8 @@ import { useThrottledCallback } from '@mantine/hooks';
 
 export const EditNodeMetaScreen = (): JSX.Element => {
   // the file selected in the sidebar
-  const { selectedTreeNodeData, setSelectedTreeNodeData, selectedFile, setTitle } = useSharedData();
+  const { selectedTreeNodeData, setSelectedTreeNodeData, selectedFile, setTitle, saveFrequency } =
+    useSharedData();
   // uses a react state to get/ change the current contents of the file being edited
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
   // uses a react state to get/ change the current contents of the file being edited
@@ -60,7 +61,15 @@ export const EditNodeMetaScreen = (): JSX.Element => {
     [selectedTreeNodeData]
   );
 
-  const throttledSaveHandler = useThrottledCallback(handleSaveContent, 2000);
+  const getSaveDelay = (frequency: string): number => {
+    if (frequency === 'on-change') return 0;
+    return parseInt(frequency) || 2000;
+  };
+
+  const throttledSaveHandler = useThrottledCallback(
+    handleSaveContent,
+    getSaveDelay(saveFrequency || '2000')
+  );
 
   const handleSaveTitle = useCallback(
     async (newTitle: string): Promise<void> => {

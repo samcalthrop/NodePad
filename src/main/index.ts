@@ -6,7 +6,7 @@ import icon from '../../resources/icon.png?asset';
 import { getTreeNodeData } from './getTreeNodeData';
 import { dialog } from 'electron';
 import { readFile } from 'fs/promises';
-import { checkCredentials, createCredentials } from './dbHandling';
+import { checkCredentials, createCredentials, updateEmail, updatePassword } from './dbHandling';
 import { getFileContents, saveFile, renameFile } from './fileHandling';
 
 function createWindow(): void {
@@ -45,13 +45,13 @@ function createWindow(): void {
   }
 }
 
-// This method will be called when Electron has finished
+// this method will be called when Electron has finished
 // initialization and is ready to create browser windows
 app.whenReady().then(() => {
-  // Set app user model id for windows
+  // set app user model id for windows
   electronApp.setAppUserModelId('com.electron');
 
-  // Default open or close DevTools with F12
+  // default open or close devtools with F12
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
@@ -64,7 +64,7 @@ app.whenReady().then(() => {
     console.log('tree node data successfully retrieved');
   });
 
-  // when ipc receives request for file contents...
+  // when ipcMain receives request for file contents...
   ipcMain.on('get-file-contents', (event: IpcMainEvent, path: string) => {
     // file contents are read in and returned
     const fileContents: string = getFileContents(path);
@@ -72,31 +72,59 @@ app.whenReady().then(() => {
     event.sender.send('get-file-contents-success', fileContents);
   });
 
+  // when passed new db credentials...
   ipcMain.on('create-credentials', async (event: IpcMainEvent, { email, password }) => {
     console.log('main:create-credentials', email, password);
+    // new record is created, or error is returned
     const result = await createCredentials(email, password);
     result.success
       ? event.sender.send('create-credentials-success', result.success)
       : event.sender.send('create-credentials-failure', result.success);
   });
 
+  // when passed existing db credentials...
   ipcMain.on('check-credentials', async (event: IpcMainEvent, { email, password }) => {
     console.log('main:check-credentials', email, password);
+    // credentials are checked against existing records, true/ false returned
     const result = await checkCredentials(email, password);
     result.success
       ? event.sender.send('check-credentials-success', result.success)
       : event.sender.send('check-credentials-failure', result.success);
   });
 
+  // new email is given...
+  ipcMain.on('update-email', async (event: IpcMainEvent, { oldEmail, newEmail }) => {
+    // old email is located and updated, or old email not found
+    console.log('main:update-email', oldEmail, newEmail);
+    const result = await updateEmail(oldEmail, newEmail);
+    result.success
+      ? event.sender.send('update-email-success', result.success)
+      : event.sender.send('update-email-failure', result.success);
+  });
+
+  // new password is given...
+  ipcMain.on('update-password', async (event: IpcMainEvent, { email, password }) => {
+    // email is located and password updated, or email not found
+    console.log('main:update-password', email, password);
+    const result = await updatePassword(email, password);
+    result.success
+      ? event.sender.send('update-password-success', result.success)
+      : event.sender.send('update-password-failure', result.success);
+  });
+
+  // when passed a file path and content...
   ipcMain.on('save-file', async (event: IpcMainEvent, { filePath, content }) => {
     console.log('main:save-file', filePath, content);
+    // update the file contents, or filepath not found
     const result = await saveFile(filePath, content);
     result.success
       ? event.sender.send('save-file-success', result.success)
       : event.sender.send('save-file-failure', result.success);
   });
 
+  // when passed file path and new title...
   ipcMain.on('rename-file', async (event: IpcMainEvent, { oldPath, newTitle }) => {
+    // update title of file, or filepath not found
     console.log('main:rename-file', oldPath, newTitle);
     const result = await renameFile(oldPath, newTitle);
     result.success
@@ -146,13 +174,12 @@ ipcMain.handle('open-file-selector', async () => {
   return null;
 });
 
-/* this is used to retrieve the Multi-purpose Internet Mail Extension (MIME) type of the image,
- so as to correctly encode base64 image data */
+// used to retrieve the Multi-purpose Internet Mail Extension (MIME) type of the image, so as to correctly encode base64 image data
 const getMimeType = (filePath: string): string => {
   const extension = filePath.toLowerCase();
   if (extension.endsWith('.png')) return 'image/png';
   if (extension.endsWith('.webp')) return 'image/webp';
   if (extension.endsWith('.svg')) return 'image/svg+xml';
-  if (extension.endsWith('.gif')) return 'image/gif'; // in case the .gif type ever needs to be processed
+  if (extension.endsWith('.gif')) return 'image/gif';
   return 'image/jpeg'; // the default extension for .jpg, .jpeg...
 };

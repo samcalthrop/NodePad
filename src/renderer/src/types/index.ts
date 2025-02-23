@@ -13,6 +13,8 @@ export type IpcAPI = {
   }) => Promise<string>;
   createCredentials: (email: string, password: string) => Promise<boolean>;
   checkCredentials: (email: string, password: string) => Promise<boolean>;
+  updateEmail: (oldEmail: string, newEmail: string) => Promise<boolean>;
+  updatePassword: (email: string, password: string) => Promise<boolean>;
   saveFile: (filePath: string, content: string) => Promise<boolean>;
   renameFile: (oldPath: string, newTitle: string) => Promise<renameReturnObject>;
 };
@@ -35,6 +37,10 @@ export interface Node {
   title: string;
   filePath: string;
   connections: Array<number>; // Array of connected node IDs
+  mass: number | 1;
+  vx: number | 0; // speed in x direction
+  vy: number | 0; // speed in y direction
+  radius: number;
 }
 
 export interface Connection {
@@ -56,6 +62,14 @@ export type renameReturnObject = {
   path: string;
 };
 
-// export type NetworkNodeData = TreeNodeData & {
-//   connections: Array<TreeNodeData>;
-//   tags: Array<string>;
+export type PhysicsControlsProps = {
+  protectedRange: number;
+  visualRange: number;
+  avoidFactor: number;
+  turnFactor: number;
+  centeringFactor: number;
+  matchingFactor: number;
+  maxSpeed: number;
+  nodeRadius: number;
+  onUpdate: (param: string, value: number) => void;
+};

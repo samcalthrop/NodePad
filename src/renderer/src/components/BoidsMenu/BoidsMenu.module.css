@@ -1,0 +1,63 @@
+:root {
+  --titlebar-height: 30px;
+  --padding: 15px;
+}
+
+.controls {
+  position: fixed;
+  right: var(--padding);
+  top: var(--titlebar-height) + var(--padding);
+  border-radius: var(--mantine-radius-md);
+  box-shadow: var(--mantine-shadow-md);
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-4);
+  border-radius: 13px;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+.button {
+  width: 100%;
+  padding-left: var(--padding);
+  padding-right: var(--padding);
+  border-radius: var(--mantine-radius-sm);
+  /* transition: background-color 150ms ease; */
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-4);
+  border-radius: 13px;
+}
+
+.button:hover {
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+.content {
+  padding-left: var(--padding);
+  padding-right: var(--padding);
+  padding-bottom: var(--padding);
+}
+
+.controls :global(.mantine-Slider-bar) {
+  background-color: var(--mantine-color-defaultScheme-5);
+  color: var(--mantine-color-defaultScheme-2);
+}
+
+.controls :global(.mantine-Slider-thumb) {
+  background-color: var(--mantine-color-defaultScheme-2);
+  border-color: var(--mantine-color-defaultScheme-5);
+}
+
+.controls :global(.mantine-Slider-track) {
+  background-color: var(--mantine-color-defaultScheme-2);
+  color: var(--mantine-color-defaultScheme-2);
+}
+
+.controls :global(.mantine-Slider-mark) {
+  border-color: var(--mantine-color-defaultScheme-2);
+  color: var(--mantine-color-defaultScheme-2);
+}
+
+.controls :global(.mantine-Slider-markLabel) {
+  color: var(--mantine-color-defaultScheme-2);
+}

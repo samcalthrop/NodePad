@@ -50,7 +50,7 @@ export const SignUpScreen = (): JSX.Element => {
       <div className={classes.root}>
         <div className={classes.base}>
           <br />
-          <Group align="center">
+          <Group align="center" className={classes.titleGroup}>
             <ActionIcon
               className={classes.leftArrow}
               variant="transparent"
@@ -73,6 +73,16 @@ export const SignUpScreen = (): JSX.Element => {
           >
             {/* username field */}
             <TextInput
+              styles={{
+                input: {
+                  background: 'var(--mantine-color-defaultScheme-2)',
+                  color: 'var(--mantine-color-defaultScheme-6)',
+                  borderColor: 'var(--mantine-color-defaultScheme-2)',
+                },
+                label: {
+                  color: 'var(--mantine-color-defaultScheme-4)',
+                },
+              }}
               withAsterisk
               label="email"
               placeholder="your@email.com"
@@ -82,6 +92,19 @@ export const SignUpScreen = (): JSX.Element => {
 
             {/* password field */}
             <PasswordInput
+              styles={{
+                input: {
+                  background: 'var(--mantine-color-defaultScheme-2)',
+                  color: 'var(--mantine-color-defaultScheme-6)',
+                  borderColor: 'var(--mantine-color-defaultScheme-2)',
+                },
+                label: {
+                  color: 'var(--mantine-color-defaultScheme-4)',
+                },
+                description: {
+                  color: 'var(--mantine-color-defaultScheme-3)',
+                },
+              }}
               withAsterisk
               label="password"
               description="ensure password length is at least 8 characters long"
@@ -92,6 +115,16 @@ export const SignUpScreen = (): JSX.Element => {
 
             {/* re-enter password field */}
             <PasswordInput
+              styles={{
+                input: {
+                  background: 'var(--mantine-color-defaultScheme-2)',
+                  color: 'var(--mantine-color-defaultScheme-6)',
+                  borderColor: 'var(--mantine-color-defaultScheme-2)',
+                },
+                label: {
+                  color: 'var(--mantine-color-defaultScheme-4)',
+                },
+              }}
               withAsterisk
               label="re-enter password"
               placeholder="password-123"

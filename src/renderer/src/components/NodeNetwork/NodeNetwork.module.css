@@ -1,8 +1,47 @@
+:root {
+  --node-colour: var(--mantine-color-defaultScheme-2);
+  --node-hover-colour: var(--mantine-color-defaultScheme-9);
+  --node-text-colour: var(--mantine-color-defaultScheme-6);
+  --node-connection-colour: var(--mantine-color-defaultScheme-3);
+  --node-centre-colour: var(--mantine-color-defaultScheme-3);
+  --node-connection-width: 2px;
+  --node-font: 'Fira Code';
+  --node-text-size: 12px;
+  --titlebar-height: 30px;
+  --toggle-height: 34px;
+  --root-padding: 15px;
+  --controls-width: 100px;
+}
+
+.networkDiv {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas {
+  position: absolute;
+  top: var(--toggle-height); /* Add this */
+  left: 0; /* Add this */
+  right: 0; /* Add this */
+  bottom: 0; /* Add this */
+  width: 100%;
+  height: calc(100% - var(--toggle-height)); /* Change this from viewport units */
+}
+
 .viewEditToggle {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
+  padding-left: calc((100% / 2) - var(--controls-width));
   align-items: center;
   flex-direction: row;
+}
+
+.segmentedControl {
+  background-color: var(--mantine-color-defaultScheme-1);
 }
 
 .eyeIcon {
@@ -16,9 +55,9 @@
 }
 
 .viewToggled:hover {
-  color: var(--mantine-color-defaultScheme-9);
+  color: var(--mantine-color-defaultScheme-6);
 }
 
 .editToggled:hover {
-  color: var(--mantine-color-defaultScheme-9);
+  color: var(--mantine-color-defaultScheme-6);
 }

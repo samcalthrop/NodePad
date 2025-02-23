@@ -54,7 +54,7 @@ export const ScreenWithSidebar = ({ children }: ScreenWithSidebarProps): JSX.Ele
           <Sidebar />
           <div className={classes.resizer} onMouseDown={startResizing} />
         </div>
-        <div>{children}</div>
+        <div className={classes.content}>{children}</div>
       </div>
     </Screen>
   );

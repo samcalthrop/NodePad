@@ -4,8 +4,8 @@
 
 .root {
   display: flex;
-  flex-direction: row;
   gap: 10px;
+  overflow: hidden;
   background-color: var(--mantine-color-defaultScheme-0);
 
   .sidebar {
@@ -35,4 +35,10 @@
     background-color: var(--mantine-color-defaultScheme-2);
     opacity: 0.5;
   }
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
 }

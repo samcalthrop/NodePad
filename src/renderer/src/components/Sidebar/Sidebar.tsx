@@ -15,8 +15,8 @@ import { NpmIcon } from '@mantinex/dev-icons';
 import { IconBook, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
 import { useSharedData } from '@renderer/providers/SharedDataProvider';
 import { useNavigate } from 'react-router-dom';
-import { SettingsModal } from '../SettingsModal/SettingsModal';
-import { HomeButton } from '../HomeButton/HomeButton';
+import { SettingsModal } from './Toolbar/SettingsModal/SettingsModal';
+import { HomeButton } from './Toolbar/HomeButton/HomeButton';
 
 export const Sidebar = (): JSX.Element => {
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
@@ -36,7 +36,7 @@ export const Sidebar = (): JSX.Element => {
       <div className={classes.title}>
         <Title order={1}>files</Title>
       </div>
-      <Divider />
+      <Divider className={classes.divider} size="sm" />
       <div className={classes.filetree}>
         <ScrollArea.Autosize
           className={classes.scrollableArea}
@@ -57,6 +57,7 @@ export const Sidebar = (): JSX.Element => {
           </Box>
         </ScrollArea.Autosize>
       </div>
+      <Divider className={classes.divider} size="sm" />
       <div className={classes.toolbar}>
         <SettingsModal />
         <HomeButton />
