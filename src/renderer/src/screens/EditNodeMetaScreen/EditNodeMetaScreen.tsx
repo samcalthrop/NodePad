@@ -1,10 +1,22 @@
 import classes from './EditNodeMetaScreen.module.css';
-import { ScrollArea, Space, Title } from '@mantine/core';
+import {
+  Combobox,
+  Divider,
+  Group,
+  Pill,
+  PillsInput,
+  ScrollArea,
+  Space,
+  Title,
+  useCombobox,
+  Highlight,
+} from '@mantine/core';
 import {
   MDXEditor,
   MDXEditorMethods,
   codeBlockPlugin,
   diffSourcePlugin,
+  frontmatterPlugin,
   headingsPlugin,
   imagePlugin,
   jsxPlugin,
@@ -19,18 +31,90 @@ import {
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSharedData } from '@renderer/providers/SharedDataProvider';
-// import { useForm } from '@mantine/form';
+import { useSharedData } from '../../providers/SharedDataProvider';
 import { useThrottledCallback } from '@mantine/hooks';
+import { IconHash } from '@tabler/icons-react';
 
 export const EditNodeMetaScreen = (): JSX.Element => {
   // the file selected in the sidebar
-  const { selectedTreeNodeData, setSelectedTreeNodeData, selectedFile, setTitle, saveFrequency } =
-    useSharedData();
+  const {
+    selectedTreeNodeData,
+    setSelectedTreeNodeData,
+    selectedFile,
+    setTitle,
+    saveFrequency,
+    newFileCreated,
+  } = useSharedData();
   // uses a react state to get/ change the current contents of the file being edited
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
   // uses a react state to get/ change the current contents of the file being edited
   const [fileContents, setFileContents] = useState<string | null>(null);
+
+  // ----------------------------
+
+  const tags: Array<string> = [
+    'maths',
+    'english',
+    'computer science',
+    'sciences',
+    'physics',
+    'english literature',
+    'psychology',
+  ];
+  const [search, setSearch] = useState('');
+  const [value, setValue] = useState<Array<string>>([]);
+
+  const combobox = useCombobox({
+    onDropdownClose: (): void => combobox.resetSelectedOption(),
+    onDropdownOpen: (): void => combobox.updateSelectedOptionIndex('active'),
+  });
+
+  const handleValueSelect = (val: string): void => {
+    setValue((current) =>
+      current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
+    );
+    combobox.closeDropdown();
+  };
+
+  const handleValueRemove = (val: string): void => {
+    setValue((current) => current.filter((v) => v !== val));
+  };
+
+  const values = value.map((item) => (
+    <Pill
+      className={classes.pill}
+      size="md"
+      key={item}
+      withRemoveButton
+      onRemove={() => handleValueRemove(item)}
+    >
+      {item}
+    </Pill>
+  ));
+
+  const options = tags
+    .filter(
+      (item) =>
+        !value.includes(item) && // exclude already selected tags
+        item.toLowerCase().includes(search.trim().toLowerCase())
+    )
+    .map((item) => (
+      <Combobox.Option value={item} key={item}>
+        <Group gap="4" className={classes.tagsDropdownGroup}>
+          <span>#</span>
+          <Highlight highlight={search} color="#bca0d9">
+            {item}
+          </Highlight>
+        </Group>
+      </Combobox.Option>
+    ));
+
+  useEffect(() => {
+    // we need to wait for options to render before we can select first one
+    if (search !== '') combobox.selectFirstOption();
+  }, [search]);
+
+  // -----------------------------
 
   useEffect(() => {
     console.log('EditNodeMetaScreen selectedTreeNodeData:', selectedTreeNodeData);
@@ -45,6 +129,10 @@ export const EditNodeMetaScreen = (): JSX.Element => {
         mdxEditorRef.current?.getMarkdown()
       );
       setFileContents(fileContents);
+      // await the contents being set before auto-focusing the content
+      setTimeout(() => {
+        mdxEditorRef.current?.focus();
+      }, 0);
     });
   }, [selectedTreeNodeData]);
 
@@ -66,6 +154,7 @@ export const EditNodeMetaScreen = (): JSX.Element => {
     return parseInt(frequency) || 2000;
   };
 
+  // prevents file from being saved more than every n milliseconds
   const throttledSaveHandler = useThrottledCallback(
     handleSaveContent,
     getSaveDelay(saveFrequency || '2000')
@@ -97,20 +186,19 @@ export const EditNodeMetaScreen = (): JSX.Element => {
     <div className={classes.root}>
       <div className={classes.innerDiv}>
         {fileContents === null ? (
-          <Title h={1}>No selection made yet</Title>
+          <Title h={1}>no selection made yet</Title>
         ) : (
           <ScrollArea.Autosize
             className={classes.scrollableArea}
-            type="scroll"
+            type="never"
             offsetScrollbars
             viewportProps={{ style: { overflowX: 'hidden' } }}
             scrollHideDelay={100}
           >
-            <Space h="xl" />
-            {/* <Title order={1} contentEditable={true} onChange={titleSaveHandler}>
-              {selectedFile}
-            </Title> */}
+            <Space className={classes.space} />
             <div
+              autoFocus={newFileCreated}
+              className={classes.title}
               contentEditable={true}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -130,20 +218,84 @@ export const EditNodeMetaScreen = (): JSX.Element => {
                   selection.collapseToEnd();
                 }
               }}
-              style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}
-              className={classes.title}
+              spellCheck={false}
             >
               {selectedFile}
+            </div>
+
+            <div className={classes.tagsDiv}>
+              <Divider className={classes.divider} size="sm" />
+              <Space h="md" />
+              <Combobox
+                classNames={{
+                  dropdown: classes.tagsDropdown,
+                  option: classes.tagsOption,
+                  empty: classes.tagsDropdownEmpty,
+                }}
+                store={combobox}
+                onOptionSubmit={handleValueSelect}
+              >
+                <Combobox.DropdownTarget>
+                  <PillsInput
+                    leftSection={<IconHash color="var(--mantine-color-defaultScheme-3" />}
+                    variant="unstyled"
+                    onClick={() => combobox.openDropdown()}
+                  >
+                    <Pill.Group>
+                      {values}
+
+                      <Combobox.EventsTarget>
+                        <PillsInput.Field
+                          className={classes.pillsInputField}
+                          onFocus={() => combobox.openDropdown()}
+                          onBlur={() => combobox.closeDropdown()}
+                          value={search}
+                          placeholder="..."
+                          onChange={(event) => {
+                            combobox.updateSelectedOptionIndex();
+                            setSearch(event.currentTarget.value);
+                            combobox.openDropdown();
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Backspace' && search.length === 0) {
+                              event.preventDefault();
+                              handleValueRemove(value[value.length - 1]);
+                            }
+                            if (event.key === 'Enter') {
+                              // if (value.length === 0) {
+                              //   setTags([...tags, search]);
+                              // }
+                              setSearch('');
+                            }
+                          }}
+                        />
+                      </Combobox.EventsTarget>
+                    </Pill.Group>
+                  </PillsInput>
+                </Combobox.DropdownTarget>
+
+                <Combobox.Dropdown>
+                  <Combobox.Options>
+                    {options.length > 0 ? (
+                      options
+                    ) : (
+                      <Combobox.Empty>nothing to see here</Combobox.Empty>
+                    )}
+                  </Combobox.Options>
+                </Combobox.Dropdown>
+              </Combobox>
             </div>
 
             <div className={classes.mdxeditor}>
               {/* a class specially for the markdown editor instance, as specified in the documentation for MDXEditor: https://mdxeditor.dev/editor/docs/theming */}
               <MDXEditor
+                placeholder="start typing..."
                 ref={mdxEditorRef}
-                // className="dark-theme dark-editor"
                 className={classes.editor}
                 markdown={fileContents}
                 onChange={throttledSaveHandler}
+                autoFocus={newFileCreated}
+                contentEditableClassName={classes.contentEditable}
                 plugins={[
                   codeBlockPlugin({ defaultCodeBlockLanguage: 'js' }),
                   diffSourcePlugin(),
@@ -158,6 +310,7 @@ export const EditNodeMetaScreen = (): JSX.Element => {
                   tablePlugin(),
                   thematicBreakPlugin(),
                   sandpackPlugin(),
+                  frontmatterPlugin(),
                   // toolbarPlugin({
                   //   toolbarContents: () => (
                   //     <DiffSourceToggleWrapper>

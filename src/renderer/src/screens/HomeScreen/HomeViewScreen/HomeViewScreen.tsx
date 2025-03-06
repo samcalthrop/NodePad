@@ -1,12 +1,12 @@
 import classes from './HomeViewScreen.module.css';
 import { TreeNodeData } from '@mantine/core';
-import { NodeNetwork } from '@renderer/components/NodeNetwork/NodeNetwork';
-import { useSharedData } from '@renderer/providers/SharedDataProvider';
+import { NodeNetwork } from '../../../components/NodeNetwork/NodeNetwork';
+import { useSharedData } from '../../../providers/SharedDataProvider';
 import { useEffect, useState } from 'react';
 
 export const HomeViewScreen = (): JSX.Element => {
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
-  const { rootDirPath } = useSharedData();
+  const { rootDirPath, counter } = useSharedData();
 
   // retrieving the treeNodeData from the backend
   useEffect(() => {
@@ -15,7 +15,7 @@ export const HomeViewScreen = (): JSX.Element => {
         setTreeNodeData(treeNodeData);
       });
     }
-  }, [rootDirPath]);
+  }, [rootDirPath, counter]);
   for (const node of treeNodeData) {
     console.log(node.children);
   }

@@ -2,8 +2,8 @@ import { Button, Divider, Slider, Stack, Text } from '@mantine/core';
 import classes from './BoidsMenu.module.css';
 import { useState } from 'react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { PhysicsControlsProps } from '@renderer/types';
-import { useSharedData } from '@renderer/providers/SharedDataProvider';
+import { PhysicsControlsProps } from '../../types';
+import { useSharedData } from '../../providers/SharedDataProvider';
 
 export const PhysicsControls = ({
   protectedRange,
@@ -158,7 +158,7 @@ export const PhysicsControls = ({
               min={minTitleOpacity}
               max={maxTitleOpacity}
               step={0.01}
-              defaultValue={1.0}
+              defaultValue={0.38}
             />
           </div>
         </Stack>

@@ -1,18 +1,20 @@
 // import classes from './index.module.css';
 import { createTheme, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './assets/main.css';
 import { HomeScreen } from './screens/HomeScreen';
 import { LoginScreen } from './screens/LoginScreen';
 import { SignUpScreen } from './screens/SignUpScreen';
-import { SharedDataProvider } from './providers/SharedDataProvider';
+import { SharedDataProvider, useSharedData } from './providers/SharedDataProvider';
+import { useHotkeys } from '@mantine/hooks';
 
 const theme = createTheme({
   fontFamily: 'Fira Code, monospace',
   colors: {
+    // each colour in the colour scheme can be accessed via indexing, e.g --mantine-default-scheme-5 yields purple (#61497C)
     defaultScheme: [
       '#19161E',
       '#29262D',
@@ -47,17 +49,69 @@ const theme = createTheme({
   },
 });
 
+const AppWrapper = (): JSX.Element => {
+  const {
+    counter,
+    setCounter,
+    rootDirPath,
+    setSelectedFile,
+    setSelectedTreeNodeData,
+    setNewFileCreated,
+  } = useSharedData();
+  const navigate = useNavigate();
+
+  useHotkeys([
+    [
+      'mod+N',
+      (): void => {
+        if (!counter) setCounter(1);
+
+        const fileName = 'new file ' + counter;
+
+        // save new file
+        window.ipcAPI.saveFile((rootDirPath ?? '~') + '/' + fileName + '.md', '');
+
+        // tells text editor what file to open
+        setSelectedTreeNodeData({
+          label: fileName,
+          value: rootDirPath + '/' + fileName + '.md',
+        });
+        setSelectedFile(fileName);
+        // title of file will be autofocused so user can quickly rename from 'new file X'
+        setNewFileCreated(true);
+        console.log(`navigating to ${fileName}`);
+        navigate('/home/edit-node-meta');
+
+        // increment counter in anticipation of another file being created (prevents duplicate naming)
+        setCounter((counter ?? 1) + 1);
+
+        console.log('cmd/ctrl+n: create new note');
+      },
+    ],
+    [
+      'mod+,',
+      (): void => {
+        console.log('cmd/ctrl+,: open settings');
+      },
+    ],
+  ]);
+
+  return (
+    <Routes>
+      <Route path="/" element={<LoginScreen />} />
+      <Route path="/login" element={<LoginScreen />} />
+      <Route path="/signup" element={<SignUpScreen />} />
+      <Route path="/home/*" element={<HomeScreen />} />
+    </Routes>
+  );
+};
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <MantineProvider defaultColorScheme="dark" theme={theme}>
       <SharedDataProvider>
         <HashRouter>
-          <Routes>
-            <Route path="/" element={<LoginScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/signup" element={<SignUpScreen />} />
-            <Route path="/home/*" element={<HomeScreen />} />
-          </Routes>
+          <AppWrapper />
         </HashRouter>
       </SharedDataProvider>
     </MantineProvider>

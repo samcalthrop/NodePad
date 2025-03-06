@@ -11,6 +11,13 @@ database.exec(`
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL
   )
+
+  CREATE TABLE IF NOT EXISTS Tags (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    filepath TEXT UNIQUE NOT NULL,
+    tag TEXT NOT NULL
+    UNIQUE(filepath, tag)
+  )
 `);
 
 // log all current users
@@ -79,7 +86,7 @@ export const updatePassword = (
     const statement = database.prepare('UPDATE Users SET password = ? WHERE email = ?');
     const result = statement.run(password, email);
 
-    // if the record is not updated
+    // if the record is not updated, return false
     if (result.changes === 0) {
       return Promise.resolve({ success: false, message: 'account not found' });
     }
@@ -89,3 +96,38 @@ export const updatePassword = (
     return Promise.resolve({ success: false, message: 'an unknown error occurred' });
   }
 };
+
+// // save each tag in the tags array from a file to its filepath
+// export const saveTags = (
+//   filePath: string,
+//   tags: Array<string>
+// ): Promise<{ success: boolean; message?: string }> => {
+//   try {
+//     // first remove all existing tags from the file (user may have removed tags as well as adding them)
+//     const removeStatement = database.prepare('DELETE FROM Tags WHERE filepath = ?');
+//     removeStatement.run(filePath);
+
+//     // then add back all the new/ existing tags one-by-one
+//     const insertStatement = database.prepare('INSERT INTO Tags (filepath, tag) VALUES (?,?)');
+//     tags.forEach((tag) => {
+//       insertStatement.run(filePath, tag);
+//     });
+//     return Promise.resolve({ success: true });
+//   } catch (err) {
+//     console.error('!! Error saving tags:', err);
+//     return Promise.resolve({ success: false, message: 'an unknown error occurred' });
+//   }
+// };
+
+// // returns an array of all the tags attached to a particular filepath
+// export const getTags = (filePath: string): Promise<{ tags: Array<string> }> => {
+//   try {
+//     const statement = database.prepare('SELECT tag FROM Tags WHERE filepath = ?');
+//     const result = statement.run(filePath);
+//     console.log('result:', result);
+//     return Promise.resolve({ tags: result });
+//   } catch (err) {
+//     console.error('!! Error getting tags:', err);
+//     return Promise.resolve({ tags: [] });
+//   }
+// };

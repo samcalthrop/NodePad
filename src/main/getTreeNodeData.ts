@@ -8,7 +8,7 @@ export const convertDirectoryTree = ({ name, path, children }: DirectoryTree): T
 });
 
 export const getTreeNodeData = (path: string): TreeNodeData[] => {
-  const tree = directoryTree(path, { extensions: /\.md$/ });
+  const tree = directoryTree(path, { extensions: /\.(md|png|jpg|jpeg|gif)$/ });
   // debug log
   console.log(tree);
 

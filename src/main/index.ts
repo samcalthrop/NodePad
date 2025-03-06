@@ -1,13 +1,20 @@
 import { app, shell, BrowserWindow, ipcMain, IpcMainEvent } from 'electron';
-import { join } from 'path';
+import path, { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
 import icon from '../../resources/icon.png?asset';
 import { getTreeNodeData } from './getTreeNodeData';
 import { dialog } from 'electron';
 import { readFile } from 'fs/promises';
-import { checkCredentials, createCredentials, updateEmail, updatePassword } from './dbHandling';
-import { getFileContents, saveFile, renameFile } from './fileHandling';
+import {
+  checkCredentials,
+  createCredentials,
+  updateEmail,
+  updatePassword,
+  // getTags,
+  // saveTags,
+} from './dbHandling';
+import { getFileContents, saveFile, renameFile, getMimeType } from './fileHandling';
 
 function createWindow(): void {
   // create the browser window
@@ -132,6 +139,24 @@ app.whenReady().then(() => {
       : event.sender.send('rename-file-failure', result);
   });
 
+  // // when passed a filepath and array of tags
+  // ipcMain.on('save-tags', async (event: IpcMainEvent, { filePath, tags }) => {
+  //   // update db to store all existing tags attached to the file
+  //   console.log('main:save-tags', filePath, tags);
+  //   const result = await saveTags(filePath, tags);
+  //   result.success
+  //     ? event.sender.send('save-tags-success', result)
+  //     : event.sender.send('save-tags-failure', result);
+  // });
+
+  // // when passed a filepath
+  // ipcMain.on('get-tags', async (event: IpcMainEvent, filePath: string) => {
+  //   // return the tags attached to that file, or an empty array
+  //   console.log('main:get-tags', filePath);
+  //   const result = await getTags(filePath);
+  //   event.sender.send('get-tags-success', result);
+  // });
+
   createWindow();
 
   app.on('activate', function () {
@@ -174,12 +199,13 @@ ipcMain.handle('open-file-selector', async () => {
   return null;
 });
 
-// used to retrieve the Multi-purpose Internet Mail Extension (MIME) type of the image, so as to correctly encode base64 image data
-const getMimeType = (filePath: string): string => {
-  const extension = filePath.toLowerCase();
-  if (extension.endsWith('.png')) return 'image/png';
-  if (extension.endsWith('.webp')) return 'image/webp';
-  if (extension.endsWith('.svg')) return 'image/svg+xml';
-  if (extension.endsWith('.gif')) return 'image/gif';
-  return 'image/jpeg'; // the default extension for .jpg, .jpeg...
-};
+// listens for the request to retrieve the path to the resources directory
+ipcMain.handle('getResourcePath', () => {
+  if (app.isPackaged) {
+    console.log(path.join(process.resourcesPath, 'resources'));
+    // if in production, files are located in different area to in development
+    return path.join(process.resourcesPath, 'resources');
+  } else {
+    return path.join(app.getAppPath(), 'resources');
+  }
+});

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Title, TextInput, Text, Group, PasswordInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useCallback } from 'react';
-import { useSharedData } from '@renderer/providers/SharedDataProvider';
+import { useSharedData } from '../../providers/SharedDataProvider';
 // import { electronAPI } from '@electron-toolkit/preload';
 
 export const LoginScreen = (): JSX.Element => {
@@ -61,6 +61,7 @@ export const LoginScreen = (): JSX.Element => {
             {/* username field */}
             <TextInput
               styles={{
+                // styles are done inline here due to TextInput having multiple subclasses, potentially making a css file for these more confusing
                 input: {
                   background: 'var(--mantine-color-defaultScheme-2)',
                   color: 'var(--mantine-color-defaultScheme-6)',
@@ -74,6 +75,7 @@ export const LoginScreen = (): JSX.Element => {
               placeholder="your@email.com"
               key={form.key('email')}
               {...form.getInputProps('email')}
+              autoFocus
             />
 
             {/* password field */}
@@ -102,7 +104,7 @@ export const LoginScreen = (): JSX.Element => {
             </Group>
           </form>
 
-          {/* Sign up link */}
+          {/* sign up link */}
           <br />
           <br />
           <Group gap={8} justify="center">

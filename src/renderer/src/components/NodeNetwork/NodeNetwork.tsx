@@ -4,15 +4,17 @@ import { Center, SegmentedControl } from '@mantine/core';
 import { IconEye, IconPencil } from '@tabler/icons-react';
 import classes from './NodeNetwork.module.css';
 import { useNavigate } from 'react-router-dom';
-import { useSharedData } from '@renderer/providers/SharedDataProvider';
-import { PhysicsSystem } from '@renderer/physics/NodePhysics';
+import { useSharedData } from '../../providers/SharedDataProvider';
+import { PhysicsSystem } from '../../components/NodeNetwork/NodePhysics';
 import { PhysicsControls } from '../BoidsMenu/BoidsMenu';
 
 export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
   const navigate = useNavigate();
   const {
+    counter,
     boids,
     setSelectedTreeNodeData,
+    selectedFile,
     setSelectedFile,
     nodeRadius,
     setNodeRadius,
@@ -49,7 +51,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     setPhysicsParams((prev) => ({ ...prev, [param]: value }));
     if (param === 'nodeRadius') {
       setNodeRadius(value);
-      // Update all nodes with new radius
+      // update all nodes with new radius
       setNodes((prevNodes) =>
         prevNodes.map((node) => ({
           ...node,
@@ -124,6 +126,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
           vx: Math.random() * 2 - 1,
           vy: Math.random() * 2 - 1,
           radius: nodeRadius || 15,
+          tags: [],
         });
         // the next node id will be given the next number, which only increments if a new node is created
         index++;
@@ -158,11 +161,15 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
 
     // retrieving network styling from css file
     const computedStyle = getComputedStyle(document.documentElement);
-    const nodeColour: string = computedStyle.getPropertyValue('--node-colour') || '#2196F3';
-    const nodeTextColour: string = computedStyle.getPropertyValue('--node-text-colour') || 'white';
+    const nodeColour: string = computedStyle.getPropertyValue('--node-colour') || '#2E2B33';
+    const nodeTextColour: string =
+      computedStyle.getPropertyValue('--node-text-colour') || '#FED5FB';
     const connectionColour: string =
-      computedStyle.getPropertyValue('--node-connection-colour') || '#666';
-    const centreColour: string = computedStyle.getPropertyValue('--node-centre-colour') || 'white';
+      computedStyle.getPropertyValue('--node-connection-colour') || '#4A4850';
+    const centreColour: string =
+      computedStyle.getPropertyValue('--node-centre-colour') || '#4A4850';
+    const selectedColour: string =
+      computedStyle.getPropertyValue('--node-selected-colour') || '#61497C';
     const connectionWidth: number =
       parseInt(computedStyle.getPropertyValue('--node-connection-width')) || 2;
     const fontFamily: string = computedStyle.getPropertyValue('--node-font') || 'Fira Code';
@@ -208,7 +215,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     ctx.fillStyle = nodeTextColour;
     ctx.font = `${textSize} ${fontFamily}`;
     ctx.textAlign = 'center';
-    ctx.globalAlpha = titleOpacity || 1;
+    ctx.globalAlpha = titleOpacity || 0.38;
     nodes.forEach((node) => {
       ctx.fillText(node.title, node.x, node.y + 30);
     });
@@ -222,6 +229,17 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       ctx.arc(node.x, node.y, nodeRadius || 15, 0, Math.PI * 2);
     });
     ctx.fill();
+
+    // drawing selected node
+    ctx.fillStyle = selectedColour;
+    ctx.beginPath();
+    nodes.forEach((node) => {
+      if (node.title == selectedFile) {
+        ctx.moveTo(node.x + (nodeRadius || 15), node.y);
+        ctx.arc(node.x, node.y, nodeRadius || 15, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
 
     // in the case that edit mode is on, these features are drawn
     if (mode == 'edit') {
@@ -247,7 +265,16 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
         }
       }
     }
-  }, [nodes, connections, draggingConnection, nodeRadius, mode, titleOpacity]);
+  }, [
+    nodes,
+    connections,
+    draggingConnection,
+    nodeRadius,
+    mode,
+    titleOpacity,
+    counter,
+    selectedFile,
+  ]);
 
   // check if user has clicked a connection
   const isClickOnConnection = (x: number, y: number, connection: Connection): boolean => {

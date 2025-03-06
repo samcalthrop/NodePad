@@ -1,3 +1,4 @@
+/* the page the content sites on */
 .root {
   --titlebar-height: 30px;
   height: calc(100vh - var(--titlebar-height));
@@ -6,6 +7,7 @@
   align-items: center;
 }
 
+/* the 'card' the input fields sit on top of */
 .base {
   --toolbar-height: 30px;
   background-color: var(--mantine-color-defaultScheme-1);

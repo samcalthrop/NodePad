@@ -5,7 +5,7 @@ import { Button, Title, TextInput, Group, PasswordInput, ActionIcon } from '@man
 import { useForm } from '@mantine/form';
 import { useCallback, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { UserCredential } from '@renderer/types';
+import { UserCredential } from '../../types';
 
 export const SignUpScreen = (): JSX.Element => {
   const navigate = useNavigate();
@@ -88,6 +88,7 @@ export const SignUpScreen = (): JSX.Element => {
               placeholder="your@email.com"
               key={form.key('email')}
               {...form.getInputProps('email')}
+              autoFocus
             />
 
             {/* password field */}

@@ -11,7 +11,6 @@
 }
 
 .root {
-  /* padding-top: 5px; */
   background-color: var(--mantine-color-defaultScheme-1);
   border-radius: var(--sidebar-border-radius);
   height: calc(100vh - 2 * var(--sidebar-margin) - var(--title-bar-height));
@@ -20,14 +19,24 @@
   flex-direction: column;
 }
 
-.title {
+/* the base that the title sits on */
+.titleDiv {
   padding-left: var(--padding-default);
   padding-top: var(--padding-default);
   min-width: 200px;
   flex-shrink: 0;
   color: var(--mantine-color-defaultScheme-6);
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  min-height: 40px;
+  text-overflow: ellipsis;
 }
 
+.title {
+  text-overflow: ellipsis;
+}
+
+/* the horizontal grey lines between sections */
 .divider {
   margin-left: var(--padding-default);
   margin-right: var(--padding-default);
@@ -37,11 +46,12 @@
   background-color: transparent;
 }
 
-.filetree {
+/* the base that the filetree sits on */
+.filetreeDiv {
   position: relative;
   flex: 1;
   min-height: 0;
-  padding-left: 10px;
+  padding-left: 20px;
   padding-top: 4px;
   overflow: hidden;
 }
@@ -63,35 +73,18 @@
   border-radius: var(--sidebar-border-radius);
 }
 
+/* the base that each label sits on */
 .leaf {
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
   width: 100%;
+  background-color: var(--mantine-color-defaultScheme-1);
 }
 
-:global(.mantine-Tree-label[data-selected]) {
-  background-color: var(--mantine-color-defaultScheme-1) !important;
-  color: var(--mantine-color-defaultScheme-6) !important;
-}
-
-.leafText {
-  color: var(--mantine-color-defaultScheme-4);
-  size: 'lg';
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-  min-width: 0; /* Add this to allow text to shrink */
-}
-
-.leafText:hover {
-  color: var(--mantine-color-defaultScheme-6);
-}
-
+/* each component of the file tree */
 .label {
-  /* padding-block: 1px; */
   margin-left: var(--margin-width);
   margin-right: var(--margin-width);
   white-space: nowrap;
@@ -101,4 +94,25 @@
   &[data-selected] {
     color: var(--mantine-color-defaultScheme-6);
   }
+}
+
+/* the text within each label */
+.leafText {
+  color: var(--mantine-color-defaultScheme-4);
+  size: 'lg';
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.leafText:hover {
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+:where([data-selected]) {
+  background-color: var(--mantine-color-defaultScheme-1) !important;
+  border-radius: 4px;
 }

@@ -1,9 +1,11 @@
+/* defining canvas styles */
 :root {
   --node-colour: var(--mantine-color-defaultScheme-2);
   --node-hover-colour: var(--mantine-color-defaultScheme-9);
   --node-text-colour: var(--mantine-color-defaultScheme-6);
   --node-connection-colour: var(--mantine-color-defaultScheme-3);
   --node-centre-colour: var(--mantine-color-defaultScheme-3);
+  --node-selected-colour: var(--mantine-color-defaultScheme-5);
   --node-connection-width: 2px;
   --node-font: 'Fira Code';
   --node-text-size: 12px;
@@ -13,6 +15,7 @@
   --controls-width: 100px;
 }
 
+/* base for all components to sit on */
 .networkDiv {
   flex: 1;
   display: flex;
@@ -22,19 +25,20 @@
   position: relative;
 }
 
+/* constraints for canvas element */
 .canvas {
   position: absolute;
-  top: var(--toggle-height); /* Add this */
-  left: 0; /* Add this */
-  right: 0; /* Add this */
-  bottom: 0; /* Add this */
+  top: var(--toggle-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
-  height: calc(100% - var(--toggle-height)); /* Change this from viewport units */
+  height: calc(100% - var(--toggle-height));
 }
 
+/* everything below covers toggle menu at top of page */
 .viewEditToggle {
   display: flex;
-  /* justify-content: center; */
   padding-left: calc((100% / 2) - var(--controls-width));
   align-items: center;
   flex-direction: row;

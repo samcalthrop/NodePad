@@ -1,29 +1,33 @@
+/* the base for the entire page */
 .root {
   margin-left: 5px;
   display: flex;
   flex-direction: column;
   gap: 12px;
   border-radius: 6px;
-  /* height: 100%; */
+  --tags-height: 37px;
   --sidebar-margin: 15px;
   --title-bar-height: 15px;
   --title-height: 70px;
   --title-padding: 30px;
-  height: calc(
-    100vh - 2 * var(--sidebar-margin) - var(--title-bar-height) - 2 * var(--title-height)
-  );
+  /* height: calc(
+    100vh - 2 * var(--sidebar-margin) - var(--title-bar-height) - 2 * var(--title-height) -
+      var(--tags-height)
+  ); */
   background-color: var(--mantine-color-defaultScheme-0);
   color: white;
-
+  width: 100%;
   .button {
     width: fit-content;
   }
 }
 
+/* the div that the editor or the 'no file selected' message sit on */
 .innerDiv {
-  height: 100vh;
+  height: 100%;
 }
 
+/* the classname provided by the MDXEditor API, determining a base for the editor to sit on */
 .mdxeditor {
   --sidebar-margin: 15px;
   --title-bar-height: 32px;
@@ -31,20 +35,91 @@
   --editor-padding: 12px;
   height: calc(
     100vh - 2 * var(--sidebar-margin) - var(--title-bar-height) - var(--title-height) -
-      var(--editor-padding)
+      var(--editor-padding) - var(--tags-height) - 22px
   );
   font-family: var(--mantine-font-family);
   padding: 0;
+  line-height: 1rem;
 }
 
+.space {
+  height: 35px;
+}
+
+/* the name of the file (editable), at the top of the page */
 .title {
   font-family: 'Fredoka';
   color: var(--mantine-color-defaultScheme-9);
   font-size: 54px;
   font-weight: 500;
   line-height: 1.2;
+  min-width: 500px;
+  user-select: none;
+  outline: 0px solid transparent;
+  height: var(--title-height);
 }
 
+.tagsDiv {
+  /* padding-top: 8px; */
+  margin-left: var(--editor-padding);
+  width: calc(100% - var(--sidebar-margin));
+}
+
+.divider {
+  border-color: var(--mantine-color-defaultScheme-1);
+  padding-top: 0px;
+}
+
+.pillsInputField {
+  color: var(--mantine-color-defaultScheme-4);
+}
+
+.pillsInputField::placeholder {
+  color: var(--mantine-color-defaultScheme-3);
+}
+
+.pill {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.pill:hover {
+  color: var(--mantine-color-defaultScheme-6);
+  cursor: pointer;
+}
+
+.tagsDropdown {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-0);
+  border-color: var(--mantine-color-defaultScheme-1);
+  border-width: 2px;
+}
+
+.tagsOption {
+  /* border-radius: 0px; */
+}
+
+.tagsOption[data-combobox-selected] {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.tagsOption:hover {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.tagsDropdownEmpty {
+}
+
+.contentEditable {
+  font-family: var(--mantine-font-family);
+  padding-left: 0px !important;
+  --baseSolid: var(--mantine-color-defaultScheme-4);
+  min-height: 400px;
+}
+
+/* the styling of the content of the editor */
 .editor {
   color: var(--mantine-color-defaultScheme-6);
   background-color: var(--mantine-color-defaultScheme-0);
@@ -55,12 +130,22 @@
   background-color: var(--mantine-color-defaultScheme-0) !important;
   font-family: var(--mantine-font-family) !important;
   --baseBg: var(--mantine-color-defaultScheme-2);
+  --baseSolid: var(--mantine-color-defaultScheme-4);
 }
 
 .editor :global([contenteditable='true'] a) {
   color: var(--mantine-color-defaultScheme-5) !important;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.editor :global([contenteditable='true'] p) {
+  /* margin: 5; */
+  /* line-height: 1.5rem; */
+}
+
+.editor :global([contenteditable='true'] ul) {
+  line-height: 1.5rem;
 }
 
 .editor :global([contenteditable='true'] a:hover) {

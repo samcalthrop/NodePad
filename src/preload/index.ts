@@ -40,6 +40,9 @@ if (process.contextIsolated) {
       // triggers native filesystem GUI (for file selection)
       openFileSelector: (options) => ipcRenderer.invoke('open-file-selector', options),
 
+      // returns the path to the resource directory, for media retrieval and display
+      getResourcePath: () => ipcRenderer.invoke('getResourcePath'),
+
       // creates new record in db
       createCredentials: (email: string, password: string) => {
         // debug
@@ -144,6 +147,20 @@ if (process.contextIsolated) {
           ipcRenderer.on('rename-file-failure', (_event, message) => {
             console.log('on rename-file-failure');
             resolve(message);
+          });
+        });
+      },
+
+      // renames a given file in user's filesystem
+      getTags: (filepath: string) => {
+        // debug
+        console.log('preload:get-tags', { filepath });
+        ipcRenderer.send('rename-file', { filepath });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('get-tags-success', (_event, tags) => {
+            console.log('on get-tags-success');
+            resolve(tags);
           });
         });
       },

@@ -10,9 +10,13 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
   },
   renderer: {
+    optimizeDeps: {
+      exclude: ['chunk-7LZ2TQWD.js?v=30a74ddd', '@tabler/icons-react'],
+    },
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src'),
+        '@renderer/*': resolve(__dirname, 'src/renderer/src'),
+        '@resources': resolve(__dirname, 'resources'),
       },
     },
     plugins: [react()],

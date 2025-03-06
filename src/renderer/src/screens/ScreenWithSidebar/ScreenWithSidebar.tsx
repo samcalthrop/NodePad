@@ -10,6 +10,7 @@ export type ScreenWithSidebarProps = {
 export const ScreenWithSidebar = ({ children }: ScreenWithSidebarProps): JSX.Element => {
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [resizing, setResizing] = useState(false);
+  // define constraints
   const minWidth = 250;
   const maxWidth = 450;
 

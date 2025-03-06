@@ -2,9 +2,9 @@ import { rename } from 'node:fs/promises';
 import path from 'node:path';
 import fs from 'node:fs';
 
-type returnMessage = {
+export type returnMessage = {
   success: boolean;
-  path: string;
+  path?: string;
 };
 
 export const getFileContents = (filePath: string): string => {
@@ -36,7 +36,7 @@ export const renameFile = async (oldPath: string, newTitle: string): Promise<ret
   }
 };
 
-export const saveFile = (filePath: string, content: string): { success: boolean; err?: string } => {
+export const saveFile = (filePath: string, content: string): returnMessage => {
   fs.writeFile(filePath, content, (err) => {
     if (err) {
       console.log(err);
@@ -45,4 +45,14 @@ export const saveFile = (filePath: string, content: string): { success: boolean;
     return { success: true, err };
   });
   return { success: true };
+};
+
+// used to retrieve the Multi-purpose Internet Mail Extension (MIME) type of the image, so as to correctly encode base64 image data
+export const getMimeType = (filePath: string): string => {
+  const extension = filePath.toLowerCase();
+  if (extension.endsWith('.png')) return 'image/png';
+  if (extension.endsWith('.webp')) return 'image/webp';
+  if (extension.endsWith('.svg')) return 'image/svg+xml';
+  if (extension.endsWith('.gif')) return 'image/gif';
+  return 'image/jpeg'; // the default extension for .jpg, .jpeg...
 };

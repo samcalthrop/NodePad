@@ -13,31 +13,35 @@ import {
 } from '@mantine/core';
 import { NpmIcon } from '@mantinex/dev-icons';
 import { IconBook, IconChevronRight, IconChevronDown } from '@tabler/icons-react';
-import { useSharedData } from '@renderer/providers/SharedDataProvider';
+import { useSharedData } from '../../providers/SharedDataProvider';
 import { useNavigate } from 'react-router-dom';
 import { SettingsModal } from './Toolbar/SettingsModal/SettingsModal';
 import { HomeButton } from './Toolbar/HomeButton/HomeButton';
+import { CreateFile } from './Toolbar/CreateFileButton/CreateFileButton';
+import { FileIconProps } from '../../types';
 
 export const Sidebar = (): JSX.Element => {
   const [treeNodeData, setTreeNodeData] = useState<Array<TreeNodeData>>([]);
-  const { rootDirPath, title } = useSharedData();
+  const { rootDirPath, title, counter } = useSharedData();
 
   // retrieving the treeNodeData from the backend
   useEffect(() => {
     if (rootDirPath) {
       window.ipcAPI.getTreeNodeData(rootDirPath).then((treeNodeData) => {
-        setTreeNodeData(treeNodeData);
+        setTreeNodeData(treeNodeData[0]?.children || []);
       });
     }
-  }, [rootDirPath, title]);
+  }, [rootDirPath, title, counter]);
 
   return (
     <div className={classes.root}>
-      <div className={classes.title}>
-        <Title order={1}>files</Title>
+      <div className={classes.titleDiv}>
+        <Title className={classes.title} order={1}>
+          {rootDirPath?.split('/').pop() ?? 'files'}
+        </Title>
       </div>
       <Divider className={classes.divider} size="sm" />
-      <div className={classes.filetree}>
+      <div className={classes.filetreeDiv}>
         <ScrollArea.Autosize
           className={classes.scrollableArea}
           type="scroll"
@@ -61,17 +65,11 @@ export const Sidebar = (): JSX.Element => {
       <div className={classes.toolbar}>
         <SettingsModal />
         <HomeButton />
+        <CreateFile filePath={rootDirPath ?? '~'} name="new file" files={treeNodeData} />
       </div>
     </div>
   );
 };
-
-// declaring the properties each file icon will have
-interface FileIconProps {
-  name: string;
-  isFolder: boolean;
-  expanded: boolean;
-}
 
 // returns the appropriate file icon for a particular file extension
 function FileIcon({ name, isFolder, expanded }: FileIconProps): JSX.Element {
@@ -103,7 +101,7 @@ function Leaf({
   tree,
 }: RenderTreeNodePayload): ReactElement<FileIconProps> {
   // making use of the SharedDataProvider and the custom hook useSharedData() to access the shared data
-  const { setSelectedTreeNodeData, setSelectedFile } = useSharedData();
+  const { setSelectedTreeNodeData, setSelectedFile, setNewFileCreated } = useSharedData();
   const navigate = useNavigate();
 
   return (
@@ -116,8 +114,11 @@ function Leaf({
         if (!node.children) {
           console.log('Sidebar: node selected: ', node);
           // updating the shared data with the selected node
+          console.log(`navigating to ${node.value.split('/').pop()?.replace('.md', '')}`);
           setSelectedTreeNodeData(node);
           setSelectedFile(node.value.split('/').pop()?.replace('.md', '') || '');
+          // when an existing file is clicked, autofocus the content of the editor
+          setNewFileCreated(false);
           navigate('/home/edit-node-meta');
         }
       }}
