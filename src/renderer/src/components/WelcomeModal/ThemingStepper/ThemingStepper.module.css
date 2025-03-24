@@ -1,0 +1,60 @@
+.stepperContent {
+  height: var(--root-height);
+  width: var(--root-width);
+  background-color: var(--mantine-color-defaultScheme-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepperTitle {
+  display: flex;
+  flex-direction: center;
+  justify-content: center;
+  min-width: var(--title-width-padded);
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-6);
+  max-width: 300px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+.text {
+  color: var(--mantine-color-defaultScheme-9);
+  font-weight: 500;
+  font-size: 20px;
+  font-family: 'Fredoka';
+  max-width: var(--content-area-width-padded);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  max-width: 450px;
+}
+
+.selectFolderButton {
+  color: var(--mantine-color-defaultScheme-5);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 200px;
+  background-color: var(--mantine-color-defaultScheme-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.selectFolderButton:hover {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+}

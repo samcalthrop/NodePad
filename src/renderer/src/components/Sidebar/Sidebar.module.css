@@ -17,6 +17,7 @@
   width: calc(var(--sidebar-width) - 2);
   display: flex;
   flex-direction: column;
+  box-shadow: var(--mantine-shadow-md);
 }
 
 /* the base that the title sits on */
@@ -40,6 +41,7 @@
 .divider {
   margin-left: var(--padding-default);
   margin-right: var(--padding-default);
+  border-color: var(--mantine-color-defaultScheme-4);
 }
 
 .tree {

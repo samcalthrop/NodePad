@@ -46,6 +46,11 @@
 
 .segmentedControl {
   background-color: var(--mantine-color-defaultScheme-1);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.segmentedControlIndicator {
+  background-color: var(--mantine-color-defaultScheme-3);
 }
 
 .eyeIcon {

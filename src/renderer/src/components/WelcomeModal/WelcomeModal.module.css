@@ -1,0 +1,180 @@
+.root {
+  --title-width-padded: calc(2 * var(--mantine-spacing-lg) + var(--title-width));
+  --root-height: 70vh;
+  --root-width: 110vh;
+  --header-padding-top: var(--mantine-spacing-xl);
+  --header-padding-bottom: var(--mantine-spacing-xs);
+  --header-height: calc(var(--header-padding-bottom) + var(--header-padding-top) + 72px);
+  --main-area-height: calc(var(--root-height) - var(--header-height));
+  --padding-default: 20px;
+  --content-area-width: calc(var(--root-width) - var(--title-width-padded));
+  --content-area-width-padded: calc(var(--content-area-width) - 2 * var(--padding-default));
+  --profile-img-width: 160px;
+}
+
+.modal {
+  color: var(--mantine-color-defaultScheme-4);
+  font-family: 'Fredoka';
+}
+
+.stepperCompletedIcon {
+  color: var(--mantine-color-defaultScheme-1);
+}
+
+.stepperIcon {
+  border-color: var(--mantine-color-defaultScheme-3);
+  background-color: var(--mantine-color-defaultScheme-3);
+  color: var(--mantine-color-defaultScheme-1);
+  border-width: 3px;
+
+  &[data-progress] {
+    color: var(--mantine-color-defaultScheme-6);
+    border-color: var(--mantine-color-defaultScheme-6);
+  }
+
+  &[data-completed] {
+    color: var(--mantine-color-defaultScheme-6);
+    background-color: var(--mantine-color-defaultScheme-6);
+    border-color: var(--mantine-color-defaultScheme-6);
+  }
+}
+
+.stepperLabel {
+  color: var(--mantine-color-defaultScheme-3);
+
+  &[data-active] {
+    color: var(--mantine-color-defaultScheme-6);
+  }
+
+  &[data-completed] {
+    color: var(--mantine-color-defaultScheme-6);
+  }
+}
+
+.stepperLabel:hover {
+  color: var(--mantine-color-defaultScheme-6);
+}
+
+.stepperSeparator {
+  background-color: var(--mantine-color-defaultScheme-3);
+  border-radius: 5px;
+  width: 10px;
+  height: 2px;
+
+  &[data-active] {
+    background-color: var(--mantine-color-defaultScheme-6);
+  }
+
+  &[data-completed] {
+    background-color: var(--mantine-color-defaultScheme-6);
+  }
+}
+
+.stepperContainer {
+  background-color: var(--mantine-color-defaultScheme-1);
+  padding: 40px;
+}
+
+.stepperContent {
+  height: var(--root-height);
+  width: var(--root-width);
+  background-color: var(--mantine-color-defaultScheme-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepperTitle {
+  display: flex;
+  flex-direction: center;
+  justify-content: center;
+  min-width: var(--title-width-padded);
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-6);
+  max-width: 300px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 20px;
+}
+
+.close {
+  padding-top: var(--mantine-spacing-xs);
+  padding-right: var(--mantine-spacing-xs);
+  color: var(--mantine-color-defaultScheme-4);
+  background-color: var(--mantine-color-defaultScheme-1) !important;
+}
+
+.text {
+  color: var(--mantine-color-defaultScheme-9);
+  font-weight: 500;
+  font-size: 20px;
+  font-family: 'Fredoka';
+  max-width: var(--content-area-width-padded);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  max-width: 450px;
+}
+
+.selectFolderButton {
+  color: var(--mantine-color-defaultScheme-5);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 200px;
+  background-color: var(--mantine-color-defaultScheme-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.selectFolderButton:hover {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.navigationButtons {
+  display: flex;
+  gap: 0px;
+}
+
+.navButton {
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-5);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  transition: color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+}
+
+.navButton:hover {
+  color: var(--mantine-color-defaultScheme-6);
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.navButton:disabled {
+  color: var(--mantine-color-defaultScheme-3);
+  cursor: auto;
+}
+
+.link {
+  color: var(--mantine-color-defaultScheme-5);
+}
+
+.link:hover {
+  color: var(--mantine-color-defaultScheme-6);
+}

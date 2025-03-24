@@ -95,10 +95,6 @@
   border-width: 2px;
 }
 
-.tagsOption {
-  /* border-radius: 0px; */
-}
-
 .tagsOption[data-combobox-selected] {
   color: var(--mantine-color-defaultScheme-6);
   background-color: var(--mantine-color-defaultScheme-1);
@@ -107,9 +103,6 @@
 .tagsOption:hover {
   color: var(--mantine-color-defaultScheme-6);
   background-color: var(--mantine-color-defaultScheme-1);
-}
-
-.tagsDropdownEmpty {
 }
 
 .contentEditable {
@@ -139,11 +132,6 @@
   cursor: pointer;
 }
 
-.editor :global([contenteditable='true'] p) {
-  /* margin: 5; */
-  /* line-height: 1.5rem; */
-}
-
 .editor :global([contenteditable='true'] ul) {
   line-height: 1.5rem;
 }
@@ -155,4 +143,10 @@
 
 .editor :global([contenteditable='true'] h1) {
   color: var(--mantine-color-defaultScheme-9) !important;
+}
+
+.editor :global([contenteditable='true'] button) {
+  background-color: transparent !important;
+  color: var(--mantine-color-defaultScheme-5);
+  opacity: 0.15;
 }

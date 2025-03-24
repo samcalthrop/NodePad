@@ -6,7 +6,7 @@ progress:
   - [New File Button](#new-file)
 - ~~[Overhauling the UI Hierarchy](#overhauling-the-ui-hierarchy)~~
 - [Improving Aesthetics](#improving-aesthetics)
-  - ~~Theming~~
+  - Theming
   - ~~Making a custom title bar~~
   - ~~Login/ signup design~~
   - ~~Network~~

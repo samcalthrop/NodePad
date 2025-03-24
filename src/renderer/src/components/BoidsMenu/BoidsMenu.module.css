@@ -38,26 +38,35 @@
   padding-bottom: var(--padding);
 }
 
-.controls :global(.mantine-Slider-bar) {
+.sliderBar {
   background-color: var(--mantine-color-defaultScheme-5);
   color: var(--mantine-color-defaultScheme-2);
 }
 
-.controls :global(.mantine-Slider-thumb) {
+.sliderThumb {
   background-color: var(--mantine-color-defaultScheme-2);
   border-color: var(--mantine-color-defaultScheme-5);
 }
 
-.controls :global(.mantine-Slider-track) {
+.sliderTrack {
   background-color: var(--mantine-color-defaultScheme-2);
   color: var(--mantine-color-defaultScheme-2);
 }
 
-.controls :global(.mantine-Slider-mark) {
+.sliderTrack::before {
+  background-color: var(--mantine-color-defaultScheme-1);
+  color: var(--mantine-color-defaultScheme-2);
+}
+
+.sliderMark {
   border-color: var(--mantine-color-defaultScheme-2);
   color: var(--mantine-color-defaultScheme-2);
 }
 
-.controls :global(.mantine-Slider-markLabel) {
+.sliderMarkLabel {
   color: var(--mantine-color-defaultScheme-2);
+}
+
+.divider {
+  border-color: var(--mantine-color-defaultScheme-4);
 }

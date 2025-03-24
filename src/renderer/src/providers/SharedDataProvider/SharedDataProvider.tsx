@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { TreeNodeData } from '@mantine/core';
+import { MantineColorScheme, TreeNodeData } from '@mantine/core';
 import { UserCredential } from '../../types';
 
 export type SharedDataProviderProps = {
@@ -35,8 +35,16 @@ export type SharedData = {
   setCounter: React.Dispatch<React.SetStateAction<number | undefined>>;
   newFileCreated: boolean | undefined; // decides whether to autofocus content or title of file (new file -> title, file exists -> content)
   setNewFileCreated: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-  tags: Array<string> | undefined;
-  setTags: React.Dispatch<React.SetStateAction<Array<string> | undefined>>;
+  fileTags: Array<string> | undefined; // the tags associated with a file
+  setFileTags: React.Dispatch<React.SetStateAction<Array<string>>>;
+  globalTags: Array<string> | undefined; // the tags associated with any file in the root directory
+  setGlobalTags: React.Dispatch<React.SetStateAction<Array<string>>>;
+  tagOptions: Array<string> | undefined; // the tags the user can select for a file (not already selected)
+  setTagOptions: React.Dispatch<React.SetStateAction<Array<string>>>;
+  isNewUser: boolean | undefined; // the tags the user can select for a file (not already selected)
+  setIsNewUser: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  uiMode: MantineColorScheme | undefined; // the mode the user's UI is in (light or dark mode). affects colour schemes
+  setUiMode: React.Dispatch<React.SetStateAction<MantineColorScheme | undefined>>;
 };
 
 export const SharedDataContext = createContext<SharedData | undefined>(undefined);
@@ -56,7 +64,11 @@ export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.E
   const [saveFrequency, setSaveFrequency] = useState<string>();
   const [counter, setCounter] = useState<number>();
   const [newFileCreated, setNewFileCreated] = useState<boolean>();
-  const [tags, setTags] = useState<Array<string>>();
+  const [fileTags, setFileTags] = useState<Array<string>>([]);
+  const [globalTags, setGlobalTags] = useState<Array<string>>([]);
+  const [tagOptions, setTagOptions] = useState<Array<string>>([]);
+  const [isNewUser, setIsNewUser] = useState<boolean>();
+  const [uiMode, setUiMode] = useState<MantineColorScheme>();
 
   const value = useMemo<SharedData>(
     () => ({
@@ -88,8 +100,16 @@ export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.E
       setCounter,
       newFileCreated,
       setNewFileCreated,
-      tags,
-      setTags,
+      fileTags,
+      setFileTags,
+      globalTags,
+      setGlobalTags,
+      tagOptions,
+      setTagOptions,
+      isNewUser,
+      setIsNewUser,
+      uiMode,
+      setUiMode,
     }),
     [
       selectedTreeNodeData,
@@ -106,7 +126,11 @@ export function SharedDataProvider({ children }: SharedDataProviderProps): JSX.E
       saveFrequency,
       counter,
       newFileCreated,
-      tags,
+      fileTags,
+      globalTags,
+      tagOptions,
+      isNewUser,
+      uiMode,
     ]
   );
 

@@ -47,3 +47,9 @@ suchwemc
 kbjb
 
 lih
+
+| table |    |
+| ----- | :- |
+|       |    |
+|       |    |
+|       |    |

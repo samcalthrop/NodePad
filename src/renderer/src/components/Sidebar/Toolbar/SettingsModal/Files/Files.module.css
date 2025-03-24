@@ -1,0 +1,100 @@
+.root {
+  --title-width: 208px;
+  --title-width-padded: calc(2 * var(--mantine-spacing-lg) + var(--title-width));
+  --root-height: 70vh;
+  --root-width: 110vh;
+  --header-padding-top: var(--mantine-spacing-xl);
+  --header-padding-bottom: var(--mantine-spacing-xs);
+  --header-height: calc(var(--header-padding-bottom) + var(--header-padding-top) + 72px);
+  --main-area-height: calc(var(--root-height) - var(--header-height));
+  --padding-default: 20px;
+  --content-area-width: calc(var(--root-width) - var(--title-width-padded));
+  --content-area-width-padded: calc(var(--content-area-width) - 2 * var(--padding-default));
+}
+
+.stack {
+  height: calc(var(--main-area-height));
+}
+
+.text {
+  color: var(--mantine-color-defaultScheme-4);
+  font-weight: 500;
+  font-size: 16px;
+  max-width: var(--content-area-width-padded);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
+}
+
+.selectFolderButton {
+  align-self: flex-start;
+  height: auto;
+  align-content: center;
+  min-height: 36px;
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+  padding: 5px;
+  gap: 0;
+  /* padding-right: 78px; */
+  max-width: var(--content-area-width-padded);
+  text-overflow: ellipsis;
+}
+
+.selectFolderButton:hover {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-2);
+}
+
+.nsRoot {
+  align-self: flex-start;
+  height: auto;
+  align-content: center;
+  max-height: 36px;
+  margin-left: -5px;
+}
+
+.nsSection {
+  color: var(--mantine-color-defaultScheme-5);
+  /* padding-right: 5px; */
+  margin-left: 5px;
+}
+
+.nsInput {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-1);
+  /* width: fit-content; */
+  margin-left: 5px;
+}
+
+.nsInput:hover {
+  color: var(--mantine-color-defaultScheme-5);
+  background-color: var(--mantine-color-defaultScheme-2);
+}
+
+.settingComponent {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.settingsComponentTitle {
+  width: 100%;
+  color: var(--mantine-color-defaultScheme-9);
+}
+
+.settingsComponentContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.settingsSubHeading {
+  width: 100%;
+  color: var(--mantine-color-defaultScheme-3);
+}
+
+.dividerSettingsComponent {
+  width: var(--content-area-width-padded);
+  border-color: var(--mantine-color-defaultScheme-3);
+}

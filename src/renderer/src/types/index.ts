@@ -18,6 +18,9 @@ export type IpcAPI = {
   saveFile: (filePath: string, content: string) => Promise<boolean>;
   renameFile: (oldPath: string, newTitle: string) => Promise<renameReturnObject>;
   getResourcePath: () => Promise<string>;
+  getFileTags: (filePath: string) => Promise<{ tags: Array<string> }>;
+  saveFileTags: (filePath: string, tags: Array<string>) => Promise<boolean>;
+  getGlobalTags: (directoryPath: string) => Promise<{ tags: Array<string> }>;
 };
 
 declare global {
@@ -93,4 +96,12 @@ export type CreateFileProps = {
   filePath: string;
   name: string;
   files: Array<TreeNodeData>;
+};
+
+export type ThemeModuleProps = {
+  themeName: string;
+  label: string;
+  backgroundColour: string;
+  foregroundColour: string;
+  secondaryColour: string;
 };

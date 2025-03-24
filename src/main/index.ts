@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, IpcMainEvent } from 'electron';
+import { app, shell, BrowserWindow, ipcMain, IpcMainEvent, screen } from 'electron';
 import path, { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { TreeNodeData } from '@mantine/core';
@@ -11,16 +11,21 @@ import {
   createCredentials,
   updateEmail,
   updatePassword,
-  // getTags,
-  // saveTags,
+  getFileTags,
+  saveFileTags,
+  getGlobalTags,
 } from './dbHandling';
 import { getFileContents, saveFile, renameFile, getMimeType } from './fileHandling';
 
 function createWindow(): void {
+  // retrieve the dimensions of the user's primary display
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const { width, height } = primaryDisplay.workAreaSize;
+
   // create the browser window
   const mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: width,
+    height: height,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -139,23 +144,33 @@ app.whenReady().then(() => {
       : event.sender.send('rename-file-failure', result);
   });
 
-  // // when passed a filepath and array of tags
-  // ipcMain.on('save-tags', async (event: IpcMainEvent, { filePath, tags }) => {
-  //   // update db to store all existing tags attached to the file
-  //   console.log('main:save-tags', filePath, tags);
-  //   const result = await saveTags(filePath, tags);
-  //   result.success
-  //     ? event.sender.send('save-tags-success', result)
-  //     : event.sender.send('save-tags-failure', result);
-  // });
+  // when passed a filepath...
+  ipcMain.on('get-file-tags', async (event: IpcMainEvent, filePath) => {
+    // return the tags attached to that file, or an empty array
+    console.log('main:get-file-tags', filePath);
+    const result = await getFileTags(filePath);
+    console.log('file tags:', result);
+    event.sender.send('get-file-tags-success', result);
+  });
 
-  // // when passed a filepath
-  // ipcMain.on('get-tags', async (event: IpcMainEvent, filePath: string) => {
-  //   // return the tags attached to that file, or an empty array
-  //   console.log('main:get-tags', filePath);
-  //   const result = await getTags(filePath);
-  //   event.sender.send('get-tags-success', result);
-  // });
+  // when passed a filepath and array of tags...
+  ipcMain.on('save-file-tags', async (event: IpcMainEvent, { filePath, tags }) => {
+    // update db to store all existing tags attached to the file
+    console.log('main:save-file-tags', filePath, tags);
+    const result = await saveFileTags(filePath, tags);
+    result.success
+      ? event.sender.send('save-file-tags-success', result)
+      : event.sender.send('save-file-tags-failure', result);
+  });
+
+  // when passed the path to a directory...
+  ipcMain.on('get-global-tags', async (event: IpcMainEvent, directoryPath) => {
+    // return the tags attached to that file, or an empty array
+    console.log('main:get-global-tags', directoryPath);
+    const result = await getGlobalTags(directoryPath);
+    console.log('global tags:', result);
+    event.sender.send('get-global-tags-success', result);
+  });
 
   createWindow();
 

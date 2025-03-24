@@ -151,15 +151,43 @@ if (process.contextIsolated) {
         });
       },
 
-      // renames a given file in user's filesystem
-      getTags: (filepath: string) => {
+      // retrieves all tags attached to the given file
+      getFileTags: (filePath: string) => {
         // debug
-        console.log('preload:get-tags', { filepath });
-        ipcRenderer.send('rename-file', { filepath });
+        console.log('preload:get-file-tags', filePath);
+        ipcRenderer.send('get-file-tags', filePath);
 
         return new Promise((resolve) => {
-          ipcRenderer.on('get-tags-success', (_event, tags) => {
-            console.log('on get-tags-success');
+          ipcRenderer.on('get-file-tags-success', (_event, tags) => {
+            console.log('on get-file-tags-success');
+            resolve(tags);
+          });
+        });
+      },
+
+      // saves all tags attached to a file
+      saveFileTags: (filePath: string, tags: Array<string>) => {
+        // debug
+        console.log('preload:save-file-tags', { filePath, tags });
+        ipcRenderer.send('save-file-tags', { filePath, tags });
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('save-file-tags-success', (_event, message) => {
+            console.log('on save-file-tags-success');
+            resolve(message);
+          });
+        });
+      },
+
+      // retrieves all the tags used in the files within the given root directory
+      getGlobalTags: (directoryPath: string) => {
+        // debug
+        console.log('preload:get-global-tags', directoryPath);
+        ipcRenderer.send('get-global-tags', directoryPath);
+
+        return new Promise((resolve) => {
+          ipcRenderer.on('get-global-tags-success', (_event, tags) => {
+            console.log('on get-global-tags-success');
             resolve(tags);
           });
         });

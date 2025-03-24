@@ -532,6 +532,9 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       <div className={classes.viewEditToggle}>
         <SegmentedControl
           className={classes.segmentedControl}
+          classNames={{
+            indicator: classes.segmentedControlIndicator,
+          }}
           value={mode}
           onChange={setMode}
           data={[

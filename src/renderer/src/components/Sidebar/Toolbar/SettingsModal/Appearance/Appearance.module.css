@@ -1,0 +1,128 @@
+.root {
+  --title-width: 208px;
+  --title-width-padded: calc(2 * var(--mantine-spacing-lg) + var(--title-width));
+  --root-height: 70vh;
+  --root-width: 110vh;
+  --header-padding-top: var(--mantine-spacing-xl);
+  --header-padding-bottom: var(--mantine-spacing-xs);
+  --header-height: calc(var(--header-padding-bottom) + var(--header-padding-top) + 72px);
+  --main-area-height: calc(var(--root-height) - var(--header-height));
+  --padding-default: 20px;
+  --content-area-width: calc(var(--root-width) - var(--title-width-padded));
+  --content-area-width-padded: calc(var(--content-area-width) - 2 * var(--padding-default));
+}
+
+.stack {
+  height: calc(var(--main-area-height));
+}
+
+.text {
+  color: var(--mantine-color-defaultScheme-4);
+  font-weight: 500;
+  font-size: 16px;
+  max-width: var(--content-area-width-padded);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  width: 100%;
+}
+
+.settingComponent {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.settingsComponentTitle {
+  width: 100%;
+  color: var(--mantine-color-defaultScheme-9);
+}
+
+.settingsComponentContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.settingsSubHeading {
+  width: 100%;
+  color: var(--mantine-color-defaultScheme-3);
+}
+
+.checkbox {
+  border: 1px solid var(--mantine-color-defaultScheme-3);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  border-width: 2px;
+  transition:
+    color 100ms ease,
+    background-color 100ms ease,
+    border-color 100ms ease;
+  cursor: pointer;
+  max-width: 240px;
+  background-color: var(--mantine-color-defaultScheme-2);
+
+  &[data-checked] {
+    background-color: var(--mantine-color-defaultScheme-2);
+    border-color: var(--mantine-color-defaultScheme-5);
+    color: var(--mantine-color-defaultScheme-5);
+  }
+
+  & * {
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+.dividerSettingsComponent {
+  width: var(--content-area-width-padded);
+  border-color: var(--mantine-color-defaultScheme-3);
+}
+
+.grid {
+  padding-right: var(--padding-default);
+}
+
+.themeBox {
+  height: 100px;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.themeBox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.selectedTheme {
+  border-width: 2px;
+  border-style: solid;
+}
+
+.themeAccent {
+  height: 10px;
+  width: 50%;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.themeLabel {
+  color: var(--mantine-color-defaultScheme-7);
+  font-size: 16px;
+  margin-top: 10px;
+  font-family: 'Fredoka';
+  font-weight: 500;
+}
+
+.themeAccentSecondary {
+  height: 5px;
+  width: 25%;
+  border-radius: 10px;
+  margin-top: 5px;
+}

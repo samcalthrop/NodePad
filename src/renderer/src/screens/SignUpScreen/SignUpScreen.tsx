@@ -6,10 +6,12 @@ import { useForm } from '@mantine/form';
 import { useCallback, useState } from 'react';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { UserCredential } from '../../types';
+import { useSharedData } from '../../providers/SharedDataProvider';
 
 export const SignUpScreen = (): JSX.Element => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState<UserCredential>();
+  const { setIsNewUser, setEmail, setPassword } = useSharedData();
 
   // defining the rules for the login form
   const form = useForm({
@@ -34,9 +36,12 @@ export const SignUpScreen = (): JSX.Element => {
     const { email, password }: UserCredential = form.getValues();
     const result = await window.ipcAPI.createCredentials(email, password);
     if (result) {
-      setCredentials({ email, password });
       console.log(credentials);
-      navigate('/login');
+      setCredentials({ email, password });
+      setEmail(email); // set the user's credentials and log them in
+      setPassword(password);
+      setIsNewUser(true); // give the user a welcome screen
+      navigate('/home');
     } else {
       console.log('Email already taken');
       alert(

@@ -52,11 +52,19 @@ export const PhysicsControls = ({
 
       {isOpen && (
         <Stack className={classes.content}>
-          <Divider size="sm" />
+          <Divider size="sm" className={classes.divider} />
           <div>
             <Text size="sm">protected range</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                trackContainer: classes.sliderTrackContainer,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={protectedRange}
               onChange={(value) => onUpdate('protectedRange', value)}
@@ -67,7 +75,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">visual range</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={visualRange}
               onChange={(value) => onUpdate('visualRange', value)}
@@ -78,7 +93,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">avoid factor</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={avoidFactor}
               onChange={(value) => onUpdate('avoidFactor', value)}
@@ -90,7 +112,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">turn factor</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={turnFactor}
               onChange={(value) => onUpdate('turnFactor', value)}
@@ -102,7 +131,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">centering factor</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={centeringFactor}
               onChange={(value) => onUpdate('centeringFactor', value)}
@@ -114,7 +150,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">matching factor</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={matchingFactor}
               onChange={(value) => onUpdate('matchingFactor', value)}
@@ -126,7 +169,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">max speed</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={maxSpeed}
               onChange={(value) => onUpdate('maxSpeed', value)}
@@ -135,11 +185,18 @@ export const PhysicsControls = ({
               step={0.01}
             />
           </div>
-          <Divider size="sm" />
+          <Divider size="sm" className={classes.divider} />
           <div>
             <Text size="sm">node size</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={nodeRadius}
               onChange={(value) => onUpdate('nodeRadius', value)}
@@ -151,7 +208,14 @@ export const PhysicsControls = ({
           <div>
             <Text size="sm">title opacity</Text>
             <Slider
-              className={classes.slider}
+              classNames={{
+                root: classes.sliderRoot,
+                track: classes.sliderTrack,
+                bar: classes.sliderBar,
+                thumb: classes.sliderThumb,
+                mark: classes.sliderMark,
+                markLabel: classes.sliderMarkLabel,
+              }}
               label={null}
               value={titleOpacity}
               onChange={(value) => setTitleOpacity(value)}

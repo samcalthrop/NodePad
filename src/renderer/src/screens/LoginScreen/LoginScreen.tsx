@@ -50,7 +50,6 @@ export const LoginScreen = (): JSX.Element => {
         <div className={classes.base}>
           <br />
           <Title className={classes.title}>log in</Title>
-          {/* <form onSubmit={form.onSubmit(() => navigate('/home'))} className={classes.form}> */}
           <form
             onSubmit={form.onSubmit((values) => {
               console.log('onSubmit', { values });

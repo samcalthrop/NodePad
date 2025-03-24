@@ -19,13 +19,11 @@ import {
   frontmatterPlugin,
   headingsPlugin,
   imagePlugin,
-  jsxPlugin,
   linkDialogPlugin,
   linkPlugin,
   listsPlugin,
   markdownShortcutPlugin,
   quotePlugin,
-  sandpackPlugin,
   tablePlugin,
   thematicBreakPlugin,
 } from '@mdxeditor/editor';
@@ -44,25 +42,23 @@ export const EditNodeMetaScreen = (): JSX.Element => {
     setTitle,
     saveFrequency,
     newFileCreated,
+    fileTags,
+    setFileTags,
+    globalTags,
+    setGlobalTags,
+    rootDirPath,
+    // tagOptions,
+    // setTagOptions,
   } = useSharedData();
   // uses a react state to get/ change the current contents of the file being edited
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
   // uses a react state to get/ change the current contents of the file being edited
   const [fileContents, setFileContents] = useState<string | null>(null);
+  const previousFilePathRef = useRef<string | null>(null);
 
   // ----------------------------
 
-  const tags: Array<string> = [
-    'maths',
-    'english',
-    'computer science',
-    'sciences',
-    'physics',
-    'english literature',
-    'psychology',
-  ];
   const [search, setSearch] = useState('');
-  const [value, setValue] = useState<Array<string>>([]);
 
   const combobox = useCombobox({
     onDropdownClose: (): void => combobox.resetSelectedOption(),
@@ -70,49 +66,69 @@ export const EditNodeMetaScreen = (): JSX.Element => {
   });
 
   const handleValueSelect = (val: string): void => {
-    setValue((current) =>
+    setFileTags((current) =>
       current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
     );
     combobox.closeDropdown();
   };
 
   const handleValueRemove = (val: string): void => {
-    setValue((current) => current.filter((v) => v !== val));
+    setFileTags((current) => current.filter((v) => v !== val));
   };
 
-  const values = value.map((item) => (
-    <Pill
-      className={classes.pill}
-      size="md"
-      key={item}
-      withRemoveButton
-      onRemove={() => handleValueRemove(item)}
-    >
-      {item}
-    </Pill>
-  ));
+  const selectedTagPills = Array.isArray(fileTags)
+    ? fileTags.map((item) => (
+        <Pill
+          className={classes.pill}
+          size="md"
+          key={item}
+          withRemoveButton
+          onRemove={() => handleValueRemove(item)}
+        >
+          {item}
+        </Pill>
+      ))
+    : [];
 
-  const options = tags
-    .filter(
-      (item) =>
-        !value.includes(item) && // exclude already selected tags
-        item.toLowerCase().includes(search.trim().toLowerCase())
-    )
-    .map((item) => (
-      <Combobox.Option value={item} key={item}>
-        <Group gap="4" className={classes.tagsDropdownGroup}>
-          <span>#</span>
-          <Highlight highlight={search} color="#bca0d9">
-            {item}
-          </Highlight>
-        </Group>
-      </Combobox.Option>
-    ));
+  const tagOptions = Array.isArray(globalTags)
+    ? globalTags
+        .filter(
+          (item) =>
+            !fileTags?.includes(item) && // exclude already selected tags
+            item.toLowerCase().includes(search.trim().toLowerCase())
+        )
+        .map((item) => (
+          <Combobox.Option value={item} key={item}>
+            <Group gap="4" className={classes.tagsDropdownGroup}>
+              <span>#</span>
+              <Highlight highlight={search} color="#bca0d9">
+                {item}
+              </Highlight>
+            </Group>
+          </Combobox.Option>
+        ))
+    : [];
 
   useEffect(() => {
     // we need to wait for options to render before we can select first one
     if (search !== '') combobox.selectFirstOption();
   }, [search]);
+
+  useEffect(() => {
+    if (!selectedTreeNodeData) return;
+    // Skip the first update when switching to a new file
+    if (previousFilePathRef.current !== selectedTreeNodeData.value) {
+      previousFilePathRef.current = selectedTreeNodeData.value;
+      return;
+    }
+    // if (fileTags?.length === 0) return;
+
+    window.ipcAPI.saveFileTags(selectedTreeNodeData.value, fileTags || []).then((message) => {
+      // debug
+      console.log(selectedTreeNodeData.value);
+      console.log('EditNodeMetaScreen saveTags:', message);
+    });
+  }, [fileTags]);
 
   // -----------------------------
 
@@ -120,7 +136,8 @@ export const EditNodeMetaScreen = (): JSX.Element => {
     console.log('EditNodeMetaScreen selectedTreeNodeData:', selectedTreeNodeData);
     if (!selectedTreeNodeData) return;
 
-    window.ipcAPI.getFileContents(`${selectedTreeNodeData.value}`).then((fileContents) => {
+    window.ipcAPI.getFileContents(selectedTreeNodeData.value).then((fileContents) => {
+      // debug
       console.log('EditNodeMetaScreen getFileContents:', fileContents);
       // setting the markdown of the editor to the file contents
       mdxEditorRef.current?.setMarkdown(fileContents);
@@ -129,18 +146,45 @@ export const EditNodeMetaScreen = (): JSX.Element => {
         mdxEditorRef.current?.getMarkdown()
       );
       setFileContents(fileContents);
+
       // await the contents being set before auto-focusing the content
       setTimeout(() => {
         mdxEditorRef.current?.focus();
       }, 0);
     });
+
+    // retrieving tags from the backend and displaying them on load
+    window.ipcAPI.getFileTags(selectedTreeNodeData.value).then((result) => {
+      // debug
+      console.log(selectedTreeNodeData.value, previousFilePathRef.current);
+      console.log('EditNodeMetaScreen getTags:', result.tags, typeof result.tags);
+      setFileTags(result.tags);
+      // setFileTags(Array.isArray(tags) ? tags : []);
+    });
+
+    if (rootDirPath) {
+      window.ipcAPI.getGlobalTags(rootDirPath).then((result) => {
+        // debug
+        console.log('EditNodeMetaScreen getGlobalTags:', result);
+        setGlobalTags(result.tags);
+        // setGlobalTags(Array.isArray(tags) ? tags : []);
+      });
+    }
   }, [selectedTreeNodeData]);
 
   const handleSaveContent = useCallback(
     async (markdown: string): Promise<void> => {
+      const filteredMarkdown = markdown.replaceAll('\n\\|', '|').replaceAll('\\>', '>');
+      // mdxEditorRef.current?.setMarkdown(filteredMarkdown);
+      setFileContents(filteredMarkdown);
+
+      setTimeout(() => {
+        mdxEditorRef.current?.focus();
+      }, 0);
+
       if (!selectedTreeNodeData) return;
       try {
-        await window.ipcAPI.saveFile(selectedTreeNodeData.value, markdown);
+        await window.ipcAPI.saveFile(selectedTreeNodeData.value, filteredMarkdown);
         console.log('File saved successfully');
       } catch (error) {
         console.error('Error saving file:', error);
@@ -242,7 +286,7 @@ export const EditNodeMetaScreen = (): JSX.Element => {
                     onClick={() => combobox.openDropdown()}
                   >
                     <Pill.Group>
-                      {values}
+                      {selectedTagPills}
 
                       <Combobox.EventsTarget>
                         <PillsInput.Field
@@ -259,12 +303,17 @@ export const EditNodeMetaScreen = (): JSX.Element => {
                           onKeyDown={(event) => {
                             if (event.key === 'Backspace' && search.length === 0) {
                               event.preventDefault();
-                              handleValueRemove(value[value.length - 1]);
+                              handleValueRemove(fileTags ? fileTags[fileTags.length - 1] : '');
                             }
                             if (event.key === 'Enter') {
-                              // if (value.length === 0) {
-                              //   setTags([...tags, search]);
-                              // }
+                              if (tagOptions?.length === 0 && search.trim() !== '') {
+                                const newTag = search.trim();
+                                setGlobalTags((prevTags) => {
+                                  const tagsArray = Array.isArray(prevTags) ? prevTags : [];
+                                  return [...tagsArray, newTag];
+                                });
+                                setFileTags((current) => [...current, newTag]);
+                              }
                               setSearch('');
                             }
                           }}
@@ -276,8 +325,8 @@ export const EditNodeMetaScreen = (): JSX.Element => {
 
                 <Combobox.Dropdown>
                   <Combobox.Options>
-                    {options.length > 0 ? (
-                      options
+                    {tagOptions.length > 0 ? (
+                      tagOptions
                     ) : (
                       <Combobox.Empty>nothing to see here</Combobox.Empty>
                     )}
@@ -301,15 +350,13 @@ export const EditNodeMetaScreen = (): JSX.Element => {
                   diffSourcePlugin(),
                   headingsPlugin(),
                   imagePlugin(),
-                  jsxPlugin(),
                   linkDialogPlugin(),
                   linkPlugin(),
                   listsPlugin(),
                   markdownShortcutPlugin(),
-                  quotePlugin(),
                   tablePlugin(),
+                  quotePlugin(),
                   thematicBreakPlugin(),
-                  sandpackPlugin(),
                   frontmatterPlugin(),
                   // toolbarPlugin({
                   //   toolbarContents: () => (

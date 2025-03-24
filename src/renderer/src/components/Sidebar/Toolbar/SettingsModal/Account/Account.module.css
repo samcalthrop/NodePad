@@ -1,0 +1,37 @@
+.root {
+  --root-height: 70vh;
+  --root-width: 110vh;
+  --main-area-height: calc(var(--root-height) - var(--header-height));
+  --profile-img-width: 160px;
+
+  height: var(--root-height);
+  width: var(--root-width);
+  background-color: var(--mantine-color-defaultScheme-1);
+  font-weight: 500;
+}
+
+.stack {
+  height: calc(var(--main-area-height));
+}
+
+.profileImg {
+  width: var(--profile-img-width);
+  height: var(--profile-img-width);
+  border-radius: calc(var(--profile-img-width) / 2);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid var(--mantine-color-defaultScheme-3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--mantine-color-defaultScheme-1);
+}
+
+.cameraIcon {
+  color: var(--mantine-color-defaultScheme-3);
+}
+
+.dividerSettingsComponent {
+  width: var(--content-area-width-padded);
+  border-color: var(--mantine-color-defaultScheme-3);
+}

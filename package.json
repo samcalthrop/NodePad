@@ -31,7 +31,7 @@
     "@mantine/spotlight": "^7.13.5",
     "@mantine/tiptap": "^7.13.5",
     "@mantinex/mantine-header": "^1.0.2",
-    "@mdxeditor/editor": "^3.17.2",
+    "@mdxeditor/editor": "^3.26.0",
     "@tiptap/extension-link": "^2.9.1",
     "@tiptap/pm": "^2.9.1",
     "@tiptap/react": "^2.9.1",
@@ -43,7 +43,8 @@
     "path": "^0.12.7",
     "poline": "^0.7.0",
     "react-router-dom": "^6.26.1",
-    "repo2pdf": "^2.2.4"
+    "repo2pdf": "^2.2.4",
+    "shiki": "^3.1.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
