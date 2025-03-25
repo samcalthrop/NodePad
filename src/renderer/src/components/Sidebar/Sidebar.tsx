@@ -124,7 +124,6 @@ function Leaf({
       }}
     >
       <div className={classes.leaf}>
-        {/* <div></div> */}
         <FileIcon name={node.value} isFolder={hasChildren} expanded={expanded} />
         <Text className={classes.leafText}>{node.label}</Text>
       </div>

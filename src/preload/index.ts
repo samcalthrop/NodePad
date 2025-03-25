@@ -5,10 +5,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
-
     // communication between front and backend for data transfer (tree node data)
-    // adapted from: https://www.jsgarden.co/blog/how-to-handle-electron-ipc-events-with-typescript
-
     // expose these functions to the backend (main):
     contextBridge.exposeInMainWorld('ipcAPI', {
       // retrieves file structure from given path, in TreeNodeData[] format
