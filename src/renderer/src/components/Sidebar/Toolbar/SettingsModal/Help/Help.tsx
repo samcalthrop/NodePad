@@ -4,6 +4,8 @@ import demo1 from '@resources/settings-help/demo1.gif';
 import demo2 from '@resources/settings-help/demo2.gif';
 import demo3 from '@resources/settings-help/demo3.gif';
 import demo4 from '@resources/settings-help/demo4.gif';
+import demo5 from '@resources/settings-help/demo5.gif';
+import demo6 from '@resources/settings-help/demo6.gif';
 
 export const Help = (): JSX.Element => {
   return (
@@ -53,6 +55,32 @@ export const Help = (): JSX.Element => {
             radius="md"
             src={demo1}
             alt="navigating to the select directory setting"
+            fallbackSrc="https://placehold.co/600x400?text=Placeholder"
+            className={classes.demo}
+          />
+          <Space h="md" />
+          <Text className={classes.text}>
+            then, to open a note, you can left click on its name in the sidebar, or right click on
+            it in the node network:
+          </Text>
+          <Space h="md" />
+          <Image
+            radius="md"
+            src={demo6}
+            alt="opening a note"
+            fallbackSrc="https://placehold.co/600x400?text=Placeholder"
+            className={classes.demo}
+          />
+          <Space h="md" />
+          <Text className={classes.text}>
+            furthermore, to create a new note, you can either click on the `+` icon at the bottom of
+            the sidebar, or press `cmd`+`n` (mac) or `ctrl`+`n` (windows/ linux):
+          </Text>
+          <Space h="md" />
+          <Image
+            radius="md"
+            src={demo5}
+            alt="creating a new note"
             fallbackSrc="https://placehold.co/600x400?text=Placeholder"
             className={classes.demo}
           />

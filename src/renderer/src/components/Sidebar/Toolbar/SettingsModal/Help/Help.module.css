@@ -111,10 +111,9 @@
   font-weight: 500;
   font-size: 16px;
   max-width: var(--content-area-width-padded);
-  text-overflow: ellipsis;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* text-overflow: ellipsis; */
+  /* white-space: nowrap; */
   display: block;
   width: 100%;
 }

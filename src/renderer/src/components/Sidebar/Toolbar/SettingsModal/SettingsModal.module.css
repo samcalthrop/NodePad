@@ -103,7 +103,6 @@
 
 .panel {
   padding-left: var(--padding-default);
-  /* height: calc(var(--main-area-height) - var(--padding-default)); */
 }
 
 .text {
@@ -111,7 +110,6 @@
   font-weight: 500;
   font-size: 16px;
   max-width: var(--content-area-width-padded);
-  text-overflow: ellipsis;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -128,7 +126,6 @@
   background-color: var(--mantine-color-defaultScheme-1);
   padding: 5px;
   gap: 0;
-  /* padding-right: 78px; */
   max-width: var(--content-area-width-padded);
   text-overflow: ellipsis;
 }
@@ -148,14 +145,12 @@
 
 .nsSection {
   color: var(--mantine-color-defaultScheme-5);
-  /* padding-right: 5px; */
   margin-left: 5px;
 }
 
 .nsInput {
   color: var(--mantine-color-defaultScheme-5);
   background-color: var(--mantine-color-defaultScheme-1);
-  /* width: fit-content; */
   margin-left: 5px;
 }
 
@@ -229,7 +224,6 @@
   width: var(--title-width);
   background-color: var(--mantine-color-defaultScheme-2);
   border-color: var(--mantine-color-defaultScheme-3);
-  /* margin-right: calc(var(--padding-default) + var(--root-width) - var(--title-width-padded)); */
 }
 
 .behindDividerNavBar {

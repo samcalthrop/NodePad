@@ -92,7 +92,7 @@ const NavBar = (): JSX.Element => {
             type="scroll"
             scrollHideDelay={100}
           >
-            <Files />
+            <Files /> {/* imported from Files.tsx */}
           </ScrollArea.Autosize>
         </Tabs.Panel>
 
@@ -106,7 +106,7 @@ const NavBar = (): JSX.Element => {
             type="scroll"
             scrollHideDelay={100}
           >
-            <Appearance />
+            <Appearance /> {/* imported from Appearance.tsx */}
           </ScrollArea.Autosize>
         </Tabs.Panel>
 
@@ -116,7 +116,7 @@ const NavBar = (): JSX.Element => {
             type="scroll"
             scrollHideDelay={100}
           >
-            <Account />
+            <Account /> {/* imported from Account.tsx */}
           </ScrollArea.Autosize>
         </Tabs.Panel>
 
@@ -126,7 +126,7 @@ const NavBar = (): JSX.Element => {
             type="scroll"
             scrollHideDelay={100}
           >
-            <Help />
+            <Help /> {/* imported from Help.tsx */}
           </ScrollArea.Autosize>
         </Tabs.Panel>
       </Tabs>

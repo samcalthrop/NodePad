@@ -38,7 +38,6 @@
   background-color: var(--mantine-color-defaultScheme-1);
   padding: 5px;
   gap: 0;
-  /* padding-right: 78px; */
   max-width: var(--content-area-width-padded);
   text-overflow: ellipsis;
 }
@@ -48,6 +47,7 @@
   background-color: var(--mantine-color-defaultScheme-2);
 }
 
+/* ns stands for 'native select' */
 .nsRoot {
   align-self: flex-start;
   height: auto;
@@ -58,14 +58,12 @@
 
 .nsSection {
   color: var(--mantine-color-defaultScheme-5);
-  /* padding-right: 5px; */
   margin-left: 5px;
 }
 
 .nsInput {
   color: var(--mantine-color-defaultScheme-5);
   background-color: var(--mantine-color-defaultScheme-1);
-  /* width: fit-content; */
   margin-left: 5px;
 }
 
