@@ -34,7 +34,6 @@ import { useThrottledCallback } from '@mantine/hooks';
 import { IconHash } from '@tabler/icons-react';
 
 export const EditNodeMetaScreen = (): JSX.Element => {
-  // the file selected in the sidebar
   const {
     selectedTreeNodeData,
     setSelectedTreeNodeData,
@@ -47,16 +46,12 @@ export const EditNodeMetaScreen = (): JSX.Element => {
     globalTags,
     setGlobalTags,
     rootDirPath,
-    // tagOptions,
-    // setTagOptions,
   } = useSharedData();
   // uses a react state to get/ change the current contents of the file being edited
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
   // uses a react state to get/ change the current contents of the file being edited
   const [fileContents, setFileContents] = useState<string | null>(null);
   const previousFilePathRef = useRef<string | null>(null);
-
-  // ----------------------------
 
   const [search, setSearch] = useState('');
 
@@ -116,21 +111,19 @@ export const EditNodeMetaScreen = (): JSX.Element => {
 
   useEffect(() => {
     if (!selectedTreeNodeData) return;
-    // Skip the first update when switching to a new file
+    // skip the first update when switching to a new file
     if (previousFilePathRef.current !== selectedTreeNodeData.value) {
       previousFilePathRef.current = selectedTreeNodeData.value;
       return;
     }
-    // if (fileTags?.length === 0) return;
 
+    // save file tags
     window.ipcAPI.saveFileTags(selectedTreeNodeData.value, fileTags || []).then((message) => {
       // debug
       console.log(selectedTreeNodeData.value);
       console.log('EditNodeMetaScreen saveTags:', message);
     });
   }, [fileTags]);
-
-  // -----------------------------
 
   useEffect(() => {
     console.log('EditNodeMetaScreen selectedTreeNodeData:', selectedTreeNodeData);
@@ -159,7 +152,6 @@ export const EditNodeMetaScreen = (): JSX.Element => {
       console.log(selectedTreeNodeData.value, previousFilePathRef.current);
       console.log('EditNodeMetaScreen getTags:', result.tags, typeof result.tags);
       setFileTags(result.tags);
-      // setFileTags(Array.isArray(tags) ? tags : []);
     });
 
     if (rootDirPath) {
@@ -167,7 +159,6 @@ export const EditNodeMetaScreen = (): JSX.Element => {
         // debug
         console.log('EditNodeMetaScreen getGlobalTags:', result);
         setGlobalTags(result.tags);
-        // setGlobalTags(Array.isArray(tags) ? tags : []);
       });
     }
   }, [selectedTreeNodeData]);
@@ -175,7 +166,6 @@ export const EditNodeMetaScreen = (): JSX.Element => {
   const handleSaveContent = useCallback(
     async (markdown: string): Promise<void> => {
       const filteredMarkdown = markdown.replaceAll('\n\\|', '|').replaceAll('\\>', '>');
-      // mdxEditorRef.current?.setMarkdown(filteredMarkdown);
       setFileContents(filteredMarkdown);
 
       setTimeout(() => {

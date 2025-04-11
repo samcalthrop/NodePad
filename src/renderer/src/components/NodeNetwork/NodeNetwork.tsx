@@ -45,7 +45,6 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
     maxSpeed: 2,
     nodeRadius: 15,
   });
-  // const radius: number = nodeRadius || 15;
 
   const handlePhysicsUpdate = (param: string, value: number): void => {
     setPhysicsParams((prev) => ({ ...prev, [param]: value }));
@@ -174,26 +173,6 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       parseInt(computedStyle.getPropertyValue('--node-connection-width')) || 2;
     const fontFamily: string = computedStyle.getPropertyValue('--node-font') || 'Fira Code';
     const textSize: string = computedStyle.getPropertyValue('--node-text-size') || '12px';
-
-    // // clear only the used area instead of entire canvas
-    // const usedArea = nodes.reduce(
-    //   (acc, node) => {
-    //     return {
-    //       minX: Math.min(acc.minX, node.x - 3 * radius),
-    //       minY: Math.min(acc.minY, node.y - 3 * radius),
-    //       maxX: Math.max(acc.maxX, node.x + 3 * radius),
-    //       maxY: Math.max(acc.maxY, node.y + 3 * radius),
-    //     };
-    //   },
-    //   { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
-    // );
-
-    // ctx.clearRect(
-    //   usedArea.minX,
-    //   usedArea.minY,
-    //   usedArea.maxX - usedArea.minX,
-    //   usedArea.maxY - usedArea.minY
-    // );
 
     // batch similar operations
     ctx.strokeStyle = connectionColour;
@@ -509,7 +488,7 @@ export const NodeNetwork = ({ files }: NodeNetworkProps): JSX.Element => {
       if (physicsSystem.current) {
         const updatedNodes = [...nodes];
         physicsSystem.current.update(updatedNodes, draggedNode, isIdle, prevMousePos || undefined);
-        // Check if any nodes actually moved before updating state
+        // check if any nodes actually moved before updating state
         const hasChanges = updatedNodes.some(
           (node, i) => node.x !== nodes[i].x || node.y !== nodes[i].y
         );

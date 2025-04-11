@@ -44,7 +44,7 @@ export class PhysicsSystem {
           node.vy = mouseVelocity.y;
         }
       } else {
-        // slows nodes by friction factor
+        // slows nodes by friction coefficient
         node.vx *= this.drag;
         node.vy *= this.drag;
 

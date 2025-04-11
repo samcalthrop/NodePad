@@ -1,9 +1,11 @@
 import { Space, Title, Text, Group } from '@mantine/core';
 import classes from './FinalNotesStepper.module.css';
 import { useNavigate } from 'react-router-dom';
+import { useSharedData } from '../../../providers/SharedDataProvider';
 
 export const FinalNotesStepper = (): JSX.Element => {
   const navigate = useNavigate();
+  const { setIsNewUser } = useSharedData();
 
   return (
     <div className={classes.stepperContent}>
@@ -30,10 +32,13 @@ export const FinalNotesStepper = (): JSX.Element => {
             className={classes.link}
             size="sm"
             style={{ cursor: 'pointer' }}
-            onClick={() => navigate('/home')}
+            onClick={() => {
+              navigate('/home');
+              setIsNewUser(false); // closes the modal
+            }}
             td="underline"
           >
-            start taking notes!
+            start taking notes! (click here or press `escape`)
           </Text>
         </Group>
         <Space h="md" />
