@@ -1,7 +1,0 @@
-*italics*
-
-*italics*
-
-**bold**
-
-`code`
