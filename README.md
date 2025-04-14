@@ -34,7 +34,7 @@ Within the write-up are several folders, each corresponding to different parts o
 
 ### Download
 
-_Note: these instructions are all written in `bash`, so if using a different shell such as chocolately, you cannot just copy + paste._
+_Note: these instructions are all written in `bash`, so if using a different shell, you cannot just copy + paste._
 
 To download the repository for local use, navigate to where you want to store the project in your file system, i.e:
 
@@ -96,3 +96,7 @@ A demo of most of the features the app includes is below. A list of these featur
 - A log in and signup system (_details stored in a database_),
 - Account customisation such as changing email and password,
 - Tutorials for if users get stuck, and more
+
+<img src="./resources/demo.gif" alt="NodePad Demo" width="100%" />
+
+<img src="./resources/demo copy.gif" alt="NodePad Demo" width="100%" />
