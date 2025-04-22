@@ -26,6 +26,52 @@ Within the write-up are several folders, each corresponding to different parts o
 - [Section 3](https://github.com/samcalthrop/NodePad/tree/main/writeup/3%20-%20Design) - The design of the app's front and back end.
 - [Section 4](https://github.com/samcalthrop/NodePad/tree/main/writeup/4%20-%20Evaluation) - The post-development stage, where I run black box tests evaluate the app's success through a variety of measures.
 
+```
+writeup/
+    ├── 1 - Analysis/
+        ├── 1.1-problem_description.md
+        ├── 1.2-stakeholders.md
+        ├── 1.3-computational_methods.md
+        ├── 1.4-research.md
+        ├── 1.5-proposed_solution_features.md
+        ├── 1.6-computational_requirements.md
+        └── 1.7-success_criteria.md
+    ├── 2 - Iterative Development/
+        ├── 2.1-Iteration1/
+            ├── 2.1.1-aims.md
+            ├── 2.1.2-functionality_of_prototype.md
+            ├── 2.1.3-annotation_of_code.md
+            ├── 2.1.4-stakeholder_feedback.md
+            └── 2.1.5-evaluation.md
+        ├── 2.2-Iteration2/
+            ├── 2.2.1-aims.md
+            ├── 2.2.2-functionality_of_prototype.md
+            ├── 2.2.3-annotation_of_code.md
+            ├── 2.2.4-stakeholder_feedback.md
+            └── 2.2.5-evaluation.md
+        └── 2.3-Iteration3/
+            ├── 2.3.1-aims.md
+            ├── 2.3.2-functionality_of_prototype.md
+            ├── 2.3.3-annotation_of_code.md
+            ├── 2.3.4-stakeholder_feedback.md
+            └── 2.3.5-evaluation.md
+    ├── 3 - Design/
+        ├── 3.1 - Design Part I/
+            ├── 3.1.1-decomposition.md
+            ├── 3.1.2-systems_processes.md
+            ├── 3.1.3-interface_designs.md
+            └── 3.1.4-user_flow.md
+        └── 3.2 - Design Part II/
+            ├── 3.2.1-algorithms.md
+            ├── 3.2.2-data_structures.md
+            └── 3.2.3-post_development_test_data.md
+    └── 4 - Evaluation/
+        ├── 4.1-post_development_testing.md
+        ├── 4.2-evaluation.md
+        ├── 4.3-maintenence_and_future_improvements.md
+        └── 4.4-final_reflection.md
+```
+
 ## Project Setup
 
 ## Recommended IDE Setup
